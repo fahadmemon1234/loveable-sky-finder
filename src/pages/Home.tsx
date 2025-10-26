@@ -114,24 +114,24 @@ const Home = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             {[
               {
-                city: "London",
-                img: "/assets/images/cardimg/London.jpg",
-                price: "$500",
+                city: "Manila, Philippines",
+                img: "/assets/images/cardimg/Manila.jpg",
+                price: "£437",
               },
               {
-                city: "Paris",
-                img: "/assets/images/cardimg/Paris.jpg",
-                price: "$600",
+                city: "Lagos, Nigeria",
+                img: "/assets/images/cardimg/Nigeria.jpg",
+                price: "£390",
               },
               {
-                city: "New York",
-                img: "/assets/images/cardimg/NewYork.jpg",
-                price: "$700",
+                city: "Accra, Ghana",
+                img: "/assets/images/cardimg/Ghana.jpg",
+                price: "£401",
               },
               {
-                city: "Tokyo",
-                img: "/assets/images/cardimg/Tokyo.jpg",
-                price: "$800",
+                city: "Harare, Zimbabwe",
+                img: "/assets/images/cardimg/Zimbabwe.jpg",
+                price: "£457",
               },
             ].map(({ city, img, price }) => (
               <div
