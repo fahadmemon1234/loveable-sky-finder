@@ -38,10 +38,18 @@ All colors MUST be HSL.
     --ring: 220 68% 32%;
 
     --radius: 0.5rem;
-    
+
     /* Custom gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(220, 68%, 32%), hsl(220, 68%, 42%));
-    --gradient-card: linear-gradient(180deg, hsl(0, 0%, 100%), hsl(190, 100%, 98%));
+    --gradient-hero: linear-gradient(
+      135deg,
+      hsl(220, 68%, 32%),
+      hsl(220, 68%, 42%)
+    );
+    --gradient-card: linear-gradient(
+      180deg,
+      hsl(0, 0%, 100%),
+      hsl(190, 100%, 98%)
+    );
 
     --sidebar-background: 0 0% 98%;
 
@@ -107,4 +115,45 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+}
+
+input#from,
+input#to {
+  color: black !important;
+}
+input#from::placeholder,
+input#to::placeholder {
+  color: gray !important;
+}
+
+input#airline {
+  color: black !important;
+}
+input#airline::placeholder {
+  color: gray !important;
+}
+
+button.inline-flex.items-center.gap-2.whitespace-nowrap.rounded-md.text-sm.ring-offset-background.transition-colors.focus-visible\:outline-none.focus-visible\:ring-2.focus-visible\:ring-ring.focus-visible\:ring-offset-2.disabled\:pointer-events-none.disabled\:opacity-50.\[\&_svg\]\:pointer-events-none.\[\&_svg\]\:size-4.\[\&_svg\]\:shrink-0.border.border-input.bg-background.hover\:bg-accent.hover\:text-accent-foreground.h-10.px-4.py-2.w-full.justify-start.text-left.font-normal {
+  color: black !important;
+}
+
+button.inline-flex.items-center.gap-2.whitespace-nowrap.rounded-md.text-sm.ring-offset-background.transition-colors.focus-visible\:outline-none.focus-visible\:ring-2.focus-visible\:ring-ring.focus-visible\:ring-offset-2.disabled\:pointer-events-none.disabled\:opacity-50.\[\&_svg\]\:pointer-events-none.\[\&_svg\]\:size-4.\[\&_svg\]\:shrink-0.border.border-input.bg-background.hover\:bg-accent.hover\:text-accent-foreground.h-10.px-4.py-2.w-full.justify-start.text-left.font-normal.text-muted-foreground {
+  color: black !important;
+}
+
+.hover\:bg-accent:hover {
+  background-color: white !important;
+}
+
+button.rdp-button_reset.rdp-button.inline-flex.items-center.justify-center.gap-2.whitespace-nowrap.rounded-md.text-sm.ring-offset-background.transition-colors.focus-visible\:outline-none.focus-visible\:ring-2.focus-visible\:ring-ring.focus-visible\:ring-offset-2.disabled\:pointer-events-none.disabled\:opacity-50.\[\&_svg\]\:pointer-events-none.\[\&_svg\]\:size-4.\[\&_svg\]\:shrink-0.h-9.w-9.p-0.font-normal.aria-selected\:opacity-100:hover {
+  background-color: hsl(220 68% 32%) !important;
+  color: white !important;
+}
+
+button#class {
+  color: black !important;
+}
+
+label.text-sm.leading-none.peer-disabled\:cursor-not-allowed.peer-disabled\:opacity-70.text-foreground.font-medium {
+  color: black !important;
 }

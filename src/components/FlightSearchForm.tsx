@@ -4,10 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -24,12 +34,12 @@ const FlightSearchForm = () => {
   const [adults, setAdults] = useState("1");
   const [children, setChildren] = useState("0");
   const [infants, setInfants] = useState("0");
-  const [flightClass, setFlightClass] = useState("economy");
+  const [flightClass, setFlightClass] = useState("0");
   const [directOnly, setDirectOnly] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!from || !to || !departDate) {
       toast.error("Please fill in all required fields");
       return;
@@ -46,13 +56,15 @@ const FlightSearchForm = () => {
     }
 
     setLoading(true);
-    
+
     setTimeout(() => {
       const params = new URLSearchParams({
         from,
         to,
         departDate: format(departDate, "yyyy-MM-dd"),
-        ...(tripType === "round" && returnDate ? { returnDate: format(returnDate, "yyyy-MM-dd") } : {}),
+        ...(tripType === "round" && returnDate
+          ? { returnDate: format(returnDate, "yyyy-MM-dd") }
+          : {}),
         adults,
         children,
         infants,
@@ -60,30 +72,57 @@ const FlightSearchForm = () => {
         direct: directOnly.toString(),
         tripType,
       });
-      
+
       navigate(`/flights?${params.toString()}`);
       setLoading(false);
     }, 1000);
   };
 
+  // const [departDate, setDepartDate] = useState<Date | undefined>()
+  const [open, setOpen] = useState(false);
+
+  const handleSelect = (date: Date | undefined) => {
+    setDepartDate(date);
+    setOpen(false);
+  };
+
+  const [openReturn, setOpenReturn] = useState(false);
+  const handleSelectReturn = (date: Date | undefined) => {
+    setReturnDate(date);
+    setOpenReturn(false);
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="bg-card/70 backdrop-blur-md rounded-lg shadow-lg p-6 space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-card/70 backdrop-blur-md rounded-lg shadow-lg p-6 space-y-6"
+    >
       {/* Trip Type */}
-      <RadioGroup value={tripType} onValueChange={setTripType} className="flex gap-4">
+      <RadioGroup
+        value={tripType}
+        onValueChange={setTripType}
+        className="flex gap-4"
+      >
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="round" id="round" />
-          <Label htmlFor="round" className="text-foreground font-medium">Round Trip</Label>
+          <Label htmlFor="round" className="text-foreground font-medium">
+            Round Trip
+          </Label>
         </div>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="one" id="one" />
-          <Label htmlFor="one" className="text-foreground font-medium">One Way</Label>
+          <Label htmlFor="one" className="text-foreground font-medium">
+            One Way
+          </Label>
         </div>
       </RadioGroup>
 
       {/* From and To */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="from" className="text-foreground font-medium">From *</Label>
+          <Label htmlFor="from" className="text-foreground font-medium">
+            From *
+          </Label>
           <Input
             id="from"
             placeholder="Departure city"
@@ -93,7 +132,9 @@ const FlightSearchForm = () => {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="to" className="text-foreground font-medium">To *</Label>
+          <Label htmlFor="to" className="text-foreground font-medium">
+            To *
+          </Label>
           <Input
             id="to"
             placeholder="Destination city"
@@ -108,36 +149,68 @@ const FlightSearchForm = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label className="text-foreground font-medium">Depart Date *</Label>
-          <Popover>
+          <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className={cn("w-full justify-start text-left font-normal", !departDate && "text-muted-foreground")}
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !departDate && "text-muted-foreground"
+                )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {departDate ? format(departDate, "PPP") : "Pick a date"}
               </Button>
             </PopoverTrigger>
+
             <PopoverContent className="w-auto p-0">
-              <Calendar mode="single" selected={departDate} onSelect={setDepartDate} initialFocus />
+              <Calendar
+                key={departDate ? departDate.toString() : "default"}
+                mode="single"
+                selected={departDate}
+                onSelect={handleSelect}
+                disabled={(date) =>
+                  date < new Date(new Date().setHours(0, 0, 0, 0))
+                }
+                defaultMonth={departDate || new Date()}
+                initialFocus
+              />
             </PopoverContent>
           </Popover>
         </div>
+
         {tripType === "round" && (
           <div className="space-y-2">
             <Label className="text-foreground font-medium">Return Date *</Label>
-            <Popover>
+            <Popover open={openReturn} onOpenChange={setOpenReturn}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className={cn("w-full justify-start text-left font-normal", !returnDate && "text-muted-foreground")}
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !returnDate && "text-muted-foreground"
+                  )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {returnDate ? format(returnDate, "PPP") : "Pick a date"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
-                <Calendar mode="single" selected={returnDate} onSelect={setReturnDate} initialFocus />
+                <Calendar
+                  mode="single"
+                  selected={returnDate}
+                  onSelect={handleSelectReturn}
+                  disabled={(date) => {
+                    const today = new Date();
+                    const minDate = new Date(today);
+                    minDate.setDate(today.getDate() + 2);
+                    return date < minDate;
+                  }}
+                  defaultMonth={
+                    new Date(new Date().setDate(new Date().getDate() + 2))
+                  }
+                  initialFocus
+                />
               </PopoverContent>
             </Popover>
           </div>
@@ -147,75 +220,180 @@ const FlightSearchForm = () => {
       {/* Passengers */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="adults" className="text-foreground font-medium">Adults (12+ years)</Label>
-          <Select value={adults} onValueChange={setAdults}>
-            <SelectTrigger id="adults">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {[1, 2, 3, 4, 5, 6].map((num) => (
-                <SelectItem key={num} value={num.toString()}>
-                  {num}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label className="text-foreground font-medium">
+            Adults (12+ years)
+          </Label>
+          <div
+            className="flex items-center border rounded-md w-100 overflow-hidden"
+            style={{ background: "white" }}
+          >
+            <button
+              type="button"
+              className="flex-1 text-lg font-semibold text-[#1c448e] hover:text-[#15336a] py-1"
+              onClick={() =>
+                setAdults((prev) =>
+                  Number(prev) > 1 ? String(Number(prev) - 1) : "1"
+                )
+              }
+            >
+              –
+            </button>
+
+            <span
+              style={{ color: "black" }}
+              className="flex-1 text-base font-medium text-center select-none border-x border-gray-300 py-1"
+            >
+              {adults}
+            </span>
+
+            <button
+              type="button"
+              className="flex-1 text-lg font-semibold text-[#1c448e] hover:text-[#15336a] py-1"
+              onClick={() =>
+                setAdults((prev) =>
+                  Number(prev) < 9 ? String(Number(prev) + 1) : "9"
+                )
+              }
+            >
+              +
+            </button>
+          </div>
         </div>
+
         <div className="space-y-2">
-          <Label htmlFor="children" className="text-foreground font-medium">Children (2-11 years)</Label>
-          <Select value={children} onValueChange={setChildren}>
-            <SelectTrigger id="children">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {[0, 1, 2, 3, 4].map((num) => (
-                <SelectItem key={num} value={num.toString()}>
-                  {num}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label className="text-foreground font-medium">
+            Children (2–11 years)
+          </Label>
+          <div
+            className="flex items-center border rounded-md w-100 overflow-hidden"
+            style={{ background: "white" }}
+          >
+            <button
+              type="button"
+              className="flex-1 text-lg font-semibold text-[#1c448e] hover:text-[#15336a] py-1"
+              onClick={() =>
+                setChildren((prev) =>
+                  Number(prev) > 0 ? String(Number(prev) - 1) : "0"
+                )
+              }
+            >
+              –
+            </button>
+
+            <span
+              style={{ color: "black" }}
+              className="flex-1 text-base font-medium text-center select-none border-x border-gray-300 py-1"
+            >
+              {children}
+            </span>
+
+            <button
+              type="button"
+              className="flex-1 text-lg font-semibold text-[#1c448e] hover:text-[#15336a] py-1"
+              onClick={() =>
+                setChildren((prev) =>
+                  Number(prev) < 9 ? String(Number(prev) + 1) : "9"
+                )
+              }
+            >
+              +
+            </button>
+          </div>
         </div>
+
         <div className="space-y-2">
-          <Label htmlFor="infants" className="text-foreground font-medium">Infants (below 2 years)</Label>
-          <Select value={infants} onValueChange={setInfants}>
-            <SelectTrigger id="infants">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {[0, 1, 2].map((num) => (
-                <SelectItem key={num} value={num.toString()}>
-                  {num}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label className="text-foreground font-medium">
+            Infants (below 2 years)
+          </Label>
+          <div
+            className="flex items-center border rounded-md w-100 overflow-hidden"
+            style={{ background: "white" }}
+          >
+            <button
+              type="button"
+              className="flex-1 text-lg font-semibold text-[#1c448e] hover:text-[#15336a] py-1"
+              onClick={() =>
+                setInfants((prev) =>
+                  Number(prev) > 0 ? String(Number(prev) - 1) : "0"
+                )
+              }
+            >
+              –
+            </button>
+
+            <span
+              style={{ color: "black" }}
+              className="flex-1 text-base font-medium text-center select-none border-x border-gray-300 py-1"
+            >
+              {infants}
+            </span>
+
+            <button
+              type="button"
+              className="flex-1 text-lg font-semibold text-[#1c448e] hover:text-[#15336a] py-1"
+              onClick={() =>
+                setInfants((prev) =>
+                  Number(prev) < 9 ? String(Number(prev) + 1) : "9"
+                )
+              }
+            >
+              +
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Class */}
-      <div className="space-y-2">
-        <Label htmlFor="class" className="text-foreground font-medium">Class</Label>
-        <Select value={flightClass} onValueChange={setFlightClass}>
-          <SelectTrigger id="class">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="economy">Economy</SelectItem>
-            <SelectItem value="premium">Premium Economy</SelectItem>
-            <SelectItem value="business">Business</SelectItem>
-            <SelectItem value="first">First Class</SelectItem>
-          </SelectContent>
-        </Select>
+      <div
+        className="grid grid-cols-1 md:grid-cols-3 gap-4"
+        style={{ alignItems: "center" }}
+      >
+        {/* Class */}
+        <div className="space-y-2">
+          <Label htmlFor="class" className="text-foreground font-medium">
+            Class
+          </Label>
+          <Select value={flightClass} onValueChange={setFlightClass}>
+            <SelectTrigger id="class">
+              <SelectValue placeholder="Select a class" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="0" disabled>
+                Select a class
+              </SelectItem>
+              <SelectItem value="economy">Economy</SelectItem>
+              <SelectItem value="premium">Premium Economy</SelectItem>
+              <SelectItem value="business">Business</SelectItem>
+              <SelectItem value="first">First Class</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Airline */}
+        <div className="space-y-2">
+          <Label htmlFor="airline" className="text-foreground font-medium">
+            Airline
+          </Label>
+          <Input id="airline" placeholder="Airline" className="form-control" />
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="direct"
+              checked={directOnly}
+              onCheckedChange={(checked) => setDirectOnly(checked as boolean)}
+            />
+            <Label
+              htmlFor="direct"
+              className="cursor-pointer text-foreground font-medium"
+            >
+              Direct flights only
+            </Label>
+          </div>
+        </div>
       </div>
 
       {/* Direct Flights */}
-      <div className="flex items-center space-x-2">
-        <Checkbox id="direct" checked={directOnly} onCheckedChange={(checked) => setDirectOnly(checked as boolean)} />
-        <Label htmlFor="direct" className="cursor-pointer text-foreground font-medium">
-          Direct flights only
-        </Label>
-      </div>
 
       {/* Submit Button */}
       <Button type="submit" className="w-full" size="lg" disabled={loading}>
