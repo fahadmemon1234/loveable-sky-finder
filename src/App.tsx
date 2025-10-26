@@ -63,7 +63,7 @@ const App = () => (
           <Route path="/support/make-payment" element={<MakePayment />} />
 
           {/* Company Pages */}
-          <Route path="/company/about-us" element={<CompanyAboutUs />} />
+          {/* <Route path="/company/about-us" element={<CompanyAboutUs />} /> */}
           <Route path="/company/contact-us" element={<CompanyContactUs />} />
           <Route path="/company/bookmark-us" element={<BookmarkUs />} />
           <Route path="/company/site-map" element={<SiteMap />} />

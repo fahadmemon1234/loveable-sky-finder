@@ -18,8 +18,11 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 220 68% 32%;
 
-    --primary: 220 68% 32%; /* #1c448e */
+    --primary: 220 68% 32%;
     --primary-foreground: 0 0% 100%;
+
+    --primary-light: 213 100% 45%; /* #006ce4 */
+    --primary-light-foreground: 0 0% 100%;
 
     --secondary: 190 100% 96%;
     --secondary-foreground: 220 68% 32%;
@@ -146,7 +149,7 @@ button.inline-flex.items-center.gap-2.whitespace-nowrap.rounded-md.text-sm.ring-
 }
 
 button.rdp-button_reset.rdp-button.inline-flex.items-center.justify-center.gap-2.whitespace-nowrap.rounded-md.text-sm.ring-offset-background.transition-colors.focus-visible\:outline-none.focus-visible\:ring-2.focus-visible\:ring-ring.focus-visible\:ring-offset-2.disabled\:pointer-events-none.disabled\:opacity-50.\[\&_svg\]\:pointer-events-none.\[\&_svg\]\:size-4.\[\&_svg\]\:shrink-0.h-9.w-9.p-0.font-normal.aria-selected\:opacity-100:hover {
-  background-color: hsl(220 68% 32%) !important;
+  background-color: #006ce4 !important;
   color: white !important;
 }
 
@@ -160,4 +163,28 @@ label.text-sm.leading-none.peer-disabled\:cursor-not-allowed.peer-disabled\:opac
 
 .hover\:text-accent-foreground:hover {
   color: hsl(var(--accent)) !important;
+}
+
+.to-primary\/70 {
+  --tw-gradient-to: hsl(220deg 68% 32% / 55%) var(--tw-gradient-to-position);
+}
+
+.from-primary\/90 {
+  --tw-gradient-from: hsl(211.58deg 100% 44.71% / 48%)
+    var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: hsl(var(--primary) / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: hsl(211.58deg 100% 44.71% / 35%),
+    hsl(220deg 68% 32% / 49%) !important;
+}
+
+.bg-primary {
+  background-color: #006ce4 !important;
+}
+
+footer.bg-primary.text-primary-foreground.mt-20 {
+  background-color: hsl(var(--primary)) !important;
+}
+
+.text-primary {
+  color: hsl(var(--primary-light)) !important;
 }
