@@ -157,3 +157,7 @@ button#class {
 label.text-sm.leading-none.peer-disabled\:cursor-not-allowed.peer-disabled\:opacity-70.text-foreground.font-medium {
   color: black !important;
 }
+
+.hover\:text-accent-foreground:hover {
+  color: hsl(var(--accent)) !important;
+}
