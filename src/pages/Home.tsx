@@ -2,6 +2,7 @@ import { MapPin, Shield, HeadphonesIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FlightSearchForm from "@/components/FlightSearchForm";
+import heroImage from "@/assets/hero-flight.jpg";
 
 const Home = () => {
   return (
@@ -9,8 +10,15 @@ const Home = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-20 px-4">
-        <div className="container mx-auto">
+      <section className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-20 px-4 overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-30"
+          style={{ backgroundImage: `url(${heroImage})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-primary/70" />
+        
+        <div className="container mx-auto relative z-10">
           <div className="max-w-3xl mx-auto text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
               Book Your Dream Flight Today

@@ -67,23 +67,23 @@ const FlightSearchForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-card rounded-lg shadow-lg p-6 space-y-6">
+    <form onSubmit={handleSubmit} className="bg-card/70 backdrop-blur-md rounded-lg shadow-lg p-6 space-y-6">
       {/* Trip Type */}
       <RadioGroup value={tripType} onValueChange={setTripType} className="flex gap-4">
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="round" id="round" />
-          <Label htmlFor="round">Round Trip</Label>
+          <Label htmlFor="round" className="text-foreground font-medium">Round Trip</Label>
         </div>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="one" id="one" />
-          <Label htmlFor="one">One Way</Label>
+          <Label htmlFor="one" className="text-foreground font-medium">One Way</Label>
         </div>
       </RadioGroup>
 
       {/* From and To */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="from">From *</Label>
+          <Label htmlFor="from" className="text-foreground font-medium">From *</Label>
           <Input
             id="from"
             placeholder="Departure city"
@@ -93,7 +93,7 @@ const FlightSearchForm = () => {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="to">To *</Label>
+          <Label htmlFor="to" className="text-foreground font-medium">To *</Label>
           <Input
             id="to"
             placeholder="Destination city"
@@ -107,7 +107,7 @@ const FlightSearchForm = () => {
       {/* Dates */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label>Depart Date *</Label>
+          <Label className="text-foreground font-medium">Depart Date *</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -125,7 +125,7 @@ const FlightSearchForm = () => {
         </div>
         {tripType === "round" && (
           <div className="space-y-2">
-            <Label>Return Date *</Label>
+            <Label className="text-foreground font-medium">Return Date *</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -147,7 +147,7 @@ const FlightSearchForm = () => {
       {/* Passengers */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="adults">Adults (12+ years)</Label>
+          <Label htmlFor="adults" className="text-foreground font-medium">Adults (12+ years)</Label>
           <Select value={adults} onValueChange={setAdults}>
             <SelectTrigger id="adults">
               <SelectValue />
@@ -162,7 +162,7 @@ const FlightSearchForm = () => {
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="children">Children (2-11 years)</Label>
+          <Label htmlFor="children" className="text-foreground font-medium">Children (2-11 years)</Label>
           <Select value={children} onValueChange={setChildren}>
             <SelectTrigger id="children">
               <SelectValue />
@@ -177,7 +177,7 @@ const FlightSearchForm = () => {
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="infants">Infants (below 2 years)</Label>
+          <Label htmlFor="infants" className="text-foreground font-medium">Infants (below 2 years)</Label>
           <Select value={infants} onValueChange={setInfants}>
             <SelectTrigger id="infants">
               <SelectValue />
@@ -195,7 +195,7 @@ const FlightSearchForm = () => {
 
       {/* Class */}
       <div className="space-y-2">
-        <Label htmlFor="class">Class</Label>
+        <Label htmlFor="class" className="text-foreground font-medium">Class</Label>
         <Select value={flightClass} onValueChange={setFlightClass}>
           <SelectTrigger id="class">
             <SelectValue />
@@ -212,7 +212,7 @@ const FlightSearchForm = () => {
       {/* Direct Flights */}
       <div className="flex items-center space-x-2">
         <Checkbox id="direct" checked={directOnly} onCheckedChange={(checked) => setDirectOnly(checked as boolean)} />
-        <Label htmlFor="direct" className="cursor-pointer">
+        <Label htmlFor="direct" className="cursor-pointer text-foreground font-medium">
           Direct flights only
         </Label>
       </div>
