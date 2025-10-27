@@ -40,34 +40,49 @@ const FlightSearchForm = () => {
   const [flightClass, setFlightClass] = useState("0");
   const [directOnly, setDirectOnly] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Validation checks
-    if (!from || !to || !departDate) {
+  const Validation = () => {
+    if (!from) {
       Swal.fire({
         icon: "error",
-        title: "Missing Fields",
-        text: "Please fill in all required fields",
+        position: "center",
+        title: "Please enter the departure city.",
       });
-      return;
+      return false;
+    }
+
+    if (!to) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please enter the destination city.",
+      });
+      return false;
+    }
+
+    if (!departDate) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please select the departure date.",
+      });
+      return false;
     }
 
     if (tripType === "round" && !returnDate) {
       Swal.fire({
-        icon: "warning",
-        title: "Return Date Required",
-        text: "Please select a return date",
-      });
-      return;
-    }
-
-    if (tripType === "round" && returnDate && departDate > returnDate) {
-      Swal.fire({
         icon: "error",
-        title: "Invalid Dates",
-        text: "Return date must be after departure date",
+        position: "center",
+        title: "Please select the return date.",
       });
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!Validation()) {
       return;
     }
 
@@ -95,7 +110,7 @@ const FlightSearchForm = () => {
       setLoading(false);
 
       Swal.fire({
-        position: "top-end",
+        position: "center",
         icon: "success",
         title: "Inquiry saved successfully",
         showConfirmButton: false,
@@ -108,6 +123,7 @@ const FlightSearchForm = () => {
 
       Swal.fire({
         icon: "error",
+        position: "center",
         title: "Error",
         text:
           error.response?.data?.message ||
@@ -168,7 +184,6 @@ const FlightSearchForm = () => {
             placeholder="Departure city"
             value={from}
             onChange={(e) => setFrom(e.target.value)}
-            required
           />
         </div>
         <div className="space-y-2">
@@ -180,7 +195,6 @@ const FlightSearchForm = () => {
             placeholder="Destination city"
             value={to}
             onChange={(e) => setTo(e.target.value)}
-            required
           />
         </div>
       </div>
