@@ -576,7 +576,7 @@ const FlightSearchForm = () => {
             Searching...
           </>
         ) : (
-          "Find Deals"
+          "Submit Inquiry"
         )}
       </Button>
     </form>
