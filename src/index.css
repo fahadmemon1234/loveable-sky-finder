@@ -121,11 +121,17 @@ All colors MUST be HSL.
 }
 
 input#from,
-input#to {
+input#to,
+#name,
+#email,
+#phone {
   color: black !important;
 }
 input#from::placeholder,
-input#to::placeholder {
+input#to::placeholder,
+#name::placeholder,
+#email::placeholder,
+#phone::placeholder {
   color: gray !important;
 }
 

@@ -168,6 +168,50 @@ const Home = () => {
                 img: "/assets/images/cardimg/Zimbabwe.jpg",
                 price: "£457",
               },
+              {
+                city: "Nairobi, Kenya",
+                img: "/assets/images/cardimg/nairobi-kenya.jpg",
+                price: "£328",
+              },
+              {
+                city: "Entebbe, Uganda",
+                img: "/assets/images/cardimg/Uganda.jpg",
+                price: "£331",
+              },
+
+              {
+                city: "Addis Ababa, Ethiopia",
+                img: "/assets/images/cardimg/Addis-Ababa-Ethiopia.jpg",
+                price: "£346",
+              },
+              {
+                city: "Johannesburg, South Africa",
+                img: "/assets/images/cardimg/Johannesburg-South-Africa.jpeg",
+                price: "£372",
+              },
+              {
+                city: "Abuja, Nigeria",
+                img: "/assets/images/cardimg/Abuja-Nigeria.jpg",
+                price: "£560",
+              },
+
+              {
+                city: "Dakar, Senegal",
+                img: "/assets/images/cardimg/Dakar-Senegal.jpg",
+                price: "£355",
+              },
+
+              {
+                city: "Freetown, Sierra Leone",
+                img: "/assets/images/cardimg/Freetown-Sierra-Leone.jpg",
+                price: "£396",
+              },
+
+              {
+                city: "Mombasa, Kenya",
+                img: "/assets/images/cardimg/Mombasa-Kenya.jpg",
+                price: "£490",
+              },
             ].map(({ city, img, price }) => (
               <div
                 key={city}

@@ -20,7 +20,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CalendarIcon, Loader2 } from "lucide-react";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -37,8 +37,11 @@ const FlightSearchForm = () => {
   const [adults, setAdults] = useState("1");
   const [children, setChildren] = useState("0");
   const [infants, setInfants] = useState("0");
-  const [flightClass, setFlightClass] = useState("0");
-  const [directOnly, setDirectOnly] = useState(false);
+  // const [flightClass, setFlightClass] = useState("0");
+  // const [directOnly, setDirectOnly] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
   const Validation = () => {
     if (!from) {
@@ -59,6 +62,16 @@ const FlightSearchForm = () => {
       return false;
     }
 
+    if (from === to) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Invalid Selection",
+        text: "Departure and destination cannot be the same.",
+      });
+      return;
+    }
+
     if (!departDate) {
       Swal.fire({
         icon: "error",
@@ -73,6 +86,43 @@ const FlightSearchForm = () => {
         icon: "error",
         position: "center",
         title: "Please select the return date.",
+      });
+      return false;
+    }
+
+    if (!name) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please enter your name.",
+      });
+      return false;
+    }
+
+    if (!email) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please enter your email.",
+      });
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please enter a valid email address.",
+      });
+      return false;
+    }
+
+    if (!phone) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please enter your phone number.",
       });
       return false;
     }
@@ -101,37 +151,68 @@ const FlightSearchForm = () => {
           adults,
           children,
           infants,
-          class: flightClass,
-          direct: directOnly,
+          // class: flightClass,
+          // direct: directOnly,
+          name,
+          email,
+          phone,
           tripType,
         }
       );
 
-      setLoading(false);
+      if (response.status === 200) {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Inquiry saved successfully",
+          text: "Agent will contact you soon on your email or phone number.",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else if (response.status === 400) {
+        Swal.fire({
+          icon: "error",
+          position: "center",
+          title: "Bad Request",
+          text: "Please check your details and try again.",
+        });
+      } else if (response.status === 500) {
+        Swal.fire({
+          icon: "error",
+          position: "center",
+          title: "Server Error",
+          text: "Something went wrong on the server. Please try later.",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          position: "center",
+          title: "Unexpected Error",
+          text: "An unexpected error occurred. Please try again.",
+        });
+      }
 
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Inquiry saved successfully",
-        text: "Agent will contact you soon on your email or phone number.",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-
-      // console.log("Server response:", response.data);
+      setFrom("");
+      setTo("");
+      setDepartDate(undefined);
+      setReturnDate(undefined);
+      setAdults("1");
+      setChildren("0");
+      setInfants("0");
+      setName("");
+      setEmail("");
+      setPhone("");
     } catch (error: any) {
-      setLoading(false);
-
       Swal.fire({
         icon: "error",
         position: "center",
-        title: "Error",
+        title: "Connection Error",
         text:
           error.response?.data?.message ||
           "Unable to connect to the server. Please try again.",
       });
-
-      // console.error("Error submitting inquiry:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -402,8 +483,7 @@ const FlightSearchForm = () => {
         className="grid grid-cols-1 md:grid-cols-3 gap-4"
         style={{ alignItems: "center" }}
       >
-        {/* Class */}
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <Label htmlFor="class" className="text-foreground font-medium">
             Class
           </Label>
@@ -423,7 +503,7 @@ const FlightSearchForm = () => {
           </Select>
         </div>
 
-        {/* Airline */}
+        
         <div className="space-y-2">
           <Label htmlFor="airline" className="text-foreground font-medium">
             Airline
@@ -445,6 +525,44 @@ const FlightSearchForm = () => {
               Direct flights only
             </Label>
           </div>
+        </div> */}
+
+        <div className="space-y-2">
+          <Label htmlFor="name" className="text-foreground font-medium">
+            Name *
+          </Label>
+
+          <Input
+            id="name"
+            placeholder="Your Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="email" className="text-foreground font-medium">
+            Email *
+          </Label>
+
+          <Input
+            id="email"
+            placeholder="Your Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="phone" className="text-foreground font-medium">
+            Phone *
+          </Label>
+          <Input
+            id="phone"
+            placeholder="Your Phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
         </div>
       </div>
 
