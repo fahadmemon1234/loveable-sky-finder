@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Swal from "sweetalert2";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -22,6 +23,8 @@ import { CalendarIcon, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+
+import axios from "axios";
 
 const FlightSearchForm = () => {
   const navigate = useNavigate();
@@ -37,45 +40,82 @@ const FlightSearchForm = () => {
   const [flightClass, setFlightClass] = useState("0");
   const [directOnly, setDirectOnly] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validation checks
     if (!from || !to || !departDate) {
-      toast.error("Please fill in all required fields");
+      Swal.fire({
+        icon: "error",
+        title: "Missing Fields",
+        text: "Please fill in all required fields",
+      });
       return;
     }
 
     if (tripType === "round" && !returnDate) {
-      toast.error("Please select a return date");
+      Swal.fire({
+        icon: "warning",
+        title: "Return Date Required",
+        text: "Please select a return date",
+      });
       return;
     }
 
     if (tripType === "round" && returnDate && departDate > returnDate) {
-      toast.error("Return date must be after departure date");
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Dates",
+        text: "Return date must be after departure date",
+      });
       return;
     }
 
     setLoading(true);
 
-    setTimeout(() => {
-      const params = new URLSearchParams({
-        from,
-        to,
-        departDate: format(departDate, "yyyy-MM-dd"),
-        ...(tripType === "round" && returnDate
-          ? { returnDate: format(returnDate, "yyyy-MM-dd") }
-          : {}),
-        adults,
-        children,
-        infants,
-        class: flightClass,
-        direct: directOnly.toString(),
-        tripType,
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/inquiry`,
+        {
+          from,
+          to,
+          departDate: format(departDate, "yyyy-MM-dd"),
+          ...(tripType === "round" && returnDate
+            ? { returnDate: format(returnDate, "yyyy-MM-dd") }
+            : {}),
+          adults,
+          children,
+          infants,
+          class: flightClass,
+          direct: directOnly,
+          tripType,
+        }
+      );
+
+      setLoading(false);
+
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Inquiry saved successfully",
+        showConfirmButton: false,
+        timer: 1500,
       });
 
-      navigate(`/flights?${params.toString()}`);
+      // console.log("Server response:", response.data);
+    } catch (error: any) {
       setLoading(false);
-    }, 1000);
+
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          error.response?.data?.message ||
+          "Unable to connect to the server. Please try again.",
+      });
+
+      // console.error("Error submitting inquiry:", error);
+    }
   };
 
   // const [departDate, setDepartDate] = useState<Date | undefined>()
