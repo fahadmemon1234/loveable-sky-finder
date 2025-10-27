@@ -17,25 +17,50 @@ const Home = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-20 px-4 overflow-hidden">
+      <section
+        className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-20 md:py-28 px-4 overflow-hidden"
+        aria-label="Visa services hero section"
+      >
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center opacity-30"
           style={{ backgroundImage: `url(${heroImage})` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-primary/70" />
+        ></div>
 
-        <div className="container mx-auto relative z-10">
+        {/* Overlay for better text visibility */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-primary/70"></div>
+
+        {/* Main Content */}
+        <div className="relative z-10 container mx-auto">
           <div className="max-w-3xl mx-auto text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            {/* Headline */}
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
               Book Your Dream Flight Today
             </h1>
-            <p className="text-lg text-primary-foreground/90">
-              Find the best deals on international flights with Loveable Travel
+
+            {/* Subtext / Value Proposition */}
+            <p className="text-lg md:text-xl text-primary-foreground/90 mb-8">
+              Find the best deals on international and domestic flights with
+              Loveable Travel. Enjoy flexible bookings, top airlines, and
+              exclusive offers to make your journey stress-free.
             </p>
+
+            {/* CTA Button */}
+            <button
+              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold px-8 py-3 rounded-lg shadow-lg transition-all duration-200"
+              onClick={() =>
+                window.scrollTo({
+                  top: document.body.scrollHeight,
+                  behavior: "smooth",
+                })
+              }
+            >
+              Book Free Consultation
+            </button>
           </div>
 
-          <div className="max-w-4xl mx-auto">
+          {/* Optional: You can replace <FlightSearchForm /> with a simple Visa Inquiry Form */}
+          <div className="max-w-4xl mx-auto mt-10">
             <FlightSearchForm />
           </div>
         </div>
