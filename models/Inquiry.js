@@ -9,8 +9,11 @@ const inquirySchema = new mongoose.Schema(
     adults: String,
     children: String,
     infants: String,
-    class: String,
-    direct: Boolean,
+    // class: String,
+    // direct: Boolean,
+    name: String,
+    email: String,
+    phone: String,
     tripType: String,
   },
   { timestamps: true }
