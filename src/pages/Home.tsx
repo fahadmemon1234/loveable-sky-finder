@@ -9,7 +9,11 @@ import {
   FaPlaneDeparture,
   FaUsers,
 } from "react-icons/fa";
-import { MapPin, Headphones, ShieldCheck } from "lucide-react";
+
+import { FaThumbsUp, FaCheck } from "react-icons/fa";
+import { PiCurrencyGbpBold } from "react-icons/pi";
+import { IoIosUnlock } from "react-icons/io";
+import { MdOutlineFlightTakeoff } from "react-icons/md";
 
 const Home = () => {
   return (
@@ -71,54 +75,60 @@ const Home = () => {
         <div className="container mx-auto text-center">
           <h2 className="text-4xl font-bold mb-12">Our Services</h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8">
             {/* Cheap Prices */}
             <div className="text-center space-y-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                <MapPin className="h-8 w-8 text-primary" />
+                <FaThumbsUp className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold">Sure Cheap Prices</h3>
+              <h3 className="text-xl font-semibold">Great choice</h3>
               <p className="text-sm text-muted-foreground">
-                Search our lowest rates to international destinations. Explore
-                the globe for journeying right here with us.
+                We offer widest choice of airfares, hotels & holiday packages.
               </p>
             </div>
 
             {/* Simple Way to Book */}
             <div className="text-center space-y-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                <ShieldCheck className="h-8 w-8 text-primary" />
+                <PiCurrencyGbpBold className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold">Simple Way to Book</h3>
+              <h3 className="text-xl font-semibold">Low prices</h3>
               <p className="text-sm text-muted-foreground">
-                The method of flight booking is very simple and completes within
-                a few clicks. Just Search, Select and Submit to us.
+                Best price guaranteed, more savings.
               </p>
             </div>
 
             {/* Dedicated Customer Support */}
             <div className="text-center space-y-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                <Headphones className="h-8 w-8 text-primary" />
+                <FaCheck className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold">
-                Dedicated Customer Support
-              </h3>
+              <h3 className="text-xl font-semibold">Flexible payment</h3>
               <p className="text-sm text-muted-foreground">
-                Bright Holiday always prioritizes premium client services. Our
-                dedicated staff stay live, and respond to customers timely.
+                To facilitate our customers the bookings are made on minor
+                initial deposit.
               </p>
             </div>
 
             {/* Financial Protection */}
             <div className="text-center space-y-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                <ShieldCheck className="h-8 w-8 text-primary" />
+                <IoIosUnlock className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold">Financial Protection</h3>
+              <h3 className="text-xl font-semibold">Secure Buy</h3>
               <p className="text-sm text-muted-foreground">
-                We operate under ATOL organizations, ensuring your peace of mind
-                with secure bookings and safe money handling.
+                Get your tickets first, Pay after the confirmation by the
+                airline.
+              </p>
+            </div>
+
+            <div className="text-center space-y-4 p-6 bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                <MdOutlineFlightTakeoff className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold">Flight Installment Plan</h3>
+              <p className="text-sm text-muted-foreground">
+                Book your flight with easy monthly installments at 0% interest.
               </p>
             </div>
           </div>

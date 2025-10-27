@@ -113,6 +113,7 @@ const FlightSearchForm = () => {
         position: "center",
         icon: "success",
         title: "Inquiry saved successfully",
+        text: "Agent will contact you soon on your email or phone number.",
         showConfirmButton: false,
         timer: 1500,
       });
