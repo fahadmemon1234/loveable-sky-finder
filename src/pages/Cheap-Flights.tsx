@@ -514,7 +514,7 @@ const CheapFlights = () => {
       <section className="py-20 px-6 bg-gradient-to-b from-secondary/10 to-secondary/30">
         <div className="container mx-auto text-center">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-            {filteredDestinations.map(({ city, img, price }) => (
+            {filteredDestinations.map(({ city, img, price, url }) => (
               <div
                 key={city}
                 className="relative group rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300"
@@ -539,9 +539,9 @@ const CheapFlights = () => {
                 </div>
 
                 <div className="absolute inset-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-                  <button className="px-6 py-3 border border-white text-white rounded-md font-semibold text-lg hover:bg-white hover:text-[#1c448e] transition-colors">
+                  <a href={url} className="px-6 py-3 border border-white text-white rounded-md font-semibold text-lg hover:bg-white hover:text-[#1c448e] transition-colors">
                     More Info
-                  </button>
+                  </a>
                 </div>
               </div>
             ))}
