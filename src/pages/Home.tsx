@@ -14,6 +14,7 @@ import { FaThumbsUp, FaCheck } from "react-icons/fa";
 import { PiCurrencyGbpBold } from "react-icons/pi";
 import { IoIosUnlock } from "react-icons/io";
 import { MdOutlineFlightTakeoff } from "react-icons/md";
+import { url } from "inspector";
 
 const Home = () => {
   return (
@@ -152,67 +153,79 @@ const Home = () => {
                 city: "Manila, Philippines",
                 img: "/assets/images/cardimg/Manila.jpg",
                 price: "£437",
+                url: "/InquiryFlight/Manila-Philippines",
               },
               {
                 city: "Lagos, Nigeria",
                 img: "/assets/images/cardimg/Nigeria.jpg",
                 price: "£390",
+                url: "/InquiryFlight/Lagos-Nigeria",
               },
               {
                 city: "Accra, Ghana",
                 img: "/assets/images/cardimg/Ghana.jpg",
                 price: "£401",
+                url: "/InquiryFlight/Accra-Ghana",
               },
               {
                 city: "Harare, Zimbabwe",
                 img: "/assets/images/cardimg/Zimbabwe.jpg",
                 price: "£457",
+                url: "/InquiryFlight/Harare-Zimbabwe",
               },
               {
                 city: "Nairobi, Kenya",
                 img: "/assets/images/cardimg/nairobi-kenya.jpg",
                 price: "£328",
+                url: "/InquiryFlight/Nairobi-Kenya",
               },
               {
                 city: "Entebbe, Uganda",
                 img: "/assets/images/cardimg/Uganda.jpg",
                 price: "£331",
+                url: "/InquiryFlight/Entebbe-Uganda",
               },
 
               {
                 city: "Addis Ababa, Ethiopia",
                 img: "/assets/images/cardimg/Addis-Ababa-Ethiopia.jpg",
                 price: "£346",
+                url: "/InquiryFlight/Addis-Ababa-Ethiopia",
               },
               {
                 city: "Johannesburg, South Africa",
                 img: "/assets/images/cardimg/Johannesburg-South-Africa.jpeg",
                 price: "£372",
+                url: "/InquiryFlight/Johannesburg-South-Africa",
               },
               {
                 city: "Abuja, Nigeria",
                 img: "/assets/images/cardimg/Abuja-Nigeria.jpg",
                 price: "£560",
+                url: "/InquiryFlight/Abuja-Nigeria",
               },
 
               {
                 city: "Dakar, Senegal",
                 img: "/assets/images/cardimg/Dakar-Senegal.jpg",
                 price: "£355",
+                url: "/InquiryFlight/Dakar-Senegal",
               },
 
               {
                 city: "Freetown, Sierra Leone",
                 img: "/assets/images/cardimg/Freetown-Sierra-Leone.jpg",
                 price: "£396",
+                url: "/InquiryFlight/Freetown-Sierra-Leone",
               },
 
               {
                 city: "Mombasa, Kenya",
                 img: "/assets/images/cardimg/Mombasa-Kenya.jpg",
                 price: "£490",
+                url: "/InquiryFlight/Mombasa-Kenya",
               },
-            ].map(({ city, img, price }) => (
+            ].map(({ city, img, price, url }) => (
               <div
                 key={city}
                 className="relative group rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300"
@@ -237,9 +250,12 @@ const Home = () => {
                 </div>
 
                 <div className="absolute inset-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-                  <button className="px-6 py-3 border border-white text-white rounded-md font-semibold text-lg hover:bg-white hover:text-[#1c448e] transition-colors">
+                  <a
+                    href={url}
+                    className="px-6 py-3 border border-white text-white rounded-md font-semibold text-lg hover:bg-white hover:text-[#1c448e] transition-colors"
+                  >
                     Book Now
-                  </button>
+                  </a>
                 </div>
               </div>
             ))}
