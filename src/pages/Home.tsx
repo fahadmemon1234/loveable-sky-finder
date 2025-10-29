@@ -51,7 +51,7 @@ const Home = () => {
 
             {/* CTA Button */}
             <button
-              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold px-8 py-3 rounded-lg shadow-lg transition-all duration-200"
+              className="inline md:hidden bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold px-8 py-3 rounded-lg shadow-lg transition-all duration-200"
               onClick={() =>
                 window.scrollTo({
                   top: document.body.scrollHeight,

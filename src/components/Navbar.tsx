@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { Menu, X, Plane } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -23,51 +23,61 @@ const Navbar = () => {
 
   return (
     <>
-      <header className="hidden  md:block">
+      <header className="hidden md:block">
         <div className="bg-primary text-primary-foreground py-2 text-center text-sm">
           <div className="grid grid-cols-2 items-center justify-center">
             <div className="font-semibold">
               Free Cancellation on select flights!
             </div>
-            <div className="">
+            <div>
               <FaPhoneVolume className="inline mb-1 mr-1" />
-              <Link to="tel:+919876543210" className="font-semibold">
+              <NavLink to="tel:+919876543210" className="font-semibold">
                 +91 9876543210
-              </Link>
+              </NavLink>
               <span className="mx-2"> | </span>
               <MdEmail className="inline mb-1 mr-1" />
-              <Link to="mailto:zooqa@example.com" className="font-semibold">
+              <NavLink to="mailto:zooqa@example.com" className="font-semibold">
                 zooqa@example.com
-              </Link>
+              </NavLink>
             </div>
           </div>
         </div>
       </header>
+
       <nav className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
-            <Link
+            <NavLink
               to="/"
               className="flex items-center gap-2 font-bold text-xl text-primary"
             >
               <Plane className="h-6 w-6" />
               <span>Loveable Travel</span>
-            </Link>
+            </NavLink>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-6">
               {navLinks.map((link) => (
-                <Link
+                <NavLink
                   key={link.path}
                   to={link.path}
-                  className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+                  className={({ isActive }) =>
+                    `relative text-sm transition-all duration-300 pb-1
+                    ${
+                      isActive
+                        ? "text-primary font-bold"
+                        : "text-foreground hover:text-primary font-medium"
+                    }`
+                  }
                 >
                   {link.title}
-                </Link>
+                  {/* Animated underline */}
+                  <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </NavLink>
               ))}
               <Button asChild>
-                <Link to="/flights">Book Now</Link>
+                <NavLink to="/flights">Book Now</NavLink>
               </Button>
             </div>
 
@@ -86,14 +96,18 @@ const Navbar = () => {
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                 <nav className="flex flex-col gap-4 mt-8">
                   {navLinks.map((link) => (
-                    <Link
+                    <NavLink
                       key={link.path}
                       to={link.path}
-                      onClick={() => setIsOpen(false)} // Close mobile menu
-                      className="text-lg font-medium hover:text-primary transition-colors"
+                      onClick={() => setIsOpen(false)}
+                      className={({ isActive }) =>
+                        `relative text-lg font-medium transition-all duration-300 
+                        ${isActive ? "text-primary" : "hover:text-primary"}`
+                      }
                     >
                       {link.title}
-                    </Link>
+                      <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full"></span>
+                    </NavLink>
                   ))}
                 </nav>
               </SheetContent>
