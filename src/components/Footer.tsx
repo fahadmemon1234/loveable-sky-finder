@@ -33,33 +33,37 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-primary text-primary-foreground mt-20">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
+    <footer className="bg-primary text-primary-foreground">
+      <div className="container mx-auto px-4 py-12 sm:py-14">
+        {/* Top Grid Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+          {/* Brand Info */}
           <div>
             <Link
               to="/"
-              className="flex items-center gap-2 font-bold text-xl mb-4"
+              className="flex items-center gap-2 font-bold text-xl sm:text-2xl mb-3 sm:mb-4"
             >
-              <Plane className="h-6 w-6" />
+              <Plane className="h-6 w-6 sm:h-7 sm:w-7" />
               <span>Loveable Travel</span>
             </Link>
-            <p className="text-sm text-primary-foreground/80">
-              Your trusted partner for international flight bookings and travel
-              experiences.
+            <p className="text-sm sm:text-base text-primary-foreground/80 leading-relaxed">
+              We specialize in creating unforgettable travel experiences. From
+              international flights to dream vacations — we handle it all with
+              care and precision.
             </p>
           </div>
 
           {/* Company Links */}
           <div>
-            <h3 className="font-semibold text-lg mb-4">Company</h3>
+            <h3 className="font-semibold text-lg mb-4 sm:mb-5 border-l-4 border-white/50 pl-2">
+              Company
+            </h3>
             <ul className="space-y-2">
               {companyLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     to={link.href}
-                    className="text-sm text-primary-foreground/80 hover:text-primary-foreground transition-colors"
+                    className="text-sm sm:text-base text-primary-foreground/80 hover:text-white transition-colors"
                   >
                     {link.title}
                   </Link>
@@ -70,13 +74,15 @@ const Footer = () => {
 
           {/* Support Links */}
           <div>
-            <h3 className="font-semibold text-lg mb-4">Support</h3>
+            <h3 className="font-semibold text-lg mb-4 sm:mb-5 border-l-4 border-white/50 pl-2">
+              Support
+            </h3>
             <ul className="space-y-2">
               {supportLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     to={link.href}
-                    className="text-sm text-primary-foreground/80 hover:text-primary-foreground transition-colors"
+                    className="text-sm sm:text-base text-primary-foreground/80 hover:text-white transition-colors"
                   >
                     {link.title}
                   </Link>
@@ -85,93 +91,108 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Social Media */}
+          {/* Contact & Social */}
           <div>
-            <h3 className="font-semibold text-lg mb-4">Follow Us</h3>
-            <div className="flex gap-4">
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-80 transition-opacity"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-80 transition-opacity"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-80 transition-opacity"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5" />
-              </a>
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:opacity-80 transition-opacity"
-                aria-label="YouTube"
-              >
-                <Youtube className="h-5 w-5" />
-              </a>
-            </div>
+            <h3 className="font-semibold text-lg mb-4 sm:mb-5 border-l-4 border-white/50 pl-2">
+              Contact Us
+            </h3>
+            <ul className="space-y-3 text-sm sm:text-base text-primary-foreground/80">
+              <li className="flex items-start gap-2">
+                <MapPin size={22} className="mt-1 text-white flex-shrink-0" />
+                <span className="leading-snug">
+                  63/66 Hatton Garden, Fifth Floor, Suite 23, London, England,
+                  EC1N 8LE
+                </span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Phone size={18} className="text-white flex-shrink-0" />
+                <span>Free Phone: 0208 004 3311</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Mail size={18} className="text-white flex-shrink-0" />
+                <a
+                  href="mailto:info@brightholiday.co.uk"
+                  className="hover:underline break-all"
+                >
+                  info@brightholiday.co.uk
+                </a>
+              </li>
+            </ul>
 
-            {/* Get in Touch */}
-
-            <div className="mt-10">
-              <h3 className="font-semibold text-lg mb-4">Get in Touch</h3>
-              <ul className="space-y-3 text-sm text-primary-foreground/80">
-                {/* Address */}
-                <li className="flex items-start gap-2">
-                  <MapPin size={30} className="mt-1 text-white" />
-                  <span>
-                    63/66 Hatton Garden, Fifth Floor, Suite 23, London, England,
-                    EC1N 8LE
-                  </span>
-                </li>
-
-                {/* Free Phone */}
-                <li className="flex items-center gap-2">
-                  <Phone size={20} className="text-white" />
-                  <span>Free Phone: 0208 004 3311</span>
-                </li>
-
-                {/* Complaint */}
-                <li className="flex items-center gap-2">
-                  <Phone size={20} className="text-white" />
-                  <span>Complaint: 0208 004 3311</span>
-                </li>
-
-                {/* Email */}
-                <li className="flex items-center gap-2">
-                  <Mail size={20} className="text-white" />
-                  <a
-                    href="mailto:info@brightholiday.co.uk"
-                    className="hover:underline"
-                  >
-                    info@brightholiday.co.uk
-                  </a>
-                </li>
-              </ul>
+            {/* Social Icons */}
+            <div className="flex gap-3 sm:gap-4 mt-5 flex-wrap">
+              {[
+                {
+                  icon: Facebook,
+                  href: "https://facebook.com",
+                  label: "Facebook",
+                },
+                {
+                  icon: Instagram,
+                  href: "https://instagram.com",
+                  label: "Instagram",
+                },
+                {
+                  icon: Linkedin,
+                  href: "https://linkedin.com",
+                  label: "LinkedIn",
+                },
+                {
+                  icon: Youtube,
+                  href: "https://youtube.com",
+                  label: "YouTube",
+                },
+              ].map(({ icon: Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="bg-white/10 p-2 sm:p-2.5 rounded-full hover:bg-white/20 transition-all flex items-center justify-center"
+                >
+                  <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                </a>
+              ))}
             </div>
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-primary-foreground/20 text-center">
-          <p className="text-sm text-primary-foreground/80">
-            Copyright © Loveable Travel 2025. All rights reserved.
+        {/* Bottom Section */}
+        <div className="mt-10 sm:mt-12 pt-6 border-t border-white/20 flex flex-col sm:flex-col md:flex-row items-center justify-between gap-6">
+          {/* Copyright */}
+          <p className="text-xs sm:text-sm text-primary-foreground/80 text-center md:text-left">
+            © 2025 Loveable Travel. All rights reserved.
           </p>
+
+          {/* Payment Methods */}
+          <div className="bg-white/90 px-4 sm:px-6 py-2 rounded-lg shadow flex flex-wrap justify-center items-center gap-3 sm:gap-4 w-full md:w-auto">
+            <img
+              src="/assets/images/payment/visa.png"
+              alt="Visa"
+              className="h-5 sm:h-6 w-auto"
+            />
+            <img
+              src="/assets/images/payment/master-card.png"
+              alt="Mastercard"
+              className="h-5 sm:h-6 w-auto"
+            />
+            <img
+              src="/assets/images/payment/PayPal.png"
+              alt="PayPal"
+              className="h-5 sm:h-6 w-auto"
+            />
+            <img
+              src="/assets/images/payment/American.png"
+              alt="American Express"
+              className="h-5 sm:h-6 w-auto"
+            />
+            <img
+              src="/assets/images/payment/bank.png"
+              alt="Bank Transfer"
+              className="h-5 sm:h-6 w-auto"
+            />
+          </div>
         </div>
       </div>
     </footer>

@@ -233,32 +233,43 @@ const FlightSearchForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-card/70 backdrop-blur-md rounded-lg shadow-lg p-6 space-y-6"
+      className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-8 space-y-8 max-w-4xl mx-auto border border-gray-100"
     >
       {/* Trip Type */}
-      <RadioGroup
-        value={tripType}
-        onValueChange={setTripType}
-        className="flex gap-4"
-      >
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="round" id="round" />
-          <Label htmlFor="round" className="text-foreground font-medium">
-            Round Trip
-          </Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="one" id="one" />
-          <Label htmlFor="one" className="text-foreground font-medium">
-            One Way
-          </Label>
-        </div>
-      </RadioGroup>
+      <div className="flex flex-wrap gap-6 justify-center">
+        <RadioGroup
+          value={tripType}
+          onValueChange={setTripType}
+          className="flex flex-wrap gap-4 justify-center"
+        >
+          {[
+            { label: "Round Trip", value: "round" },
+            { label: "One Way", value: "one" },
+          ].map((option) => (
+            <div
+              key={option.value}
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <RadioGroupItem
+                value={option.value}
+                id={option.value}
+                className="text-primary focus:ring-primary"
+              />
+              <Label
+                htmlFor={option.value}
+                className="font-semibold text-gray-800 cursor-pointer"
+              >
+                {option.label}
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+      </div>
 
-      {/* From and To */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* From & To */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <Label htmlFor="from" className="text-foreground font-medium">
+          <Label htmlFor="from" className="font-medium text-gray-700">
             From *
           </Label>
           <Input
@@ -266,10 +277,12 @@ const FlightSearchForm = () => {
             placeholder="Departure city"
             value={from}
             onChange={(e) => setFrom(e.target.value)}
+            className="border-gray-300 focus:ring-primary focus:border-primary"
           />
         </div>
+
         <div className="space-y-2">
-          <Label htmlFor="to" className="text-foreground font-medium">
+          <Label htmlFor="to" className="font-medium text-gray-700">
             To *
           </Label>
           <Input
@@ -277,38 +290,33 @@ const FlightSearchForm = () => {
             placeholder="Destination city"
             value={to}
             onChange={(e) => setTo(e.target.value)}
+            className="border-gray-300 focus:ring-primary focus:border-primary"
           />
         </div>
       </div>
 
       {/* Dates */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <Label className="text-foreground font-medium">Depart Date *</Label>
+          <Label className="font-medium text-gray-700">Depart Date *</Label>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !departDate && "text-muted-foreground"
-                )}
+                className="w-full justify-start text-left font-normal border-gray-300 hover:border-primary hover:bg-primary/5 placeholder:text-gray-300"
               >
-                <CalendarIcon className="mr-2 h-4 w-4" />
+                <CalendarIcon className="mr-2 h-4 w-4 text-primary" />
                 {departDate ? format(departDate, "PPP") : "Pick a date"}
               </Button>
             </PopoverTrigger>
-
             <PopoverContent className="w-auto p-0">
               <Calendar
-                key={departDate ? departDate.toString() : "default"}
                 mode="single"
                 selected={departDate}
                 onSelect={handleSelect}
                 disabled={(date) =>
                   date < new Date(new Date().setHours(0, 0, 0, 0))
                 }
-                defaultMonth={departDate || new Date()}
                 initialFocus
               />
             </PopoverContent>
@@ -317,17 +325,14 @@ const FlightSearchForm = () => {
 
         {tripType === "round" && (
           <div className="space-y-2">
-            <Label className="text-foreground font-medium">Return Date *</Label>
+            <Label className="font-medium text-gray-700">Return Date *</Label>
             <Popover open={openReturn} onOpenChange={setOpenReturn}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !returnDate && "text-muted-foreground"
-                  )}
+                  className="w-full justify-start text-left font-normal border-gray-300 hover:border-primary hover:bg-primary/5"
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  <CalendarIcon className="mr-2 h-4 w-4 text-primary" />
                   {returnDate ? format(returnDate, "PPP") : "Pick a date"}
                 </Button>
               </PopoverTrigger>
@@ -336,13 +341,8 @@ const FlightSearchForm = () => {
                   mode="single"
                   selected={returnDate}
                   onSelect={handleSelectReturn}
-                  disabled={(date) => {
-                    const today = new Date();
-                    const minDate = new Date(today);
-                    minDate.setDate(today.getDate() + 2);
-                    return date < minDate;
-                  }}
-                  defaultMonth={
+                  disabled={(date) =>
+                    date <
                     new Date(new Date().setDate(new Date().getDate() + 2))
                   }
                   initialFocus
@@ -353,226 +353,104 @@ const FlightSearchForm = () => {
         )}
       </div>
 
-      {/* Passengers */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="space-y-2">
-          <Label className="text-foreground font-medium">
-            Adults (12+ years)
-          </Label>
-          <div
-            className="flex items-center border rounded-md w-100 overflow-hidden"
-            style={{ background: "white" }}
-          >
-            <button
-              type="button"
-              className="flex-1 text-lg font-semibold text-[#1c448e] hover:text-[#15336a] py-1"
-              onClick={() =>
-                setAdults((prev) =>
-                  Number(prev) > 1 ? String(Number(prev) - 1) : "1"
-                )
-              }
-            >
-              –
-            </button>
-
-            <span
-              style={{ color: "black" }}
-              className="flex-1 text-base font-medium text-center select-none border-x border-gray-300 py-1"
-            >
-              {adults}
-            </span>
-
-            <button
-              type="button"
-              className="flex-1 text-lg font-semibold text-[#1c448e] hover:text-[#15336a] py-1"
-              onClick={() =>
-                setAdults((prev) =>
-                  Number(prev) < 9 ? String(Number(prev) + 1) : "9"
-                )
-              }
-            >
-              +
-            </button>
+      {/* Passenger Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          { label: "Adults (12+ years)", value: adults, setValue: setAdults },
+          {
+            label: "Children (2–11 years)",
+            value: children,
+            setValue: setChildren,
+          },
+          {
+            label: "Infants (below 2 years)",
+            value: infants,
+            setValue: setInfants,
+          },
+        ].map(({ label, value, setValue }) => (
+          <div key={label} className="space-y-2">
+            <Label className="font-medium text-gray-700">{label}</Label>
+            <div className="flex items-center border rounded-lg bg-white overflow-hidden">
+              <button
+                type="button"
+                onClick={() =>
+                  setValue((prev) =>
+                    Number(prev) > 0 ? String(Number(prev) - 1) : "0"
+                  )
+                }
+                className="flex-1 py-2 text-lg font-bold text-primary hover:bg-primary/10"
+              >
+                –
+              </button>
+              <span className="flex-1 text-center border-x border-gray-200 font-medium text-gray-800 py-2">
+                {value}
+              </span>
+              <button
+                type="button"
+                onClick={() =>
+                  setValue((prev) =>
+                    Number(prev) < 9 ? String(Number(prev) + 1) : "9"
+                  )
+                }
+                className="flex-1 py-2 text-lg font-bold text-primary hover:bg-primary/10"
+              >
+                +
+              </button>
+            </div>
           </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label className="text-foreground font-medium">
-            Children (2–11 years)
-          </Label>
-          <div
-            className="flex items-center border rounded-md w-100 overflow-hidden"
-            style={{ background: "white" }}
-          >
-            <button
-              type="button"
-              className="flex-1 text-lg font-semibold text-[#1c448e] hover:text-[#15336a] py-1"
-              onClick={() =>
-                setChildren((prev) =>
-                  Number(prev) > 0 ? String(Number(prev) - 1) : "0"
-                )
-              }
-            >
-              –
-            </button>
-
-            <span
-              style={{ color: "black" }}
-              className="flex-1 text-base font-medium text-center select-none border-x border-gray-300 py-1"
-            >
-              {children}
-            </span>
-
-            <button
-              type="button"
-              className="flex-1 text-lg font-semibold text-[#1c448e] hover:text-[#15336a] py-1"
-              onClick={() =>
-                setChildren((prev) =>
-                  Number(prev) < 9 ? String(Number(prev) + 1) : "9"
-                )
-              }
-            >
-              +
-            </button>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label className="text-foreground font-medium">
-            Infants (below 2 years)
-          </Label>
-          <div
-            className="flex items-center border rounded-md w-100 overflow-hidden"
-            style={{ background: "white" }}
-          >
-            <button
-              type="button"
-              className="flex-1 text-lg font-semibold text-[#1c448e] hover:text-[#15336a] py-1"
-              onClick={() =>
-                setInfants((prev) =>
-                  Number(prev) > 0 ? String(Number(prev) - 1) : "0"
-                )
-              }
-            >
-              –
-            </button>
-
-            <span
-              style={{ color: "black" }}
-              className="flex-1 text-base font-medium text-center select-none border-x border-gray-300 py-1"
-            >
-              {infants}
-            </span>
-
-            <button
-              type="button"
-              className="flex-1 text-lg font-semibold text-[#1c448e] hover:text-[#15336a] py-1"
-              onClick={() =>
-                setInfants((prev) =>
-                  Number(prev) < 9 ? String(Number(prev) + 1) : "9"
-                )
-              }
-            >
-              +
-            </button>
-          </div>
-        </div>
+        ))}
       </div>
 
-      <div
-        className="grid grid-cols-1 md:grid-cols-3 gap-4"
-        style={{ alignItems: "center" }}
-      >
-        {/* <div className="space-y-2">
-          <Label htmlFor="class" className="text-foreground font-medium">
-            Class
-          </Label>
-          <Select value={flightClass} onValueChange={setFlightClass}>
-            <SelectTrigger id="class">
-              <SelectValue placeholder="Select a class" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="0" disabled>
-                Select a class
-              </SelectItem>
-              <SelectItem value="economy">Economy</SelectItem>
-              <SelectItem value="premium">Premium Economy</SelectItem>
-              <SelectItem value="business">Business</SelectItem>
-              <SelectItem value="first">First Class</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        
-        <div className="space-y-2">
-          <Label htmlFor="airline" className="text-foreground font-medium">
-            Airline
-          </Label>
-          <Input id="airline" placeholder="Airline" className="form-control" />
-        </div>
-
-        <div className="space-y-2">
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="direct"
-              checked={directOnly}
-              onCheckedChange={(checked) => setDirectOnly(checked as boolean)}
-            />
-            <Label
-              htmlFor="direct"
-              className="cursor-pointer text-foreground font-medium"
-            >
-              Direct flights only
+      {/* Contact Info */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          {
+            id: "name",
+            label: "Name *",
+            value: name,
+            set: setName,
+            placeholder: "Your Name",
+          },
+          {
+            id: "email",
+            label: "Email *",
+            value: email,
+            set: setEmail,
+            placeholder: "Your Email",
+          },
+          {
+            id: "phone",
+            label: "Phone *",
+            value: phone,
+            set: setPhone,
+            placeholder: "Your Phone",
+          },
+        ].map((field) => (
+          <div key={field.id} className="space-y-2">
+            <Label htmlFor={field.id} className="font-medium text-gray-700">
+              {field.label}
             </Label>
+            <Input
+              id={field.id}
+              placeholder={field.placeholder}
+              value={field.value}
+              onChange={(e) => field.set(e.target.value)}
+              className="border-gray-300 focus:ring-primary focus:border-primary"
+            />
           </div>
-        </div> */}
-
-        <div className="space-y-2">
-          <Label htmlFor="name" className="text-foreground font-medium">
-            Name *
-          </Label>
-
-          <Input
-            id="name"
-            placeholder="Your Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="email" className="text-foreground font-medium">
-            Email *
-          </Label>
-
-          <Input
-            id="email"
-            placeholder="Your Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="phone" className="text-foreground font-medium">
-            Phone *
-          </Label>
-          <Input
-            id="phone"
-            placeholder="Your Phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-        </div>
+        ))}
       </div>
-
-      {/* Direct Flights */}
 
       {/* Submit Button */}
-      <Button type="submit" className="w-full" size="lg" disabled={loading}>
+      <Button
+        type="submit"
+        className="w-full py-4 text-lg font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 transition-all duration-300 shadow-md"
+        size="lg"
+        disabled={loading}
+      >
         {loading ? (
           <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             Searching...
           </>
         ) : (

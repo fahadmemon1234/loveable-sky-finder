@@ -25,16 +25,17 @@ const ScrollToTopButton = () => {
   return (
     <button
       onClick={scrollToTop}
-      className={`
-        fixed bottom-6 right-6 z-50 flex items-center justify-center
-        w-12 h-12 rounded-full bg-primary text-white shadow-lg
-        transform transition-all duration-300
-        hover:scale-110 hover:bg-primary/90
+      className={`fixed bottom-6 right-6 z-50 flex items-center justify-center
+        w-12 h-12 rounded-full shadow-lg transition-all duration-300
+        bg-gradient-to-br from-amber-400 via-yellow-500 to-amber-600
+        text-white hover:from-yellow-500 hover:to-amber-500
+        hover:shadow-[0_0_15px_rgba(255,193,7,0.6)]
+        transform hover:scale-110 active:scale-95
         ${isVisible ? "opacity-100 visible" : "opacity-0 invisible"}
       `}
       aria-label="Scroll to top"
     >
-      <ArrowUp className="w-6 h-6" />
+      <ArrowUp className="w-6 h-6 animate-pulse" />
     </button>
   );
 };

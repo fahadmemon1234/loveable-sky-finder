@@ -194,3 +194,11 @@ footer.bg-primary.text-primary-foreground.mt-20 {
 .text-primary {
   color: hsl(var(--primary-light)) !important;
 }
+
+button.inline-flex.items-center.gap-2.whitespace-nowrap.rounded-md.text-sm.ring-offset-background.transition-colors.focus-visible\:outline-none.focus-visible\:ring-2.focus-visible\:ring-ring.focus-visible\:ring-offset-2.disabled\:pointer-events-none.disabled\:opacity-50.\[\&_svg\]\:pointer-events-none.\[\&_svg\]\:size-4.\[\&_svg\]\:shrink-0.border.bg-background.hover\:text-accent-foreground.h-10.px-4.py-2.w-full.justify-start.text-left.font-normal.border-gray-300.hover\:border-primary.hover\:bg-primary\/5.placeholder\:text-gray-300 {
+  color: gray !important;
+}
+
+button.inline-flex.items-center.gap-2.whitespace-nowrap.rounded-md.text-sm.ring-offset-background.transition-colors.focus-visible\:outline-none.focus-visible\:ring-2.focus-visible\:ring-ring.focus-visible\:ring-offset-2.disabled\:pointer-events-none.disabled\:opacity-50.\[\&_svg\]\:pointer-events-none.\[\&_svg\]\:size-4.\[\&_svg\]\:shrink-0.border.bg-background.hover\:text-accent-foreground.h-10.px-4.py-2.w-full.justify-start.text-left.font-normal.border-gray-300.hover\:border-primary.hover\:bg-primary\/5 {
+  color: gray !important;
+}
