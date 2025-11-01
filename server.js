@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import inquiryRoutes from "./routes/inquiryRoutes.js";
 import EnquiryRoutes from "./routes/EnquiryRoutes.js";
+import CallbackRequestRoutes from "./routes/CallbackRequestRoutes.js";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 // Routes
 app.use("/api/inquiry", inquiryRoutes);
 app.use("/api/enquiry", EnquiryRoutes);
+app.use("/api/requestcallback", CallbackRequestRoutes);
 
 // MongoDB connection
 mongoose
