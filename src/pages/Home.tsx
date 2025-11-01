@@ -15,6 +15,7 @@ import { IoIosUnlock } from "react-icons/io";
 import { MdOutlineFlightTakeoff } from "react-icons/md";
 import HeroSection from "@/components/HeroSection";
 import FlightSearchForm from "@/components/FlightSearchForm";
+import SubscribeSection from "@/components/SubscribeSection";
 
 const Home = () => {
   const formRef = useRef(null);
@@ -309,45 +310,50 @@ const Home = () => {
       {/* Popular Destinations */}
       <section
         ref={sectionRef}
-        className={`py-20 px-4 sm:px-6 bg-gradient-to-b from-secondary/5 to-secondary/20 transition-all duration-700 ease-out ${
+        className={`relative py-24 sm:py-28 px-4 sm:px-8 bg-gradient-to-b from-blue-50 via-white to-blue-100 overflow-hidden transition-all duration-700 ease-out ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
       >
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-6 tracking-tight text-gray-900">
+        {/* Decorative Background Blur */}
+        <div className="absolute top-0 left-0 w-60 h-60 bg-blue-200/40 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-blue-300/30 rounded-full blur-3xl" />
+
+        <div className="relative z-10 container mx-auto text-center">
+          {/* Section Heading */}
+          <h2 className="text-3xl sm:text-4xl font-extrabold mb-6 tracking-tight text-blue-900">
             Popular Destinations
           </h2>
-          <p className="text-muted-foreground mb-14 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+          <p className="text-blue-800/80 mb-14 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
             Discover breathtaking destinations and enjoy unbeatable flight deals
             to your favorite cities worldwide.
           </p>
 
-          {/* Grid of Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+          {/* Destination Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {destinations.map(({ city, img, price, url }) => (
               <div
                 key={city}
-                className="group relative overflow-hidden rounded-2xl shadow-md hover:shadow-2xl transition-all duration-500"
+                className="group relative overflow-hidden rounded-2xl shadow-md hover:shadow-2xl bg-white/80 backdrop-blur-sm transition-all duration-500 border border-blue-100"
               >
-                {/* Image (lazy-loaded) */}
+                {/* Destination Image */}
                 <img
                   src={img}
                   alt={city}
                   loading="lazy"
-                  className="h-56 sm:h-64 md:h-72 w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="h-56 sm:h-64 md:h-72 w-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/60 transition-colors duration-300"></div>
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-all duration-500 group-hover:from-black/70" />
 
-                {/* Price Badge */}
+                {/* Price Tag */}
                 <div className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-gradient-to-r from-amber-400 to-yellow-500 text-black px-3 sm:px-4 py-1 rounded-full text-xs sm:text-sm font-semibold shadow-md">
                   {price}
                 </div>
 
                 {/* City Info */}
-                <div className="absolute bottom-4 left-4 sm:bottom-5 sm:left-5 z-10 text-left">
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-white break-words">
+                <div className="absolute bottom-5 left-5 z-10 text-left">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-white drop-shadow-md">
                     {city}
                   </h3>
                   <p className="text-xs sm:text-sm text-white/80">
@@ -355,11 +361,11 @@ const Home = () => {
                   </p>
                 </div>
 
-                {/* Hover Button */}
-                <div className="absolute inset-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                {/* Hover CTA */}
+                <div className="absolute inset-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">
                   <a
                     href={url}
-                    className="px-4 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-semibold rounded-md text-sm sm:text-lg hover:shadow-lg transition-all duration-300"
+                    className="px-5 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-semibold rounded-full text-sm sm:text-base hover:scale-105 hover:shadow-xl transition-all duration-300"
                   >
                     Book Now
                   </a>
@@ -419,6 +425,7 @@ const Home = () => {
         <div className="absolute bottom-0 right-0 w-28 sm:w-52 h-28 sm:h-52 bg-yellow-300/20 rounded-full blur-3xl -z-10"></div>
       </section>
 
+      <SubscribeSection />
       <Footer />
     </div>
   );
