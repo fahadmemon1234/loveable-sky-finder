@@ -114,7 +114,7 @@ const Navbar = () => {
 
             <Button
               asChild
-              className="hidden md:flex bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-medium shadow-md hover:shadow-lg hover:scale-105 transition-transform"
+              className=" flex bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-medium shadow-md hover:shadow-lg hover:scale-105 transition-transform"
             >
               <NavLink to="/">
                 <Phone className="w-7 h-7" /> +91 9876543210
