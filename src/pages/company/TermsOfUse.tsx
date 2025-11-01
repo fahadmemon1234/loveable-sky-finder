@@ -16,44 +16,84 @@ const TermsOfUse = () => {
           </div>
         </section>
 
-        <section className="py-16 px-4">
-          <div className="container mx-auto max-w-4xl prose prose-lg">
-            <h2>Acceptance of Terms</h2>
-            <p className="text-muted-foreground">
-              By accessing and using Loveable Travel's website and services, you accept and agree to
-              be bound by these Terms of Use and our Privacy Policy.
-            </p>
+        <section className="py-20 px-4 bg-gradient-to-b from-blue-50 via-white to-blue-100">
+          <div className="container mx-auto max-w-5xl">
+            <div className="bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border border-blue-200/30 p-10 space-y-10">
+              <div className="space-y-8">
+                {/* Acceptance of Terms */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    Acceptance of Terms
+                  </h2>
+                  <p className="text-muted-foreground">
+                    By accessing and using Loveable Travel's website and
+                    services, you accept and agree to be bound by these Terms of
+                    Use and our Privacy Policy.
+                  </p>
+                </div>
 
-            <h2>Booking Terms</h2>
-            <p className="text-muted-foreground">
-              All flight bookings are subject to availability and confirmation. Prices are subject to
-              change until payment is received and booking is confirmed. You are responsible for
-              ensuring all passenger information is accurate.
-            </p>
+                {/* Booking Terms */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    Booking Terms
+                  </h2>
+                  <p className="text-muted-foreground">
+                    All flight bookings are subject to availability and
+                    confirmation. Prices are subject to change until payment is
+                    received and booking is confirmed. You are responsible for
+                    ensuring all passenger information is accurate.
+                  </p>
+                </div>
 
-            <h2>Payment Terms</h2>
-            <p className="text-muted-foreground">
-              Payment must be made in full at the time of booking unless otherwise specified. We accept
-              major credit cards and other payment methods as displayed on our website.
-            </p>
+                {/* Payment Terms */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    Payment Terms
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Payment must be made in full at the time of booking unless
+                    otherwise specified. We accept major credit cards and other
+                    payment methods as displayed on our website.
+                  </p>
+                </div>
 
-            <h2>Cancellation & Refunds</h2>
-            <p className="text-muted-foreground">
-              Cancellation policies vary by airline and fare type. Refund eligibility depends on the
-              specific fare rules of your booking. Processing fees may apply.
-            </p>
+                {/* Cancellation & Refunds */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    Cancellation & Refunds
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Cancellation policies vary by airline and fare type. Refund
+                    eligibility depends on the specific fare rules of your
+                    booking. Processing fees may apply.
+                  </p>
+                </div>
 
-            <h2>User Conduct</h2>
-            <p className="text-muted-foreground">
-              You agree not to use our website for any unlawful purpose or in any way that could damage,
-              disable, or impair our services.
-            </p>
+                {/* User Conduct */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    User Conduct
+                  </h2>
+                  <p className="text-muted-foreground">
+                    You agree not to use our website for any unlawful purpose or
+                    in any way that could damage, disable, or impair our
+                    services.
+                  </p>
+                </div>
 
-            <h2>Changes to Terms</h2>
-            <p className="text-muted-foreground">
-              We reserve the right to modify these terms at any time. Continued use of our services
-              after changes constitutes acceptance of the modified terms.
-            </p>
+                {/* Changes to Terms */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    Changes to Terms
+                  </h2>
+                  <p className="text-muted-foreground">
+                    We reserve the right to modify these terms at any time.
+                    Continued use of our services after changes constitutes
+                    acceptance of the modified terms.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </main>

@@ -5,11 +5,13 @@ const TravelTips = () => {
   const tips = [
     {
       title: "Book Early",
-      content: "Booking flights 2-3 months in advance often gets you the best deals.",
+      content:
+        "Booking flights 2-3 months in advance often gets you the best deals.",
     },
     {
       title: "Be Flexible",
-      content: "Flying on weekdays or during off-peak hours can save you money.",
+      content:
+        "Flying on weekdays or during off-peak hours can save you money.",
     },
     {
       title: "Pack Smart",

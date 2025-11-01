@@ -33,35 +33,46 @@ const BusinessPartners = () => {
           </div>
         </section>
 
-        <section className="py-16 px-4">
+        <section className="py-20 px-4 bg-gradient-to-b from-blue-50 via-white to-blue-100">
           <div className="container mx-auto max-w-6xl">
-            <div className="text-center mb-12">
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                We partner with leading airlines around the world to bring you the best flight deals
-                and most convenient travel options.
+            {/* Section Intro */}
+            <div className="text-center mb-16 max-w-3xl mx-auto">
+              <p className="text-lg text-muted-foreground">
+                We partner with leading airlines around the world to bring you
+                the best flight deals and most convenient travel options.
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {/* Partners Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
               {partners.map((partner) => (
-                <Card key={partner} className="hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6 flex flex-col items-center justify-center text-center h-32">
-                    <Plane className="h-8 w-8 text-primary mb-2" />
-                    <h3 className="font-semibold">{partner}</h3>
-                  </CardContent>
+                <Card
+                  key={partner}
+                  className="flex flex-col items-center justify-center text-center p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 bg-white"
+                >
+                  <Plane className="h-10 w-10 text-primary mb-3" />
+                  <h3 className="font-semibold text-gray-800">{partner}</h3>
                 </Card>
               ))}
             </div>
 
-            <div className="mt-12 text-center">
-              <Card className="bg-secondary/20">
-                <CardContent className="p-8">
-                  <h2 className="text-2xl font-bold mb-4">Become a Partner</h2>
+            {/* Become a Partner Callout */}
+            <div className="mt-16 text-center">
+              <Card className="bg-primary/10 border border-primary/20 rounded-3xl shadow-md hover:shadow-xl transition-shadow duration-300">
+                <CardContent className="p-10">
+                  <h2 className="text-3xl font-bold mb-4 text-primary">
+                    Become a Partner
+                  </h2>
                   <p className="text-muted-foreground mb-4">
-                    Interested in partnering with Loveable Travel? Contact our partnership team to
-                    explore opportunities.
+                    Interested in partnering with Loveable Travel? Contact our
+                    partnership team to explore opportunities.
                   </p>
-                  <p className="text-primary font-semibold">partnerships@loveabletravel.com</p>
+                  <a
+                    href="mailto:partnerships@loveabletravel.com"
+                    className="text-primary font-semibold hover:underline"
+                  >
+                    partnerships@loveabletravel.com
+                  </a>
                 </CardContent>
               </Card>
             </div>
