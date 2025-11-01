@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Menu, X, Plane } from "lucide-react";
+import { Menu, X, Plane, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { FaPhoneVolume } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
+import { P } from "node_modules/framer-motion/dist/types.d-BJcRxCew";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,22 +27,23 @@ const Navbar = () => {
 
   const navLinks = [
     { title: "Home", path: "/" },
-    { title: "About", path: "/about" },
     { title: "Flights", path: "/cheap-flights" },
+    { title: "Request a Callback", path: "/callback" },
+    { title: "About", path: "/about" },
     { title: "Contact", path: "/contact" },
   ];
 
   return (
     <>
-      <header>
+      {/* <header>
         <div className="bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-400 text-black py-2 text-center text-sm shadow-md">
           <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-1 md:gap-0">
-            {/* Left Text */}
+          
             <div className="font-semibold tracking-wide text-xs sm:text-sm md:block">
               Free Cancellation on select flights!
             </div>
 
-            {/* Contact Info */}
+            
             <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs sm:text-sm">
               <div className="flex items-center">
                 <FaPhoneVolume className="inline mr-1 text-black" />
@@ -67,7 +69,7 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-      </header>
+      </header> */}
 
       <nav
         className={`sticky top-0 z-50 w-full border-b transition-all duration-500 ${
@@ -83,8 +85,11 @@ const Navbar = () => {
               to="/"
               className="flex items-center gap-2 font-bold text-xl bg-gradient-to-r from-amber-500 to-yellow-600 text-transparent bg-clip-text"
             >
-              <Plane className="h-6 w-6 text-amber-500" />
-              <span>Loveable Travel</span>
+              <img
+                src="/assets/images/Logo/Sky-Nova-Logo.png"
+                alt="Logo"
+                className="w-30 h-12"
+              />
             </NavLink>
 
             {/* Desktop Navigation */}
@@ -105,13 +110,16 @@ const Navbar = () => {
                   {link.title}
                 </NavLink>
               ))}
-              <Button
-                asChild
-                className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-medium shadow-md hover:shadow-lg hover:scale-105 transition-transform"
-              >
-                <NavLink to="/flights">Book Now</NavLink>
-              </Button>
             </div>
+
+            <Button
+              asChild
+              className="hidden md:flex bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-medium shadow-md hover:shadow-lg hover:scale-105 transition-transform"
+            >
+              <NavLink to="/">
+                <Phone className="w-7 h-7" /> +91 9876543210
+              </NavLink>
+            </Button>
 
             {/* Mobile Menu */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -120,7 +128,7 @@ const Navbar = () => {
                   {isOpen ? (
                     <X className="h-6 w-6" />
                   ) : (
-                    <Menu className="h-6 w-6" />
+                    <Menu className="h-6 w-7" />
                   )}
                 </Button>
               </SheetTrigger>
@@ -152,7 +160,9 @@ const Navbar = () => {
                     asChild
                     className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-medium shadow-md hover:shadow-lg"
                   >
-                    <NavLink to="/flights">Book Now</NavLink>
+                    <NavLink to="/">
+                      <Phone className="w-7 h-7" /> +91 9876543210
+                    </NavLink>
                   </Button>
                 </nav>
               </SheetContent>
