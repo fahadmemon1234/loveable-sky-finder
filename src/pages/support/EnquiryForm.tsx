@@ -177,10 +177,11 @@ const EnquiryForm = () => {
             <div className="space-y-2">
               <Label
                 htmlFor="firstName"
-                className="font-semibold text-gray-700 text-base sm:text-lg"
+                className="font-medium text-gray-600 text-sm"
               >
                 First Name *
               </Label>
+
               <Input
                 id="firstName"
                 type="text"
@@ -193,7 +194,7 @@ const EnquiryForm = () => {
             <div className="space-y-2">
               <Label
                 htmlFor="lastName"
-                className="font-semibold text-gray-700 text-base sm:text-lg"
+                className="font-medium text-gray-600 text-sm"
               >
                 Last Name *
               </Label>
@@ -212,7 +213,7 @@ const EnquiryForm = () => {
           <div className="space-y-2">
             <Label
               htmlFor="email"
-              className="font-semibold text-gray-700 text-base sm:text-lg"
+              className="font-medium text-gray-600 text-sm"
             >
               Email *
             </Label>
@@ -228,15 +229,17 @@ const EnquiryForm = () => {
           <div className="space-y-2">
             <Label
               htmlFor="phone"
-              className="font-semibold text-gray-700 text-base sm:text-lg"
+              className="font-medium text-gray-600 text-sm"
             >
               Phone Number
             </Label>
             <Input
               id="phone"
               type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => setPhone(e.target.value.replace(/\D/, ""))}
               placeholder="Enter your Phone No"
               className="w-full bg-white/80 border-gray-300 focus:border-primary focus:ring-primary"
             />
@@ -246,7 +249,7 @@ const EnquiryForm = () => {
           <div className="space-y-2">
             <Label
               htmlFor="enquiryType"
-              className="font-semibold text-gray-700 text-base sm:text-lg"
+              className="font-medium text-gray-600 text-sm"
             >
               Enquiry Type *
             </Label>
@@ -270,7 +273,7 @@ const EnquiryForm = () => {
           <div className="space-y-2">
             <Label
               htmlFor="message"
-              className="font-semibold text-gray-700 text-base sm:text-lg"
+              className="font-medium text-gray-600 text-sm"
             >
               Message *
             </Label>

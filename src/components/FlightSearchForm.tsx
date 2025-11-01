@@ -426,7 +426,16 @@ const FlightSearchForm = () => {
               id={field.id}
               placeholder={field.placeholder}
               value={field.value}
-              onChange={(e) => field.set(e.target.value)}
+              type={field.id === "phone" ? "tel" : "text"}
+              inputMode={field.id === "phone" ? "numeric" : undefined}
+              pattern={field.id === "phone" ? "[0-9]*" : undefined}
+              onChange={(e) =>
+                field.set(
+                  field.id === "phone"
+                    ? e.target.value.replace(/\D/g, "")
+                    : e.target.value
+                )
+              }
               className="border-gray-300 focus:ring-primary focus:border-primary"
             />
           </div>
