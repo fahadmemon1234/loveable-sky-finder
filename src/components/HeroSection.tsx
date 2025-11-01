@@ -183,9 +183,9 @@ const HeroSection = () => {
         <p className="text-sm sm:text-base md:text-xl max-w-xl sm:max-w-2xl mx-auto mb-6 sm:mb-8 leading-relaxed text-white/90">
           {slide.text}
         </p>
-        <button className="bg-white text-[#05304c] font-bold px-6 py-2 sm:px-10 sm:py-4 rounded-full shadow-md hover:bg-blue-100 transition-all duration-300 text-sm sm:text-base">
+        <a href="/contact" className="bg-white text-[#05304c] font-bold px-6 py-2 sm:px-10 sm:py-4 rounded-full shadow-md hover:bg-blue-100 transition-all duration-300 text-sm sm:text-base">
           {slide.btn}
-        </button>
+        </a>
       </div>
 
       {/* Navigation Arrows */}
