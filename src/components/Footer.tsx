@@ -19,7 +19,7 @@ const Footer = () => {
     { title: "Passports & Visas", href: "/support/passports-visas" },
     { title: "Traveler's Health", href: "/support/travelers-health" },
     { title: "Travel Checklist", href: "/support/travel-checklist" },
-    { title: "Make Payment", href: "/support/make-payment" },
+    // { title: "Make Payment", href: "/support/make-payment" },
   ];
 
   const companyLinks = [
@@ -124,10 +124,10 @@ const Footer = () => {
               <li className="flex items-center gap-2">
                 <Mail size={18} className="text-white flex-shrink-0" />
                 <a
-                  href="mailto:Meryy@skynovatravels.co.uk"
+                  href="mailto:Merry@skynovatravels.co.uk"
                   className="hover:underline break-all"
                 >
-                  Meryy@skynovatravels.co.uk
+                  Merry@skynovatravels.co.uk
                 </a>
               </li>
             </ul>

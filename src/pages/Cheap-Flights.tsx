@@ -432,27 +432,27 @@ const CheapFlights = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary to-primary/80 text-primary-foreground py-20 px-4 overflow-hidden">
+      <section className="relative w-full h-[30vh] sm:h-[40vh] lg:h-[45vh] overflow-hidden">
         {/* Background Image */}
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-30"
-          style={{ backgroundImage: `url(${heroImage})` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-primary/70" />
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${heroImage})`,
+          }}
+        ></div>
 
-        <div className="container mx-auto relative z-10">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Book Your Dream Flight Today
-            </h1>
-            <p className="text-lg font-medium text-primary-foreground/80">
-              Hello Passenger. Where do you want to go?
-            </p>
-          </div>
+        {/* Overlay for better text visibility */}
+        <div className="absolute inset-0 bg-black/40"></div>
 
-          <div className="max-w-4xl mx-auto">
-            <FlightSearchForm />
-          </div>
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-center items-center text-center h-full px-4">
+          <h1 className="text-2xl sm:text-4xl font-bold text-white mb-3 drop-shadow-lg">
+            Find Your Perfect Flight
+          </h1>
+          <p className="text-sm sm:text-base text-white/90 max-w-2xl leading-relaxed">
+            Compare flights from hundreds of airlines and find the best deals
+            for your next adventure
+          </p>
         </div>
       </section>
 
@@ -539,7 +539,10 @@ const CheapFlights = () => {
                 </div>
 
                 <div className="absolute inset-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-                  <a href={url} className="px-6 py-3 border border-white text-white rounded-md font-semibold text-lg hover:bg-white hover:text-[#1c448e] transition-colors">
+                  <a
+                    href={url}
+                    className="px-6 py-3 border border-white text-white rounded-md font-semibold text-lg hover:bg-white hover:text-[#1c448e] transition-colors"
+                  >
                     More Info
                   </a>
                 </div>
