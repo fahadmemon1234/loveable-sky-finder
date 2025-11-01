@@ -9,6 +9,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import CheapFlights from "./pages/Cheap-Flights";
+import Callback from "./pages/Callback";
 
 // Support Pages
 import TravelTips from "./pages/support/TravelTips";
@@ -45,6 +46,7 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/cheap-flights" element={<CheapFlights />} />
+          <Route path="/callback" element={<Callback />} />
 
           {/* Support Pages */}
           <Route path="/support/travel-tips" element={<TravelTips />} />
