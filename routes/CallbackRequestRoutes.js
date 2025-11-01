@@ -9,7 +9,7 @@ router.post("/", async (req, res) => {
     await newCallbackRequest.save();
     res.status(200).json({ message: "Callback request saved successfully" });
   } catch (error) {
-    console.error("Error saving callback request:", error);
+    console.log("Error saving callback request:", error);
     res.status(500).json({ message: "Server error" });
   }
 });

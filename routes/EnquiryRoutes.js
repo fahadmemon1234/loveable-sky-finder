@@ -9,7 +9,7 @@ router.post("/", async (req, res) => {
     await newInquiry.save();
     res.status(200).json({ message: "Enquiry saved successfully" });
   } catch (error) {
-    console.error("Error saving Enquiry:", error);
+    console.log("Error saving Enquiry:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
