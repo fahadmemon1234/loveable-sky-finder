@@ -218,13 +218,31 @@ const Home = () => {
 
       <section
         ref={formRef}
-        className={`py-20 px-4 sm:px-6 bg-gradient-to-b from-secondary/5 to-secondary/20 transition-all duration-700 ease-out ${
+        className={`relative py-24 sm:py-28 px-4 sm:px-8 bg-gradient-to-b from-blue-50 via-white to-blue-100 overflow-hidden transition-all duration-700 ease-out ${
           formisVisible
             ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-10"
         }`}
       >
-        <FlightSearchForm />
+        {/* Decorative blur background for a premium feel */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-72 h-72 bg-blue-300/20 blur-3xl rounded-full" />
+          <div className="absolute bottom-0 right-0 w-72 h-72 bg-sky-200/30 blur-3xl rounded-full" />
+        </div>
+
+        {/* Content container */}
+        <div className="relative z-10 max-w-5xl mx-auto text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary mb-6">
+            Find the Perfect Flight
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto mb-10 text-sm sm:text-base">
+            Compare routes, fares, and airlines in seconds — plan your next
+            journey with ease and confidence.
+          </p>
+
+          {/* Form container */}
+          <FlightSearchForm />
+        </div>
       </section>
 
       {/* Our Services Section */}
