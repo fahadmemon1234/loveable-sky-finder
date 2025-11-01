@@ -128,6 +128,15 @@ const FlightRequestForm = () => {
       return false;
     }
 
+    if (!email.includes("@")) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please enter a valid email address.",
+      });
+      return false;
+    }
+
     return true;
   };
 
@@ -146,8 +155,8 @@ const FlightRequestForm = () => {
         returnDate: format(returnDate, "yyyy-MM-dd"),
         departureAirport,
         destinationAirport,
-        cabin: selectedcabin?.value || null,
-        passengers: selectedPassengers?.value || null,
+        cabin: selectedcabin?.value || "",
+        passengers: selectedPassengers ? Number(selectedPassengers.value) : 0,
         fullName,
         phone,
         email,
@@ -155,7 +164,7 @@ const FlightRequestForm = () => {
       };
 
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/flight-request`,
+        `${import.meta.env.VITE_API_URL}/api/requestcallback`,
         data
       );
       if (response.status === 200) {
@@ -317,7 +326,7 @@ const FlightRequestForm = () => {
               <Input
                 id="destinationAirport"
                 value={destinationAirport}
-                onChange={(e) => setDepartureAirport(e.target.value)}
+                onChange={(e) => setDestinationAirport(e.target.value)}
                 type="text"
                 placeholder="e.g., LHR"
                 className="bg-white/70 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
@@ -386,7 +395,6 @@ const FlightRequestForm = () => {
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
-              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"

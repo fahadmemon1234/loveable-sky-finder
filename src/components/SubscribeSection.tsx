@@ -1,26 +1,78 @@
+import axios from "axios";
 import { useState } from "react";
 import Swal from "sweetalert2";
 
 const SubscribeSection = () => {
   const [email, setEmail] = useState("");
 
-  const handleSubscribe = (e) => {
-    e.preventDefault();
+  const Validation = () => {
     if (!email) {
       Swal.fire({
         icon: "error",
         position: "center",
         title: "Please enter your email address.",
       });
-      return;
+      return false;
     }
 
-    Swal.fire({
-      icon: "success",
-      position: "center",
-      title: "You have successfully subscribed to our newsletter.",
-    });
-    setEmail("");
+    if (!email.includes("@")) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Invalid email address.",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (!Validation()) {
+        return;
+      }
+      debugger;
+
+      const data = {
+        email,
+      };
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/subscribe`,
+        data
+      );
+
+      if (response.status === 200) {
+        Swal.fire({
+          icon: "success",
+          position: "center",
+          title: "You have successfully subscribed.",
+        });
+      } else if (response.status === 400) {
+        Swal.fire({
+          icon: "error",
+          position: "center",
+          title: "You have already subscribed.",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          position: "center",
+          title: "Something went wrong.",
+        });
+      }
+
+      setEmail("");
+    } catch (e) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Something went wrong.",
+      });
+    }
   };
 
   return (
