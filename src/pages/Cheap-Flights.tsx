@@ -1,27 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FlightSearchForm from "@/components/FlightSearchForm";
 import heroImage from "@/assets/hero-flight.jpg";
-import {
-  FaGlobe,
-  FaMapMarkedAlt,
-  FaHotel,
-  FaPlaneDeparture,
-  FaUsers,
-} from "react-icons/fa";
-import { url } from "inspector";
+import { FaCalendarCheck, FaDollarSign, FaGlobeAmericas } from "react-icons/fa";
 
 const CheapFlights = () => {
-  const regions = [
-    "Asia",
-    "Africa",
-    "Europe",
-    "Australia",
-    "Oceania",
-    "North America",
-    "Middle East",
-  ];
   const destinations = [
     {
       city: "Dar-Es-Salaam",
@@ -415,18 +399,36 @@ const CheapFlights = () => {
     },
   ];
 
-  const regionsData = regions.map((region) => ({
-    name: region,
-    count: destinations.filter((d) => d.region === region).length,
-  }));
+  const formRef = useRef(null);
+  const [formisVisible, setFormIsVisible] = useState(false);
 
-  const [selectedRegion, setSelectedRegion] = useState<string>("All");
-  const allCount = regionsData.reduce((acc, r) => acc + r.count, 0);
+  // Scroll Animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setFormIsVisible(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+    if (formRef.current) observer.observe(formRef.current);
+    return () => observer.disconnect();
+  }, []);
 
-  const filteredDestinations =
-    selectedRegion === "All"
-      ? destinations
-      : destinations.filter((d) => d.region === selectedRegion);
+  const tips = [
+    {
+      icon: <FaCalendarCheck className="text-4xl text-[#05304c]" />,
+      title: "Book in Advance",
+      text: "Plan your trips early to secure the best fares and more seat options, especially during peak travel seasons.",
+    },
+    {
+      icon: <FaDollarSign className="text-4xl text-[#05304c]" />,
+      title: "Compare Before You Buy",
+      text: "Use trusted platforms to compare flights from multiple airlines to make sure you get the best price and value.",
+    },
+    {
+      icon: <FaGlobeAmericas className="text-4xl text-[#05304c]" />,
+      title: "Stay Flexible",
+      text: "Be open to adjusting your dates and destinations — flexible travelers often find the best flight deals.",
+    },
+  ];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -456,65 +458,54 @@ const CheapFlights = () => {
         </div>
       </section>
 
-      {/* Select your Region */}
+      <section
+        ref={formRef}
+        className={`relative py-24 sm:py-28 px-4 sm:px-8 bg-gradient-to-b from-blue-50 via-white to-blue-100 overflow-hidden transition-all duration-700 ease-out ${
+          formisVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-10"
+        }`}
+      >
+        {/* Decorative blur background for a premium feel */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-72 h-72 bg-blue-300/20 blur-3xl rounded-full" />
+          <div className="absolute bottom-0 right-0 w-72 h-72 bg-sky-200/30 blur-3xl rounded-full" />
+        </div>
 
-      <section className="py-12 px-4 bg-[#f4fdff]">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-8">Select Your Region</h2>
+        {/* Content container */}
+        <div className="relative z-10 max-w-5xl mx-auto text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary mb-6">
+            Find the Perfect Flight
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto mb-10 text-sm sm:text-base">
+            Compare routes, fares, and airlines in seconds — plan your next
+            journey with ease and confidence.
+          </p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-3">
-            {/* All Option */}
-            <div
-              onClick={() => setSelectedRegion("All")}
-              className={`rounded-xl shadow-sm p-3 flex flex-col items-center justify-center cursor-pointer transition transform hover:-translate-y-0.5 hover:shadow-md ${
-                selectedRegion === "All"
-                  ? "bg-primary text-white border border-primary"
-                  : "bg-white text-primary border border-gray-200"
-              }`}
-            >
-              <h3 className="text-lg font-semibold mb-1">All</h3>
-              <p
-                className={`text-xs ${
-                  selectedRegion === "All"
-                    ? "text-white/80"
-                    : "text-muted-foreground"
-                }`}
-              >
-                {allCount} Destinations
-              </p>
-            </div>
-
-            {regionsData.map(({ name, count }) => (
-              <div
-                key={name}
-                onClick={() => setSelectedRegion(name)}
-                className={`rounded-xl shadow-sm p-3 flex flex-col items-center justify-center cursor-pointer transition transform hover:-translate-y-0.5 hover:shadow-md ${
-                  selectedRegion === name
-                    ? "bg-primary text-white border border-primary"
-                    : "bg-white text-primary border border-gray-200"
-                }`}
-              >
-                <h3 className="text-md font-semibold mb-1">{name}</h3>
-                <p
-                  className={`text-xs ${
-                    selectedRegion === name
-                      ? "text-white/80"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  {count} Destinations
-                </p>
-              </div>
-            ))}
-          </div>
+          {/* Form container */}
+          <FlightSearchForm />
         </div>
       </section>
 
       {/* Filtered Destinations */}
-      <section className="py-20 px-6 bg-gradient-to-b from-secondary/10 to-secondary/30">
-        <div className="container mx-auto text-center">
+      <section className="py-20 px-4 sm:px-6 bg-gradient-to-br from-[#fffbea] via-[#fef9e7] to-[#fff3cd] overflow-hidden relative">
+        {/* Decorative Background Glow */}
+        <div className="absolute top-0 left-0 w-60 h-60 bg-yellow-100/40 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-yellow-200/30 rounded-full blur-3xl" />
+
+        <div className="relative z-10 container mx-auto text-center">
+          {/* Section Heading */}
+          <h2 className="text-3xl sm:text-4xl font-extrabold mb-6 tracking-tight text-primary">
+            Featured Flight Deals
+          </h2>
+          <p className="text-muted-foreground mb-14 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+            Explore our handpicked flight offers and enjoy exclusive discounts
+            on top destinations around the world. Book now and make your next
+            journey unforgettable.
+          </p>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-            {filteredDestinations.map(({ city, img, price, url }) => (
+            {destinations.map(({ city, img, price, url }) => (
               <div
                 key={city}
                 className="relative group rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300"
@@ -552,51 +543,41 @@ const CheapFlights = () => {
         </div>
       </section>
 
-      {/* Travel Stats Section */}
-      <section className="py-20 px-6 bg-[#f4fdff]">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-12">Our Achievements</h2>
+      <section className="relative py-24 sm:py-28 px-4 sm:px-8 bg-gradient-to-b from-blue-50 via-white to-blue-100 overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute top-0 left-0 w-48 h-48 bg-blue-200/40 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-48 h-48 bg-blue-300/30 rounded-full blur-3xl" />
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 text-center">
-            <div className="space-y-2 flex flex-col items-center">
-              <FaGlobe className="text-4xl text-[#1c448e]" />
-              <h3 className="text-3xl font-bold text-[#1c448e]">95+</h3>
-              <p className="text-sm font-medium">
-                Countries <br /> Connected
-              </p>
-            </div>
+        <div className="relative z-10 container mx-auto text-center">
+          {/* Section Heading */}
+          <h2 className="text-3xl sm:text-4xl font-extrabold mb-6 tracking-tight text-[#05304c]">
+            Flight Booking Tips
+          </h2>
+          <p className="text-muted-foreground mb-14 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+            Save time and money on your next journey with these expert flight
+            booking insights.
+          </p>
 
-            <div className="space-y-2 flex flex-col items-center">
-              <FaMapMarkedAlt className="text-4xl text-[#1c448e]" />
-              <h3 className="text-3xl font-bold text-[#1c448e]">89+</h3>
-              <p className="text-sm font-medium">
-                Tour <br /> Places
-              </p>
-            </div>
-
-            <div className="space-y-2 flex flex-col items-center">
-              <FaHotel className="text-4xl text-[#1c448e]" />
-              <h3 className="text-3xl font-bold text-[#1c448e]">250+</h3>
-              <p className="text-sm font-medium">
-                Hotel <br /> Accommodation
-              </p>
-            </div>
-
-            <div className="space-y-2 flex flex-col items-center">
-              <FaPlaneDeparture className="text-4xl text-[#1c448e]" />
-              <h3 className="text-3xl font-bold text-[#1c448e]">2400+</h3>
-              <p className="text-sm font-medium">
-                Daily <br /> Flights
-              </p>
-            </div>
-
-            <div className="space-y-2 flex flex-col items-center">
-              <FaUsers className="text-4xl text-[#1c448e]" />
-              <h3 className="text-3xl font-bold text-[#1c448e]">Unlimited</h3>
-              <p className="text-sm font-medium">
-                Passenger <br /> Travel
-              </p>
-            </div>
+          {/* Tips Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {tips.map((tip, index) => (
+              <div
+                key={index}
+                className="cursor-pointer group relative bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-blue-100 hover:-translate-y-2"
+              >
+                <div className="flex flex-col items-center text-center space-y-4">
+                  <div className="bg-blue-100 p-4 rounded-full group-hover:bg-blue-200 transition-colors duration-300">
+                    {tip.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold text-[#05304c]">
+                    {tip.title}
+                  </h3>
+                  <p className="text-[#05304c]/70 text-sm sm:text-base leading-relaxed">
+                    {tip.text}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

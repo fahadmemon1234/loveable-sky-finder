@@ -236,7 +236,7 @@ const Home = () => {
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary mb-6">
             Find the Perfect Flight
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto mb-10 text-sm sm:text-base">
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-10 text-sm sm:text-base">
             Compare routes, fares, and airlines in seconds — plan your next
             journey with ease and confidence.
           </p>
@@ -249,12 +249,16 @@ const Home = () => {
       {/* Our Services Section */}
       <section
         ref={servicesRef}
-        className="py-20 px-4 sm:px-6 bg-gradient-to-br from-[#fffbea] via-[#fef9e7] to-[#fff3cd] overflow-hidden"
+        className="relative py-20 px-4 sm:px-6 bg-gradient-to-br from-[#fffbea] via-[#fef9e7] to-[#fff3cd] overflow-hidden"
       >
-        <div className="container mx-auto text-center">
-          {/* Title */}
+        {/* Decorative Background Glow */}
+        <div className="absolute top-0 left-0 w-60 h-60 bg-yellow-100/40 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-yellow-200/30 rounded-full blur-3xl" />
+
+        <div className="relative z-10 container mx-auto text-center cursor-pointer">
+          {/* Section Title */}
           <h2
-            className={`text-3xl sm:text-4xl font-bold mb-4 text-gray-900 tracking-tight transition-all duration-700 ease-out ${
+            className={`text-3xl sm:text-4xl font-extrabold mb-4 text-[#05304c] tracking-tight transition-all duration-700 ease-out ${
               servicesisVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-8"
@@ -262,15 +266,16 @@ const Home = () => {
           >
             Our Services
           </h2>
+
           <p
-            className={`text-muted-foreground mb-14 max-w-2xl mx-auto text-sm sm:text-base transition-all duration-700 ease-out delay-150 ${
+            className={`text-muted-foreground mb-14 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed transition-all duration-700 ease-out delay-150 ${
               servicesisVisible
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-6"
             }`}
           >
-            We’re committed to delivering the best travel experiences —
-            affordable, flexible, and secure.
+            We’re dedicated to making your travel easier — with affordable,
+            flexible, and secure services designed around your journey.
           </p>
 
           {/* Services Grid */}
@@ -284,21 +289,21 @@ const Home = () => {
                     : "opacity-0 translate-y-10"
                 }`}
                 style={{
-                  transitionDelay: `${index * 120}ms`, // staggered animation
+                  transitionDelay: `${index * 120}ms`,
                 }}
               >
                 {/* Icon Container */}
                 <div className="w-16 h-16 bg-amber-100 group-hover:bg-gradient-to-r group-hover:from-amber-400 group-hover:to-yellow-500 rounded-full flex items-center justify-center mx-auto transition-all duration-300">
-                  <div className="text-amber-600 group-hover:text-muted">
+                  <div className="text-amber-600 text-2xl group-hover:text-white transition-colors duration-300">
                     {service.icon}
                   </div>
                 </div>
 
                 {/* Text Content */}
-                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mt-5 mb-2 group-hover:text-amber-600 transition-colors">
+                <h3 className="text-lg sm:text-xl font-semibold text-[#05304c] mt-5 mb-2 group-hover:text-amber-600 transition-colors">
                   {service.title}
                 </h3>
-                <p className="text-sm text-gray-600 group-hover:text-gray-600 transition-colors duration-300">
+                <p className="text-sm text-gray-600 leading-relaxed">
                   {service.text}
                 </p>
               </div>
@@ -320,10 +325,10 @@ const Home = () => {
 
         <div className="relative z-10 container mx-auto text-center">
           {/* Section Heading */}
-          <h2 className="text-3xl sm:text-4xl font-extrabold mb-6 tracking-tight text-blue-900">
+          <h2 className="text-3xl sm:text-4xl font-extrabold mb-6 tracking-tight text-primary">
             Popular Destinations
           </h2>
-          <p className="text-blue-800/80 mb-14 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+          <p className="text-muted-foreground mb-14 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
             Discover breathtaking destinations and enjoy unbeatable flight deals
             to your favorite cities worldwide.
           </p>
@@ -376,39 +381,47 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Travel Stats Section */}
+      {/* Our Achievements Section */}
       <section
         ref={achievementsRef}
-        className={`relative py-14 px-4 sm:py-20 sm:px-6 bg-[#fdf8ec] overflow-hidden transition-all duration-700 ease-out ${
+        className={`relative py-20 px-4 sm:px-6 bg-gradient-to-br from-[#fffbea] via-[#fef9e7] to-[#fff3cd] overflow-hidden transition-all duration-700 ease-out ${
           visible ? "opacity-100 scale-100" : "opacity-0 scale-95"
         }`}
       >
-        <div className="container mx-auto text-center relative z-10">
-          <h2 className="text-2xl sm:text-4xl font-bold mb-3 text-gray-900 tracking-tight">
+        {/* Soft Background Glows */}
+        <div className="absolute top-0 left-0 w-48 h-48 bg-yellow-100/40 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-56 h-56 bg-yellow-200/30 rounded-full blur-3xl" />
+
+        <div className="container mx-auto text-center relative z-10 cursor-pointer">
+          {/* Section Heading */}
+          <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 text-[#05304c] tracking-tight">
             Our Achievements
           </h2>
-          <p className="text-gray-600 mb-10 sm:mb-14 max-w-2xl mx-auto text-sm sm:text-base">
-            Trusted by thousands of travelers worldwide for delivering quality,
-            safety, and unforgettable experiences.
+          <p className="text-muted-foreground mb-14 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+            We’re proud to have earned the trust of thousands of travelers by
+            delivering quality, safety, and unforgettable journeys around the
+            world.
           </p>
 
-          {/* Cards Grid */}
+          {/* Achievement Cards */}
           <div
-            className={`grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8 transition-all duration-1000 ease-out ${
+            className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8 transition-all duration-1000 ease-out ${
               visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
           >
             {data.map(({ icon, number, label }, index) => (
               <div
                 key={index}
-                className={`group bg-white/90 backdrop-blur-sm rounded-xl p-4 sm:p-6 shadow-md hover:shadow-xl transition-all duration-500 border border-amber-100 hover:border-amber-400 flex flex-col items-center justify-center text-center min-h-[130px] sm:min-h-[160px]`}
+                className={`group bg-white rounded-2xl p-6 shadow-md hover:shadow-xl border border-amber-100 hover:border-amber-400 transition-all duration-500 flex flex-col items-center justify-center text-center min-h-[130px] sm:min-h-[160px] hover:-translate-y-2`}
                 style={{
-                  transitionDelay: `${index * 120}ms`, // stagger animation
+                  transitionDelay: `${index * 120}ms`,
                 }}
               >
-                <div className="flex flex-col items-center justify-center space-y-2 sm:space-y-3">
-                  {icon}
-                  <h3 className="text-lg sm:text-2xl font-bold text-gray-900">
+                <div className="flex flex-col items-center space-y-2 sm:space-y-3">
+                  <div className="text-amber-600 text-3xl sm:text-4xl group-hover:scale-110 transition-transform duration-300">
+                    {icon}
+                  </div>
+                  <h3 className="text-lg sm:text-2xl font-bold text-[#05304c]">
                     {number}
                   </h3>
                   <p className="text-xs sm:text-sm font-medium text-gray-700 leading-tight">
@@ -419,10 +432,6 @@ const Home = () => {
             ))}
           </div>
         </div>
-
-        {/* Subtle background glow */}
-        <div className="absolute top-0 left-0 w-24 sm:w-40 h-24 sm:h-40 bg-amber-400/20 rounded-full blur-3xl -z-10"></div>
-        <div className="absolute bottom-0 right-0 w-28 sm:w-52 h-28 sm:h-52 bg-yellow-300/20 rounded-full blur-3xl -z-10"></div>
       </section>
 
       <SubscribeSection />

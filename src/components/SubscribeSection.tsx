@@ -31,10 +31,10 @@ const SubscribeSection = () => {
 
       {/* Main Content */}
       <div className="relative z-10 max-w-3xl mx-auto text-center px-2 sm:px-0">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-blue-800 mb-4 leading-tight">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-primary mb-4 leading-tight">
           Subscribe for Latest Deals
         </h2>
-        <p className="text-sm sm:text-base lg:text-lg text-blue-700/80 mb-8 sm:mb-10 leading-relaxed max-w-2xl mx-auto">
+        <p className="text-sm sm:text-base lg:text-lg text-muted-foreground mb-8 sm:mb-10 leading-relaxed max-w-2xl mx-auto">
           Sign up now and get the best holiday and flight deals straight into
           your inbox!
         </p>
@@ -49,23 +49,23 @@ const SubscribeSection = () => {
             placeholder="Subscribe to our newsletter *"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="flex-1 w-full bg-transparent text-blue-800 placeholder-blue-600/70 outline-none px-4 py-3 text-sm sm:text-base"
+            className="flex-1 w-full bg-transparent text-primary placeholder-primary outline-none px-4 py-3 text-sm sm:text-base"
           />
           <button
             type="submit"
-            className="bg-blue-700 text-white font-semibold px-8 py-3 sm:py-2 rounded-full hover:bg-blue-800 transition-all duration-300 w-full sm:w-auto text-sm sm:text-base"
+            className="bg-primary text-white font-semibold px-8 py-3 sm:py-2 rounded-full hover:bg-secondary hover:text-white transition-all duration-300 w-full sm:w-auto text-sm sm:text-base"
           >
             SUBSCRIBE
           </button>
         </form>
 
         {/* Privacy Info */}
-        <p className="text-xs sm:text-sm mt-6 sm:mt-8 text-blue-700/70 max-w-md mx-auto leading-relaxed">
+        <p className="text-xs sm:text-sm mt-6 sm:mt-8 text-muted-foreground max-w-md mx-auto leading-relaxed">
           Your privacy is important to us, so we’ll never spam you or share your
           info with third parties. Take a look at our{" "}
           <a
             href="/support/privacy-policy"
-            className="underline font-medium hover:text-blue-800"
+            className="underline font-medium hover:text-primary"
           >
             Privacy Policy
           </a>

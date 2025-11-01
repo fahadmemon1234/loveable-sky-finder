@@ -21,7 +21,7 @@ All colors MUST be HSL.
     --primary: 220 68% 32%;
     --primary-foreground: 0 0% 100%;
 
-    --primary-light: 213 100% 45%; /* #006ce4 */
+    --primary-light: 205 90% 16%; /* #006ce4 */
     --primary-light-foreground: 0 0% 100%;
 
     --secondary: 190 100% 96%;
@@ -43,11 +43,8 @@ All colors MUST be HSL.
     --radius: 0.5rem;
 
     /* Custom gradients */
-    --gradient-hero: linear-gradient(
-      135deg,
-      hsl(220, 68%, 32%),
-      hsl(220, 68%, 42%)
-    );
+    --gradient-hero: linear-gradient(135deg, #05304c, hsl(220, 68%, 38%));
+
     --gradient-card: linear-gradient(
       180deg,
       hsl(0, 0%, 100%),
@@ -155,7 +152,7 @@ button.inline-flex.items-center.gap-2.whitespace-nowrap.rounded-md.text-sm.ring-
 }
 
 button.rdp-button_reset.rdp-button.inline-flex.items-center.justify-center.gap-2.whitespace-nowrap.rounded-md.text-sm.ring-offset-background.transition-colors.focus-visible\:outline-none.focus-visible\:ring-2.focus-visible\:ring-ring.focus-visible\:ring-offset-2.disabled\:pointer-events-none.disabled\:opacity-50.\[\&_svg\]\:pointer-events-none.\[\&_svg\]\:size-4.\[\&_svg\]\:shrink-0.h-9.w-9.p-0.font-normal.aria-selected\:opacity-100:hover {
-  background-color: #006ce4 !important;
+  background-color: #05304c !important;
   color: white !important;
 }
 
@@ -184,7 +181,7 @@ label.text-sm.leading-none.peer-disabled\:cursor-not-allowed.peer-disabled\:opac
 }
 
 .bg-primary {
-  background-color: #006ce4 !important;
+  background-color: #05304c !important;
 }
 
 footer.bg-primary.text-primary-foreground.mt-20 {
