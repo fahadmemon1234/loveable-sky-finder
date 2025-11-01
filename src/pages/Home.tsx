@@ -14,8 +14,22 @@ import { PiCurrencyGbpBold } from "react-icons/pi";
 import { IoIosUnlock } from "react-icons/io";
 import { MdOutlineFlightTakeoff } from "react-icons/md";
 import HeroSection from "@/components/HeroSection";
+import FlightSearchForm from "@/components/FlightSearchForm";
 
 const Home = () => {
+  const formRef = useRef(null);
+  const [formisVisible, setFormIsVisible] = useState(false);
+
+  // Scroll Animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setFormIsVisible(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+    if (formRef.current) observer.observe(formRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   const sectionRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -201,6 +215,17 @@ const Home = () => {
 
       {/* Hero Section */}
       <HeroSection />
+
+      <section
+        ref={formRef}
+        className={`py-20 px-4 sm:px-6 bg-gradient-to-b from-secondary/5 to-secondary/20 transition-all duration-700 ease-out ${
+          formisVisible
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-10"
+        }`}
+      >
+        <FlightSearchForm />
+      </section>
 
       {/* Our Services Section */}
       <section

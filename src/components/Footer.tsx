@@ -43,8 +43,11 @@ const Footer = () => {
               to="/"
               className="flex items-center gap-2 font-bold text-xl sm:text-2xl mb-3 sm:mb-4"
             >
-              <Plane className="h-6 w-6 sm:h-7 sm:w-7" />
-              <span>Loveable Travel</span>
+              <img
+                src="/assets/images/Logo/Logo-White.png"
+                alt="logo"
+                className="w-20"
+              />
             </Link>
             <p className="text-sm sm:text-base text-primary-foreground/80 leading-relaxed">
               We specialize in creating unforgettable travel experiences. From
@@ -111,10 +114,20 @@ const Footer = () => {
               <li className="flex items-center gap-2">
                 <Mail size={18} className="text-white flex-shrink-0" />
                 <a
-                  href="mailto:info@brightholiday.co.uk"
+                  href="mailto:sales@skynovatravels.co.uk"
                   className="hover:underline break-all"
                 >
-                  info@brightholiday.co.uk
+                  sales@skynovatravels.co.uk
+                </a>
+              </li>
+
+              <li className="flex items-center gap-2">
+                <Mail size={18} className="text-white flex-shrink-0" />
+                <a
+                  href="mailto:Meryy@skynovatravels.co.uk"
+                  className="hover:underline break-all"
+                >
+                  Meryy@skynovatravels.co.uk
                 </a>
               </li>
             </ul>
@@ -168,6 +181,12 @@ const Footer = () => {
           {/* Payment Methods */}
           <div className="bg-white/90 px-4 sm:px-6 py-2 rounded-lg shadow flex flex-wrap justify-center items-center gap-3 sm:gap-4 w-full md:w-auto">
             <img
+              src="/assets/images/payment/bank.png"
+              alt="Bank Transfer"
+              className="h-6 sm:h-7 w-auto"
+            />
+
+            <img
               src="/assets/images/payment/visa.png"
               alt="Visa"
               className="h-5 sm:h-6 w-auto"
@@ -185,11 +204,6 @@ const Footer = () => {
             <img
               src="/assets/images/payment/American.png"
               alt="American Express"
-              className="h-5 sm:h-6 w-auto"
-            />
-            <img
-              src="/assets/images/payment/bank.png"
-              alt="Bank Transfer"
               className="h-5 sm:h-6 w-auto"
             />
           </div>

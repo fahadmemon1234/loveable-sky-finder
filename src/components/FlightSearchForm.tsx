@@ -233,7 +233,7 @@ const FlightSearchForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-8 space-y-8 max-w-4xl mx-auto border border-gray-100"
+      className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl p-8 space-y-8 max-w-4xl mx-auto border border-gray-100"
     >
       {/* Trip Type */}
       <div className="flex flex-wrap gap-6 justify-center">
