@@ -4,7 +4,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, Loader2 } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -13,8 +13,31 @@ import {
 import { format } from "date-fns";
 import Select from "react-select";
 import { Phone } from "lucide-react";
+import Swal from "sweetalert2";
+import axios from "axios";
+import { o } from "node_modules/framer-motion/dist/types.d-BJcRxCew";
 
 const FlightRequestForm = () => {
+  const [departDate, setDepartDate] = useState<Date | null>(null);
+  const [returnDate, setReturnDate] = useState<Date | null>(null);
+  const [departureAirport, setDepartureAirport] = useState("");
+  const [destinationAirport, setDestinationAirport] = useState("");
+  const [selectedcabin, setSelectedCabin] = useState<{
+    value: string;
+    label: string;
+  } | null>(null);
+  const [selectedPassengers, setSelectedPassengers] = useState<{
+    value: string;
+    label: string;
+  } | null>(null);
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+
+  const [open, setOpen] = useState(false);
+  const [openReturn, setOpenReturn] = useState(false);
+
   const options = [
     { value: "economy", label: "Economy" },
     { value: "business", label: "Business" },
@@ -23,8 +46,8 @@ const FlightRequestForm = () => {
 
   const [selectedOption, setSelectedOption] = useState(null);
 
-  const numberoptions = Array.from({ length: 10 }, (_, i) => ({
-    value: i + 1,
+  const numberOptions = Array.from({ length: 10 }, (_, i) => ({
+    value: (i + 1).toString(), // use string for consistency
     label: `${i + 1}`,
   }));
 
@@ -32,20 +55,163 @@ const FlightRequestForm = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const [departDate, setDepartDate] = useState<Date>();
-  const [returnDate, setReturnDate] = useState<Date>();
-  const [open, setOpen] = useState(false);
-  const [openReturn, setOpenReturn] = useState(false);
+  const Validation = () => {
+    if (!returnDate) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please enter the return date.",
+      });
+      return false;
+    }
 
-  const handleSubmit = (e: React.FormEvent) => {
+    if (!departureAirport) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please enter the departure airport.",
+      });
+      return false;
+    }
+
+    if (!destinationAirport) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please enter the destination airport.",
+      });
+      return false;
+    }
+
+    if (!selectedcabin) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please select the cabin class.",
+      });
+      return false;
+    }
+
+    if (!selectedPassengers) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please select the number of passengers.",
+      });
+      return false;
+    }
+
+    if (!fullName) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please enter the full name.",
+      });
+      return false;
+    }
+
+    if (!phone) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please enter the phone number.",
+      });
+      return false;
+    }
+
+    if (!email) {
+      Swal.fire({
+        icon: "error",
+        position: "center",
+        title: "Please enter the email address.",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate submission
-    setTimeout(() => {
-      alert("Flight request submitted!");
+    try {
+      if (!Validation()) {
+        setLoading(false);
+        return;
+      }
+
+      const data = {
+        departDate: format(departDate, "yyyy-MM-dd"),
+        returnDate: format(returnDate, "yyyy-MM-dd"),
+        departureAirport,
+        destinationAirport,
+        cabin: selectedcabin?.value || null,
+        passengers: selectedPassengers?.value || null,
+        fullName,
+        phone,
+        email,
+        message,
+      };
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/flight-request`,
+        data
+      );
+      if (response.status === 200) {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Flight request submitted successfully",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else if (response.status === 400) {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Flight request submission failed",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else if (response.status === 500) {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Flight request submission failed",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Flight request submission failed",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+
       setLoading(false);
-    }, 1500);
+
+      setDepartDate(undefined);
+      setReturnDate(undefined);
+      setDepartureAirport("");
+      setDestinationAirport("");
+      setSelectedCabin(null);
+      setSelectedPassengers(null);
+      setFullName("");
+      setPhone("");
+      setEmail("");
+      setMessage("");
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
+      setLoading(false);
+    }
   };
 
   const handleSelect = (date: Date | undefined) => {
@@ -121,7 +287,7 @@ const FlightRequestForm = () => {
                   <Calendar
                     mode="single"
                     selected={returnDate}
-                    onSelect={setReturnDate}
+                    onSelect={handleSelectReturn}
                     disabled={(date) =>
                       date <
                       new Date(new Date().setDate(new Date().getDate() + 2))
@@ -140,7 +306,8 @@ const FlightRequestForm = () => {
               <Input
                 id="departureAirport"
                 type="text"
-                required
+                value={departureAirport}
+                onChange={(e) => setDepartureAirport(e.target.value)}
                 placeholder="e.g., JFK"
                 className="bg-white/70 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
               />
@@ -149,8 +316,9 @@ const FlightRequestForm = () => {
               <Label htmlFor="destinationAirport">Destination Airport *</Label>
               <Input
                 id="destinationAirport"
+                value={destinationAirport}
+                onChange={(e) => setDepartureAirport(e.target.value)}
                 type="text"
-                required
                 placeholder="e.g., LHR"
                 className="bg-white/70 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
               />
@@ -163,8 +331,8 @@ const FlightRequestForm = () => {
               <Label htmlFor="cabin">Cabin *</Label>
               <Select
                 id="cabin"
-                value={selectedOption}
-                onChange={setSelectedOption}
+                value={selectedcabin}
+                onChange={(option) => setSelectedCabin(option)}
                 options={options}
                 placeholder="Select Cabin"
                 className="react-select-container"
@@ -175,9 +343,9 @@ const FlightRequestForm = () => {
               <Label htmlFor="passengers">Number of Passengers *</Label>
               <Select
                 id="passengers"
-                value={numOption}
-                onChange={setNumOption}
-                options={numberoptions}
+                value={selectedPassengers}
+                onChange={(option) => setSelectedPassengers(option)} // option has value & label
+                options={numberOptions}
                 placeholder="Select number of passengers"
                 className="react-select-container"
                 classNamePrefix="react-select"
@@ -192,7 +360,8 @@ const FlightRequestForm = () => {
               <Input
                 id="name"
                 type="text"
-                required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
                 placeholder="Full Name"
                 className="bg-white/70 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
               />
@@ -202,8 +371,11 @@ const FlightRequestForm = () => {
               <Input
                 id="contact"
                 type="tel"
-                required
-                placeholder="+1 555 123 4567"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+                placeholder="Enter your contact number"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 className="bg-white/70 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
               />
             </div>
@@ -215,6 +387,8 @@ const FlightRequestForm = () => {
             <Input
               id="email"
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
               className="bg-white/70 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
             />
@@ -225,6 +399,9 @@ const FlightRequestForm = () => {
             <Label htmlFor="comments">Any Comments</Label>
             <Textarea
               id="comments"
+              name="comments"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
               rows={4}
               placeholder="Additional details..."
               className="bg-white/70 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
