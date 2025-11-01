@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import inquiryRoutes from "./routes/inquiryRoutes.js";
+import EnquiryRoutes from "./routes/EnquiryRoutes.js";
 
 dotenv.config();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/inquiry", inquiryRoutes);
+app.use("/api/enquiry", EnquiryRoutes);
 
 // MongoDB connection
 mongoose
