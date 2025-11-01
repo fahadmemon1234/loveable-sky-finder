@@ -175,7 +175,7 @@ const Footer = () => {
         <div className="mt-10 sm:mt-12 pt-6 border-t border-white/20 flex flex-col sm:flex-col md:flex-row items-center justify-between gap-6">
           {/* Copyright */}
           <p className="text-xs sm:text-sm text-primary-foreground/80 text-center md:text-left">
-            © 2025 Loveable Travel. All rights reserved.
+            © {new Date().getFullYear()} Skynova Travels. All rights reserved.
           </p>
 
           {/* Payment Methods */}
