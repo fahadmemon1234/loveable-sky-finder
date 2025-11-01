@@ -500,11 +500,11 @@ const CheapFlights = () => {
         </div>
 
         {/* Content container */}
-        <div className="relative z-10 max-w-5xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary mb-6">
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-primary mb-6 text-center">
             Find the Perfect Flight
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto mb-10 text-sm sm:text-base">
+          <p className="text-gray-600 max-w-2xl mx-auto mb-10 text-sm sm:text-base text-center">
             Compare routes, fares, and airlines in seconds — plan your next
             journey with ease and confidence.
           </p>

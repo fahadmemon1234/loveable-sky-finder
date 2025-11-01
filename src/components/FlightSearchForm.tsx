@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -268,6 +268,9 @@ const FlightSearchForm = () => {
             onChange={(e) => setFrom(e.target.value)}
             className="border-gray-300 focus:ring-primary focus:border-primary"
           />
+          {loading && (
+            <p className="text-sm text-gray-400">Detecting your city...</p>
+          )}
         </div>
 
         <div className="space-y-2">
