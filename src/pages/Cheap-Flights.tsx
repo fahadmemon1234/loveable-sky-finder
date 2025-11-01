@@ -430,6 +430,33 @@ const CheapFlights = () => {
     },
   ];
 
+  const tipsRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Intersection Observer for scroll animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+
+    if (tipsRef.current) observer.observe(tipsRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const popularRef = useRef(null);
+  const [PoppularisVisible, setPoppularIsVisible] = useState(false);
+
+  // Scroll Animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setPoppularIsVisible(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+    if (popularRef.current) observer.observe(popularRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -488,7 +515,11 @@ const CheapFlights = () => {
       </section>
 
       {/* Filtered Destinations */}
-      <section className="py-20 px-4 sm:px-6 bg-gradient-to-br from-[#fffbea] via-[#fef9e7] to-[#fff3cd] overflow-hidden relative">
+      <section
+        ref={popularRef}
+        className={`py-20 px-4 sm:px-6 bg-gradient-to-br from-[#fffbea] via-[#fef9e7] to-[#fff3cd] 
+       overflow-hidden relative`}
+      >
         {/* Decorative Background Glow */}
         <div className="absolute top-0 left-0 w-60 h-60 bg-yellow-100/40 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-72 h-72 bg-yellow-200/30 rounded-full blur-3xl" />
@@ -543,7 +574,12 @@ const CheapFlights = () => {
         </div>
       </section>
 
-      <section className="relative py-24 sm:py-28 px-4 sm:px-8 bg-gradient-to-b from-blue-50 via-white to-blue-100 overflow-hidden">
+      <section
+        ref={tipsRef}
+        className={`relative py-20 sm:py-24 px-4 sm:px-8 bg-gradient-to-b from-blue-50 via-white to-blue-100 overflow-hidden transition-all duration-700 ease-out ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        }`}
+      >
         {/* Decorative Elements */}
         <div className="absolute top-0 left-0 w-48 h-48 bg-blue-200/40 rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-0 w-48 h-48 bg-blue-300/30 rounded-full blur-3xl" />
