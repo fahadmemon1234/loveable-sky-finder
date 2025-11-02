@@ -177,7 +177,7 @@ const Register = () => {
       <section className="auth d-flex">
         <div className="auth-left bg-main-50 flex-center">
           <Image
-            src="/assets/images/Plane.jpeg"
+            src="/assets/images/Plane.avif"
             alt=""
             width={500}
             height={500}
