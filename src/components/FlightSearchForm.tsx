@@ -14,12 +14,13 @@ import {
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import axios from "axios";
+import Select from "react-select";
 
 const FlightSearchForm = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [tripType, setTripType] = useState("round");
-  const [from, setFrom] = useState("");
+  const [from, setFrom] = useState<any>(null);
   const [to, setTo] = useState("");
   const [departDate, setDepartDate] = useState<Date>();
   const [returnDate, setReturnDate] = useState<Date>();
@@ -219,6 +220,60 @@ const FlightSearchForm = () => {
     setOpenReturn(false);
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [flights, setFlights] = useState([]);
+
+  const accessKey = "bd09a11b08040a7ec67fae4608ac4776";
+
+  useEffect(() => {
+    // Run only when user has typed 3+ letters
+    if (searchTerm.trim().length < 3) {
+      setFlights([]);
+      return;
+    }
+
+    const delay = setTimeout(() => {
+      fetchAirports(searchTerm);
+    }, 800); // wait 800ms after user stops typing
+
+    return () => clearTimeout(delay);
+  }, [searchTerm]);
+
+  const api = "3fec20e1ee0450c025fe04af7d333d8a";
+
+  const fetchAirports = async (term: string) => {
+    setLoading(true);
+    try {
+      const apiUrl = "https://api.core.openaip.net/api/airports";
+
+      const response = await axios.get(apiUrl, {
+        params: {
+          apiKey: api,
+          page: 1,
+          limit: 100,
+          search: term,
+        },
+        headers: {
+          Accept: "application/json",
+        },
+      });
+
+      const airports = response.data?.items || [];
+
+      // Convert airport data to react-select format
+      const formattedAirports = airports.map((a: any) => ({
+        label: `${a.name} (${a.icaoCode || "N/A"})`,
+        value: a.icaoCode || a._id,
+      }));
+
+      setFlights(formattedAirports); // update your Select options
+    } catch (error) {
+      console.error("Error fetching airports:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -261,16 +316,30 @@ const FlightSearchForm = () => {
           <Label htmlFor="from" className="font-medium text-gray-700">
             From *
           </Label>
-          <Input
+          <Select
             id="from"
-            placeholder="Departure city"
             value={from}
-            onChange={(e) => setFrom(e.target.value)}
-            className="border-gray-300 focus:ring-primary focus:border-primary"
+            onChange={(option) => {
+              setFrom(option); // keep selected airport visible
+              setSearchTerm(option?.label || ""); // keep the search term same as selected label
+            }}
+            onInputChange={(value, action) => {
+              // Only update search term when typing, not when selecting
+              if (action.action === "input-change") {
+                setSearchTerm(value);
+              }
+            }}
+            options={flights}
+            isLoading={loading}
+            placeholder="Search airports..."
+            noOptionsMessage={() =>
+              searchTerm.length < 3
+                ? "Type 3+ letters to search"
+                : "No results found"
+            }
+            className="react-select-container"
+            classNamePrefix="react-select"
           />
-          {loading && (
-            <p className="text-sm text-gray-400">Detecting your city...</p>
-          )}
         </div>
 
         <div className="space-y-2">

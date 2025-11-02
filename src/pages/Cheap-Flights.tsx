@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import FlightSearchForm from "@/components/FlightSearchForm";
 import heroImage from "@/assets/hero-flight.jpg";
 import { FaCalendarCheck, FaDollarSign, FaGlobeAmericas } from "react-icons/fa";
+import { PiCurrencyGbpBold } from "react-icons/pi";
 
 const CheapFlights = () => {
   const destinations = [
@@ -419,7 +420,7 @@ const CheapFlights = () => {
       text: "Plan your trips early to secure the best fares and more seat options, especially during peak travel seasons.",
     },
     {
-      icon: <FaDollarSign className="text-4xl text-[#05304c]" />,
+      icon: <PiCurrencyGbpBold className="text-4xl text-[#05304c]" />,
       title: "Compare Before You Buy",
       text: "Use trusted platforms to compare flights from multiple airlines to make sure you get the best price and value.",
     },
