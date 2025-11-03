@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Slide, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import axios from "axios";
 
 const Register = () => {
   const router = useRouter();
@@ -136,26 +137,47 @@ const Register = () => {
     e.preventDefault();
     if (Validation()) {
       try {
-        toast.success("Account registered successfully!", {
-          position: "top-right",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-          transition: Slide,
+        const res = await axios.post(`http://localhost:5000/api/register`, {
+          name: userName,
+          email,
+          password,
+          role: "admin",
         });
 
-        setUserName("");
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
+        if (res.data.success) {
+          toast.success(res.data.message, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Slide,
+          });
 
-        setTimeout(() => {
-          router.push("/Component/Accounts/Login");
-        }, 3000);
+          setUserName("");
+          setEmail("");
+          setPassword("");
+          setConfirmPassword("");
+
+          setTimeout(() => {
+            router.push("/Component/Accounts/Login");
+          }, 3000);
+        } else {
+          toast.error(res.data.message, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Slide,
+          });
+        }
       } catch (error) {
         toast.error(`Error: ${error}`, {
           position: "top-right",

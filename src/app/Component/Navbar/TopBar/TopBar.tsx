@@ -3,9 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useSidebar } from "../../context/SidebarContext";
 import Link from "next/link";
 import Cookies from "js-cookie";
-import { ref, get } from "firebase/database";
 import Image from "next/image";
-import { db } from "@/app/lib/firebase";
 import { AllData } from "../../utility/options";
 import { toast } from "react-toastify";
 
@@ -14,77 +12,13 @@ const TopBar = () => {
 
   const hadleLogout = () => {
     Cookies.remove(".AuthBearer");
-    Cookies.remove("user_Uid");
-    Cookies.remove("schoolName");
   };
 
-  var Name = Cookies.get("schoolName");
-  var Email = Cookies.get("email");
-  var id = Cookies.get("user_Uid");
 
   const [user, setUser] = useState<AllData[]>([]);
   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
 
-  useEffect(() => {
-    const fetchUserList = async () => {
-      try {
-        const userRef = ref(db, "users");
-        const userSnapshot = await get(userRef);
-        if (userSnapshot.exists()) {
-          const data = userSnapshot.val();
 
-          const formattedUserList: AllData[] = Object.keys(data)
-            .map((key) => ({
-              id: key,
-              ...data[key],
-            }))
-            .filter((item) => item.UId === id);
-
-          const sortedTableData = formattedUserList.sort((a, b) =>
-            b.id.localeCompare(a.id)
-          );
-
-          setUser(sortedTableData);
-
-          if (sortedTableData[0]?.ProfileImage) {
-            setProfileImageUrl(sortedTableData[0].ProfileImage as string);
-          }
-        } else {
-          toast.error("No data found", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        }
-      } catch (error: unknown) {
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
-        toast.error("Error fetching class list: " + errorMessage, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-    };
-
-    const userInterval = setInterval(fetchUserList, 2000);
-
-    return () => {
-      clearInterval(userInterval);
-    };
-
-    // fetchUserList();
-  }, []);
 
   return (
     <>
@@ -442,8 +376,8 @@ const TopBar = () => {
                       height={128}
                     />
                     <div className="">
-                      <h4 className="mb-0">{Name}</h4>
-                      <p className="fw-medium text-13 text-gray-200">{Email}</p>
+                      <h4 className="mb-0">Name</h4>
+                      <p className="fw-medium text-13 text-gray-200">Email</p>
                     </div>
                   </div>
                   <ul className="max-h-270 overflow-y-auto scroll-sm pe-4">

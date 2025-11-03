@@ -3,8 +3,8 @@ import React, { useState, FormEvent, useRef } from "react";
 import Image from "next/image";
 import { Slide, toast } from "react-toastify";
 import Link from "next/link";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const Login = () => {
   const router = useRouter();
@@ -93,24 +93,48 @@ const Login = () => {
 
     if (Validation()) {
       try {
-        toast.success(`user login successfully!`, {
-          position: "top-right",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-          transition: Slide,
-        });
+        debugger;
+        const res = await axios.post(
+          `http://localhost:5000/api/login`,
+          {
+            email,
+            password : password,
+          },
+          { withCredentials: true } // important for sending & receiving cookies
+        );
 
-        setTimeout(() => {
-          router.push("/Component/Admin/Dashboard");
-        }, 3000);
+        if (res.data.success) {
+          toast.success(res.data.message, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Slide,
+          });
 
-        setEmail("");
-        setPassword("");
+          setTimeout(() => {
+            router.push("/Component/Admin/Dashboard");
+          }, 3000);
+
+          setEmail("");
+          setPassword("");
+        } else {
+          toast.error(res.data.message, {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Slide,
+          });
+        }
       } catch (error: any) {
         console.error("Login Error:", error);
 
