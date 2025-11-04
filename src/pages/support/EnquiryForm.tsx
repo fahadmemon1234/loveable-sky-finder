@@ -119,7 +119,7 @@ const EnquiryForm = () => {
         Swal.fire({
           position: "center",
           icon: "success",
-          title: "Enquiry saved successfully",
+          title: result.data.message,
           text: "We will get back to you soon",
           showConfirmButton: false,
           timer: 1500,
@@ -128,20 +128,20 @@ const EnquiryForm = () => {
         Swal.fire({
           icon: "error",
           position: "center",
-          title: "Something went wrong",
+          title: result.data.message,
         });
       } else if (result.status === 500) {
         Swal.fire({
           icon: "error",
           position: "center",
-          title: "Unexpected Error",
+          title: result.data.message,
           text: "An unexpected error occurred. Please try again.",
         });
       } else {
         Swal.fire({
           icon: "error",
           position: "center",
-          title: "Unexpected Error",
+          title: result.data.message,
           text: "An unexpected error occurred. Please try again.",
         });
       }

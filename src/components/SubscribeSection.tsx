@@ -41,7 +41,7 @@ const SubscribeSection = () => {
       };
 
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/subscribe`,
+        `http://localhost:5000/api/subscribe`,
         data
       );
 
@@ -49,19 +49,19 @@ const SubscribeSection = () => {
         Swal.fire({
           icon: "success",
           position: "center",
-          title: "You have successfully subscribed.",
+          title: response.data.message,
         });
       } else if (response.status === 400) {
         Swal.fire({
           icon: "error",
           position: "center",
-          title: "You have already subscribed.",
+          title: response.data.message,
         });
       } else {
         Swal.fire({
           icon: "error",
           position: "center",
-          title: "Something went wrong.",
+          title: response.data.message,
         });
       }
 

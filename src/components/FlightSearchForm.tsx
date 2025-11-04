@@ -130,9 +130,9 @@ const FlightSearchForm = () => {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/inquiry`,
+        `http://localhost:5000/api/inquiry`,
         {
-          from,
+          from: from.label,
           to,
           departDate: format(departDate, "yyyy-MM-dd"),
           ...(tripType === "round" && returnDate

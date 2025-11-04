@@ -164,14 +164,14 @@ const FlightRequestForm = () => {
       };
 
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/requestcallback`,
+        `${import.meta.env.VITE_API_URL}/api/callback-request`,
         data
       );
       if (response.status === 200) {
         Swal.fire({
           position: "center",
           icon: "success",
-          title: "Flight request submitted successfully",
+          title: response.data.message,
           showConfirmButton: false,
           timer: 1500,
         });
@@ -179,7 +179,7 @@ const FlightRequestForm = () => {
         Swal.fire({
           position: "center",
           icon: "error",
-          title: "Flight request submission failed",
+          title: response.data.message,
           showConfirmButton: false,
           timer: 1500,
         });
@@ -187,7 +187,7 @@ const FlightRequestForm = () => {
         Swal.fire({
           position: "center",
           icon: "error",
-          title: "Flight request submission failed",
+          title: response.data.message,
           showConfirmButton: false,
           timer: 1500,
         });
@@ -195,7 +195,7 @@ const FlightRequestForm = () => {
         Swal.fire({
           position: "center",
           icon: "error",
-          title: "Flight request submission failed",
+          title: response.data.message,
           showConfirmButton: false,
           timer: 1500,
         });
