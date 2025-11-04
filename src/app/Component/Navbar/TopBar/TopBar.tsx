@@ -1,24 +1,42 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useSidebar } from "../../context/SidebarContext";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import { AllData } from "../../utility/options";
 import { toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
+
+interface DecodedToken {
+  name: string;
+  email: string;
+  [key: string]: any; // allow other fields
+}
 
 const TopBar = () => {
   const { toggleSidebar } = useSidebar();
 
-  const hadleLogout = () => {
-    Cookies.remove(".AuthBearer");
-  };
-
-
-  const [user, setUser] = useState<AllData[]>([]);
+  const [user, setUser] = useState<DecodedToken | null>(null);
   const [profileImageUrl, setProfileImageUrl] = useState<string>("");
 
+  const hadleLogout = () => {
+    Cookies.remove(".AuthBearer");
+    setUser(null);
+  };
 
+  useEffect(() => {
+    debugger;
+    const token = Cookies.get(".AuthBearer");
+    if (token) {
+      try {
+        const decoded: DecodedToken = jwtDecode(token);
+        setUser(decoded);
+      } catch (error) {
+        console.error("Invalid token:", error);
+      }
+    }
+  }, []);
 
   return (
     <>
@@ -376,8 +394,10 @@ const TopBar = () => {
                       height={128}
                     />
                     <div className="">
-                      <h4 className="mb-0">Name</h4>
-                      <p className="fw-medium text-13 text-gray-200">Email</p>
+                      <h4 className="mb-0">{user?.name}</h4>
+                      <p className="fw-medium text-13 text-gray-200">
+                        {user?.email}
+                      </p>
                     </div>
                   </div>
                   <ul className="max-h-270 overflow-y-auto scroll-sm pe-4">
