@@ -242,7 +242,7 @@ const FlightSearchForm = () => {
 const fetchAirports = async (term: string) => {
   setLoading(true);
   try {
-    const token = "wkNyG2dNG3aFGym9ktjtsLJaqkUV";
+    const token = "TvGTbdm0YfEwbEffDYpinmYxxo89";
     const apiUrl = "https://test.api.amadeus.com/v1/reference-data/locations";
 
     const response = await axios.get(apiUrl, {
