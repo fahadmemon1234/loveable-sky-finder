@@ -239,40 +239,38 @@ const FlightSearchForm = () => {
     return () => clearTimeout(delay);
   }, [searchTerm]);
 
-  const api = "3fec20e1ee0450c025fe04af7d333d8a";
+const fetchAirports = async (term: string) => {
+  setLoading(true);
+  try {
+    const token = "wkNyG2dNG3aFGym9ktjtsLJaqkUV"; // paste your Amadeus access_token here
 
-  const fetchAirports = async (term: string) => {
-    setLoading(true);
-    try {
-      const apiUrl = "https://api.core.openaip.net/api/airports";
+    const apiUrl = "https://test.api.amadeus.com/v1/reference-data/locations";
 
-      const response = await axios.get(apiUrl, {
-        params: {
-          apiKey: api,
-          page: 1,
-          limit: 100,
-          search: term,
-        },
-        headers: {
-          Accept: "application/json",
-        },
-      });
+    const response = await axios.get(apiUrl, {
+      params: {
+        subType: "AIRPORT",
+        keyword: term,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-      const airports = response.data?.items || [];
+    const airports = response.data?.data || [];
 
-      // Convert airport data to react-select format
-      const formattedAirports = airports.map((a: any) => ({
-        label: `${a.name} (${a.icaoCode || "N/A"})`,
-        value: a.icaoCode || a._id,
-      }));
+    const formattedAirports = airports.map((a: any) => ({
+      label: `${a.name} (${a.iataCode}) - ${a.address.cityName || ""}`,
+      value: a.iataCode,
+    }));
 
-      setFlights(formattedAirports); // update your Select options
-    } catch (error) {
-      console.error("Error fetching airports:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setFlights(formattedAirports);
+  } catch (error) {
+    console.error("Error fetching airports:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <form
