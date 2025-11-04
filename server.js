@@ -17,18 +17,19 @@ dotenv.config();
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "http://localhost:8080"],
     credentials: true,
   })
 );
 app.use(express.json());
 
 // API Routes
-app.use("/api/inquiry", inquiryRoutes);
-app.use("/api/enquiry", EnquiryRoutes);
-app.use("/api/requestcallback", CallbackRequestRoutes);
-app.use("/api/subscribe", SubscribeRoutes);
 
+
+app.use("/api", CallbackRequestRoutes);
+app.use("/api", EnquiryRoutes);
+app.use("/api", inquiryRoutes);
+app.use("/api", SubscribeRoutes);
 app.use("/api", userRoutes);
 
 // MongoDB connection
