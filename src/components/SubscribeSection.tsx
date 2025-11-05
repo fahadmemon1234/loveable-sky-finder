@@ -30,48 +30,36 @@ const SubscribeSection = () => {
   const handleSubscribe = async (e) => {
     e.preventDefault();
 
+    if (!Validation()) return;
+
     try {
-      if (!Validation()) {
-        return;
-      }
-      debugger;
-
-      const data = {
+      const response = await axios.post("http://localhost:5000/api/subscribe", {
         email,
-      };
+      });
 
-      const response = await axios.post(
-        `http://localhost:5000/api/subscribe`,
-        data
-      );
-
-      if (response.status === 200) {
-        Swal.fire({
-          icon: "success",
-          position: "center",
-          title: response.data.message,
-        });
-      } else if (response.status === 400) {
-        Swal.fire({
-          icon: "error",
-          position: "center",
-          title: response.data.message,
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          position: "center",
-          title: response.data.message,
-        });
-      }
+      Swal.fire({
+        icon: "success",
+        position: "center",
+        title: response.data.message,
+      });
 
       setEmail("");
     } catch (e) {
-      Swal.fire({
-        icon: "error",
-        position: "center",
-        title: "Something went wrong.",
-      });
+      // ✅ Check if server responded with an error
+      if (e.response && e.response.data && e.response.data.message) {
+        Swal.fire({
+          icon: "error",
+          position: "center",
+          title: e.response.data.message,
+        });
+      } else {
+        // Fallback for network errors
+        Swal.fire({
+          icon: "error",
+          position: "center",
+          title: e.message,
+        });
+      }
     }
   };
 
