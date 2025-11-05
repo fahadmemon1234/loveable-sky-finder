@@ -11,6 +11,7 @@ import CallbackRequestRoutes from "./routes/CallbackRequestRoutes.js";
 import SubscribeRoutes from "./routes/SubscribeRoutes.js";
 
 import userRoutes from "./routes/userRoutes.js"; // ✅ Add user routes
+import airportRoutes from "./routes/airportRoutes.js";
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use("/api", EnquiryRoutes);
 app.use("/api", inquiryRoutes);
 app.use("/api", SubscribeRoutes);
 app.use("/api", userRoutes);
+app.use("/api/airports", airportRoutes);
 
 // MongoDB connection
 // mongoose
