@@ -20,20 +20,45 @@
 import db from "../config/db.js";
 
 // ✅ Insert a new enquiry
-export const addEnquiry = (data, callback) => {
+export const addEnquiry = async (data, callback) => {
   const { firstName, lastName, email, phone, enquiryType, message } = data;
 
-  const query = `
-    INSERT INTO enquiry 
-    (firstName, lastName, email, phone, enquiryType, message)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `;
+  try {
+    const pool = await db();
 
-  db.query(query, [firstName, lastName, email, phone, enquiryType, message], callback);
+    await pool
+      .request()
+      .input("firstName", firstName)
+      .input("lastName", lastName)
+      .input("email", email)
+      .input("phone", phone)
+      .input("enquiryType", enquiryType)
+      .input("message", message)
+      .query(`
+        INSERT INTO enquiry 
+        (firstName, lastName, email, phone, enquiryType, message)
+        VALUES (@firstName, @lastName, @email, @phone, @enquiryType, @message)
+      `);
+
+    callback(null, { message: "Enquiry added successfully" });
+  } catch (err) {
+    console.error("❌ Error inserting enquiry:", err.message);
+    callback(err);
+  }
 };
 
 // ✅ Fetch all enquiries
-export const getEnquiries = (callback) => {
-  const query = "SELECT * FROM enquiry ORDER BY created_at DESC";
-  db.query(query, callback);
+export const getEnquiries = async (callback) => {
+  try {
+    const pool = await db();
+    const result = await pool
+      .request()
+      .query("SELECT * FROM enquiry ORDER BY created_at DESC");
+
+    callback(null, result.recordset);
+  } catch (err) {
+    console.error("❌ Error fetching enquiries:", err.message);
+    callback(err);
+  }
 };
+

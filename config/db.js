@@ -1,22 +1,26 @@
-import mysql from "mysql2";
+import sql from "mssql/msnodesqlv8.js";
 import dotenv from "dotenv";
 
-dotenv.config(); // ✅ Load .env variables
+dotenv.config();
 
-const db = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD, // leave empty if no password
+const dbConfig = {
+  server: process.env.DB_SERVER,
   database: process.env.DB_NAME,
-  port: process.env.DB_PORT || 3306, // optional, default MySQL port
-});
+  driver: "msnodesqlv8",
+  options: {
+    trustedConnection: true,
+    trustServerCertificate: true,
+  },
+};
 
-db.connect((err) => {
-  if (err) {
+const db = async () => {
+  try {
+    const pool = await sql.connect(dbConfig);
+    console.log("✅ Connected to Local SQL Server (Windows Auth)");
+    return pool;
+  } catch (err) {
     console.error("❌ Database connection failed:", err.message);
-  } else {
-    console.log("✅ Connected to MySQL Database");
   }
-});
+};
 
 export default db;

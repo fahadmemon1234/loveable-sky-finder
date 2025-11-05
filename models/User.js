@@ -1,84 +1,148 @@
-import db from "../config/db.js";
 import bcrypt from "bcrypt";
+import db from "../config/db.js";
 
 const User = {
-  // Create new user (hash password and store both)
+  // ✅ Create new user
   create: async (data, callback) => {
     try {
       const { name, email, password, role } = data;
       const hashedPassword = await bcrypt.hash(password, 10);
+      const pool = await db();
 
-      const sql =
-        "INSERT INTO users (name, email, password, passwordHash, role) VALUES (?, ?, ?, ?, ?)";
-      db.query(
-        sql,
-        [name, email, password, hashedPassword, role || "admin"],
-        callback
-      );
+      await pool
+        .request()
+        .input("name", name)
+        .input("email", email)
+        .input("password", password)
+        .input("passwordHash", hashedPassword)
+        .input("role", role || "admin")
+        .query(
+          "INSERT INTO users (name, email, password, passwordHash, role) VALUES (@name, @email, @password, @passwordHash, @role)"
+        );
+
+      callback(null, { message: "User created successfully" });
     } catch (error) {
-      console.error("Error hashing password:", error);
+      console.error("Error creating user:", error);
       callback(error, null);
     }
   },
 
-  // Get all users (excluding passwords)
-  getAll: (callback) => {
-    const sql = "SELECT id, name, email, role, created_at FROM users";
-    db.query(sql, callback);
+  // ✅ Get all users
+  getAll: async (callback) => {
+    try {
+      const pool = await db();
+      const result = await pool
+        .request()
+        .query("SELECT id, name, email, role, created_at FROM users");
+      callback(null, result.recordset);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      callback(error, null);
+    }
   },
 
-  // Get user by ID
-  getById: (id, callback) => {
-    const sql =
-      "SELECT id, name, email, role, created_at FROM users WHERE id = ?";
-    db.query(sql, [id], callback);
+  // ✅ Get user by ID
+  getById: async (id, callback) => {
+    try {
+      const pool = await db();
+      const result = await pool
+        .request()
+        .input("id", id)
+        .query(
+          "SELECT id, name, email, role, created_at FROM users WHERE id = @id"
+        );
+      callback(null, result.recordset[0]);
+    } catch (error) {
+      console.error("Error fetching user by ID:", error);
+      callback(error, null);
+    }
   },
 
-  // Get users by role
-  getByRole: (role, callback) => {
-    const sql =
-      "SELECT id, name, email, role, created_at FROM users WHERE role = ?";
-    db.query(sql, [role], callback);
+  // ✅ Get users by role
+  getByRole: async (role, callback) => {
+    try {
+      const pool = await db();
+      const result = await pool
+        .request()
+        .input("role", role)
+        .query(
+          "SELECT id, name, email, role, created_at FROM users WHERE role = @role"
+        );
+      callback(null, result.recordset);
+    } catch (error) {
+      console.error("Error fetching users by role:", error);
+      callback(error, null);
+    }
   },
 
-  // Find user by email (for login)
-  findByEmail: (email, callback) => {
-    const sql = "SELECT * FROM users WHERE email = ?";
-    db.query(sql, [email], callback);
+  // ✅ Find user by email (for login)
+  findByEmail: async (email, callback) => {
+    try {
+      const pool = await db();
+      const result = await pool
+        .request()
+        .input("email", email)
+        .query("SELECT * FROM users WHERE email = @email");
+      callback(null, result.recordset[0]);
+    } catch (error) {
+      console.error("Error finding user by email:", error);
+      callback(error, null);
+    }
   },
 
-  // Verify user password
+  // ✅ Verify user password
   verifyPassword: async (inputPassword, hashedPassword) => {
     return await bcrypt.compare(inputPassword, hashedPassword);
   },
 
-  // Update user
+  // ✅ Update user
   update: async (id, data, callback) => {
     try {
       const { name, email, password, role } = data;
-      let sql, values;
+      const pool = await db();
 
       if (password) {
         const hashedPassword = await bcrypt.hash(password, 10);
-        sql =
-          "UPDATE users SET name = ?, email = ?, password = ?, passwordHash = ?, role = ? WHERE id = ?";
-        values = [name, email, password, hashedPassword, role, id];
+        await pool
+          .request()
+          .input("id", id)
+          .input("name", name)
+          .input("email", email)
+          .input("password", password)
+          .input("passwordHash", hashedPassword)
+          .input("role", role)
+          .query(
+            "UPDATE users SET name = @name, email = @email, password = @password, passwordHash = @passwordHash, role = @role WHERE id = @id"
+          );
       } else {
-        sql = "UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?";
-        values = [name, email, role, id];
+        await pool
+          .request()
+          .input("id", id)
+          .input("name", name)
+          .input("email", email)
+          .input("role", role)
+          .query(
+            "UPDATE users SET name = @name, email = @email, role = @role WHERE id = @id"
+          );
       }
 
-      db.query(sql, values, callback);
+      callback(null, { message: "User updated successfully" });
     } catch (error) {
       console.error("Error updating user:", error);
       callback(error, null);
     }
   },
 
-  // Delete user
-  delete: (id, callback) => {
-    const sql = "DELETE FROM users WHERE id = ?";
-    db.query(sql, [id], callback);
+  // ✅ Delete user
+  delete: async (id, callback) => {
+    try {
+      const pool = await db();
+      await pool.request().input("id", id).query("DELETE FROM users WHERE id = @id");
+      callback(null, { message: "User deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      callback(error, null);
+    }
   },
 };
 

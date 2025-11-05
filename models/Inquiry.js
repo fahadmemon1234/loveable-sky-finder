@@ -24,10 +24,11 @@
 // export default Inquiry;
 
 
+
 import db from "../config/db.js";
 
 // Add new inquiry
-export const addInquiry = (data, callback) => {
+export const addInquiry = async (data, callback) => {
   const {
     from,
     to,
@@ -42,21 +43,43 @@ export const addInquiry = (data, callback) => {
     tripType,
   } = data;
 
-  const sql = `
-    INSERT INTO inquiry 
-    (from_location, to_location, departDate, returnDate, adults, children, infants, name, email, phone, tripType)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
+  try {
+    const pool = await db();
 
-  db.query(
-    sql,
-    [from, to, departDate, returnDate, adults, children, infants, name, email, phone, tripType],
-    callback
-  );
+    await pool
+      .request()
+      .input("from_location", from)
+      .input("to_location", to)
+      .input("departDate", departDate)
+      .input("returnDate", returnDate)
+      .input("adults", adults)
+      .input("children", children)
+      .input("infants", infants)
+      .input("name", name)
+      .input("email", email)
+      .input("phone", phone)
+      .input("tripType", tripType)
+      .query(`
+        INSERT INTO inquiry 
+        (from_location, to_location, departDate, returnDate, adults, children, infants, name, email, phone, tripType)
+        VALUES (@from_location, @to_location, @departDate, @returnDate, @adults, @children, @infants, @name, @email, @phone, @tripType)
+      `);
+
+    callback(null, { message: "Inquiry added successfully" });
+  } catch (err) {
+    console.error("Error adding inquiry:", err);
+    callback(err, null);
+  }
 };
 
 // Get all inquiries
-export const getInquiries = (callback) => {
-  const sql = "SELECT * FROM inquiry ORDER BY id DESC";
-  db.query(sql, callback);
+export const getInquiries = async (callback) => {
+  try {
+    const pool = await db();
+    const result = await pool.request().query("SELECT * FROM inquiry ORDER BY id DESC");
+    callback(null, result.recordset);
+  } catch (err) {
+    console.error("Error fetching inquiries:", err);
+    callback(err, null);
+  }
 };
