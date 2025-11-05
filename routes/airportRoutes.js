@@ -52,18 +52,27 @@
 
 // export default router;
 
+// routes/airports.js
 import express from "express";
-import { getAirports } from "../models/Airport.js";
+import mysql from "mysql2/promise";
+import dotenv from "dotenv";
+import db from "../config/db.js";
 
+dotenv.config();
 const router = express.Router();
 
+// GET /api/airports
 router.get("/airports", async (req, res) => {
   try {
-    const airports = await getAirports();
-    res.status(200).json(airports);
+    const [rows] = await db.query(
+      "SELECT * FROM airports ORDER BY created_at DESC"
+    );
+
+    // rows will be [] if no records — return 200 with array
+    return res.status(200).json(rows);
   } catch (err) {
     console.error("Error fetching airports:", err);
-    res.status(500).json({ message: "Error fetching airports" });
+    return res.status(500).json({ message: "Error fetching airports" });
   }
 });
 

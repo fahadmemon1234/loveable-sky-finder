@@ -4,10 +4,10 @@ import dotenv from "dotenv";
 dotenv.config(); // ✅ Load .env variables
 
 const db = mysql.createConnection({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  password: "memonggc1235#Q", // leave empty if no password
-  database: process.env.DB_NAME || "sky_nova_travles",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD, // leave empty if no password
+  database: process.env.DB_NAME,
   port: process.env.DB_PORT || 3306, // optional, default MySQL port
 });
 
