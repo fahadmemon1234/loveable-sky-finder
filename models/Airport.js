@@ -1,31 +1,14 @@
-import mysql from "mysql2/promise";
-import db from "../config/db.js"; // existing db.js
+import db from "../config/db.js";
 
-// Create a promise-based connection from your existing db config
-export async function getConnection() {
-  return await mysql.createConnection({
-    host: db.config.host,
-    user: db.config.user,
-    password: db.config.password,
-    database: db.config.database,
-    port: db.config.port,
+export const getAirports = async () => {
+  const query = "SELECT * FROM airports ORDER BY created_at DESC";
+  return new Promise((resolve, reject) => {
+    db.query(query, (err, results) => {
+      if (err) {
+        console.error("DB Error:", err);
+        return reject(err);
+      }
+      resolve(results);
+    });
   });
-}
-
-// Insert a single airport
-export async function insertAirport({ keyword, airport_code, airport_name, city, country }) {
-  const connection = await getConnection();
-  try {
-    await connection.execute(
-      `INSERT INTO airports (keyword, airport_code, airport_name, city, country)
-       VALUES (?, ?, ?, ?, ?)`,
-      [keyword, airport_code, airport_name, city, country]
-    );
-  } catch (err) {
-    if (err.code !== "ER_DUP_ENTRY") {
-      console.error("Error inserting airport:", err.message);
-    }
-  } finally {
-    await connection.end();
-  }
-}
+};

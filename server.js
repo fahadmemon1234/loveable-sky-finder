@@ -32,7 +32,9 @@ app.use("/api", EnquiryRoutes);
 app.use("/api", inquiryRoutes);
 app.use("/api", SubscribeRoutes);
 app.use("/api", userRoutes);
-app.use("/api/airports", airportRoutes);
+app.use("/api", airportRoutes);
+
+// app.use("/api/airports", airportRoutes);
 
 // MongoDB connection
 // mongoose
