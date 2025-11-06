@@ -1,26 +1,7 @@
-// import mongoose from "mongoose";
-
-// const EnquirySchema = new mongoose.Schema(
-//   {
-//     firstName: String,
-//     lastName: String,
-//     email: String,
-//     phone: String,
-//     enquiryType: String,
-//     message: String,
-//   },
-//   { timestamps: true }
-// );
-
-// const Enquiry = mongoose.model("Enquiry", EnquirySchema);
-
-// export default Enquiry;
-
-
 import db from "../config/db.js";
 
 // ✅ Insert a new enquiry
-export const addEnquiry = async (data, callback) => {
+export const addEnquiry = async (data) => {
   const { firstName, lastName, email, phone, enquiryType, message } = data;
 
   try {
@@ -40,25 +21,24 @@ export const addEnquiry = async (data, callback) => {
         VALUES (@firstName, @lastName, @email, @phone, @enquiryType, @message)
       `);
 
-    callback(null, { message: "Enquiry added successfully" });
+    return { message: "Enquiry added successfully" };
   } catch (err) {
     console.error("❌ Error inserting enquiry:", err.message);
-    callback(err);
+    throw err;
   }
 };
 
 // ✅ Fetch all enquiries
-export const getEnquiries = async (callback) => {
+export const getEnquiries = async () => {
   try {
     const pool = await db();
     const result = await pool
       .request()
       .query("SELECT * FROM enquiry ORDER BY created_at DESC");
 
-    callback(null, result.recordset);
+    return result.recordset;
   } catch (err) {
     console.error("❌ Error fetching enquiries:", err.message);
-    callback(err);
+    throw err;
   }
 };
-

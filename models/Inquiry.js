@@ -1,34 +1,7 @@
-// import mongoose from "mongoose";
-
-// const inquirySchema = new mongoose.Schema(
-//   {
-//     from: String,
-//     to: String,
-//     departDate: String,
-//     returnDate: String,
-//     adults: String,
-//     children: String,
-//     infants: String,
-//     // class: String,
-//     // direct: Boolean,
-//     name: String,
-//     email: String,
-//     phone: String,
-//     tripType: String,
-//   },
-//   { timestamps: true }
-// );
-
-// const Inquiry = mongoose.model("Inquiry", inquirySchema);
-
-// export default Inquiry;
-
-
-
 import db from "../config/db.js";
 
-// Add new inquiry
-export const addInquiry = async (data, callback) => {
+// ✅ Insert new inquiry
+export const addInquiry = async (data) => {
   const {
     from,
     to,
@@ -45,7 +18,6 @@ export const addInquiry = async (data, callback) => {
 
   try {
     const pool = await db();
-
     await pool
       .request()
       .input("from_location", from)
@@ -62,24 +34,25 @@ export const addInquiry = async (data, callback) => {
       .query(`
         INSERT INTO inquiry 
         (from_location, to_location, departDate, returnDate, adults, children, infants, name, email, phone, tripType)
-        VALUES (@from_location, @to_location, @departDate, @returnDate, @adults, @children, @infants, @name, @email, @phone, @tripType)
+        VALUES 
+        (@from_location, @to_location, @departDate, @returnDate, @adults, @children, @infants, @name, @email, @phone, @tripType)
       `);
 
-    callback(null, { message: "Inquiry added successfully" });
+    return { message: "Inquiry added successfully" };
   } catch (err) {
     console.error("Error adding inquiry:", err);
-    callback(err, null);
+    throw err;
   }
 };
 
-// Get all inquiries
-export const getInquiries = async (callback) => {
+// ✅ Get all inquiries
+export const getInquiries = async () => {
   try {
     const pool = await db();
     const result = await pool.request().query("SELECT * FROM inquiry ORDER BY id DESC");
-    callback(null, result.recordset);
+    return result.recordset;
   } catch (err) {
     console.error("Error fetching inquiries:", err);
-    callback(err, null);
+    throw err;
   }
 };
