@@ -129,26 +129,21 @@ const FlightSearchForm = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        `http://localhost:5000/api/inquiry`,
-        {
-          from: from.label,
-          to,
-          departDate: format(departDate, "yyyy-MM-dd"),
-          ...(tripType === "round" && returnDate
-            ? { returnDate: format(returnDate, "yyyy-MM-dd") }
-            : {}),
-          adults,
-          children,
-          infants,
-          // class: flightClass,
-          // direct: directOnly,
-          name,
-          email,
-          phone,
-          tripType,
-        }
-      );
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/inquiry`, {
+        from: from.label,
+        to,
+        departDate: format(departDate, "yyyy-MM-dd"),
+        ...(tripType === "round" && returnDate
+          ? { returnDate: format(returnDate, "yyyy-MM-dd") }
+          : {}),
+        adults,
+        children,
+        infants,
+        name,
+        email,
+        phone,
+        tripType,
+      });
 
       if (response.status === 200) {
         Swal.fire({
@@ -223,53 +218,61 @@ const FlightSearchForm = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [flights, setFlights] = useState([]);
 
-  const accessKey = "bd09a11b08040a7ec67fae4608ac4776";
+  // useEffect(() => {
+  //   // Run only when user has typed 3+ letters
+  //   if (searchTerm.trim().length < 3) {
+  //     setFlights([]);
+  //     return;
+  //   }
 
-  useEffect(() => {
-    // Run only when user has typed 3+ letters
-    if (searchTerm.trim().length < 3) {
-      setFlights([]);
-      return;
-    }
+  //   const delay = setTimeout(() => {
+  //     fetchAirports(searchTerm);
+  //   }, 800); // wait 800ms after user stops typing
 
-    const delay = setTimeout(() => {
-      fetchAirports(searchTerm);
-    }, 800); // wait 800ms after user stops typing
+  //   return () => clearTimeout(delay);
+  // }, [searchTerm]);
 
-    return () => clearTimeout(delay);
-  }, [searchTerm]);
+  // const fetchAirports = async (term: string) => {
+  //   setLoading(true);
+  //   try {
+  //     const token = "TvGTbdm0YfEwbEffDYpinmYxxo89";
+  //     const apiUrl = "https://test.api.amadeus.com/v1/reference-data/locations";
 
-const fetchAirports = async (term: string) => {
-  setLoading(true);
-  try {
-    const token = "TvGTbdm0YfEwbEffDYpinmYxxo89";
-    const apiUrl = "https://test.api.amadeus.com/v1/reference-data/locations";
+  //     const response = await axios.get(apiUrl, {
+  //       params: {
+  //         subType: "AIRPORT",
+  //         keyword: term,
+  //       },
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
 
-    const response = await axios.get(apiUrl, {
-      params: {
-        subType: "AIRPORT",
-        keyword: term,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  //     const airports = response.data?.data || [];
 
-    const airports = response.data?.data || [];
+  //     // const formattedAirports = airports.map((a: any) => ({
+  //     //   label: `${a.name} (${a.iataCode}) - ${a.address.cityName || ""}`,
+  //     //   value: a.iataCode,
+  //     // }));
 
-    const formattedAirports = airports.map((a: any) => ({
-      label: `${a.name} (${a.iataCode}) - ${a.address.cityName || ""}`,
-      value: a.iataCode,
-    }));
+  //     const formattedAirports = [
+  //       { label: "JFK - John F. Kennedy International Airport", value: "JFK" },
+  //       { label: "LAX - Los Angeles International Airport", value: "LAX" },
+  //       { label: "ORD - O'Hare International Airport", value: "ORD" },
+  //       {
+  //         label: "ATL - Hartsfield–Jackson Atlanta International Airport",
+  //         value: "ATL",
+  //       },
+  //       { label: "DXB - Dubai International Airport", value: "DXB" },
+  //     ];
 
-    setFlights(formattedAirports);
-  } catch (error) {
-    console.error("Error fetching airports:", error);
-  } finally {
-    setLoading(false);
-  }
-};
-
+  //     setFlights(formattedAirports);
+  //   } catch (error) {
+  //     console.error("Error fetching airports:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <form
@@ -313,7 +316,7 @@ const fetchAirports = async (term: string) => {
           <Label htmlFor="from" className="font-medium text-gray-700">
             From *
           </Label>
-          <Select
+          {/* <Select
             id="from"
             value={from}
             onChange={(option) => {
@@ -327,6 +330,46 @@ const fetchAirports = async (term: string) => {
               }
             }}
             options={flights}
+            isLoading={loading}
+            placeholder="Search airports..."
+            noOptionsMessage={() =>
+              searchTerm.length < 3
+                ? "Type 3+ letters to search"
+                : "No results found"
+            }
+            className="react-select-container"
+            classNamePrefix="react-select"
+          /> */}
+
+          <Select
+            id="from"
+            value={from}
+            onChange={(option) => {
+              setFrom(option); // keep selected airport visible
+              setSearchTerm(option?.label || ""); // keep the search term same as selected label
+            }}
+            onInputChange={(value, action) => {
+              // Only update search term when typing, not when selecting
+              if (action.action === "input-change") {
+                setSearchTerm(value);
+              }
+            }}
+            options={[
+              {
+                label: "JFK - John F. Kennedy International Airport",
+                value: "JFK",
+              },
+              {
+                label: "LAX - Los Angeles International Airport",
+                value: "LAX",
+              },
+              { label: "ORD - O'Hare International Airport", value: "ORD" },
+              {
+                label: "ATL - Hartsfield–Jackson Atlanta International Airport",
+                value: "ATL",
+              },
+              { label: "DXB - Dubai International Airport", value: "DXB" },
+            ]}
             isLoading={loading}
             placeholder="Search airports..."
             noOptionsMessage={() =>

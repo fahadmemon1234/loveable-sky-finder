@@ -33,9 +33,12 @@ const SubscribeSection = () => {
     if (!Validation()) return;
 
     try {
-      const response = await axios.post("http://localhost:5000/api/subscribe", {
-        email,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/subscribe`,
+        {
+          email,
+        }
+      );
 
       Swal.fire({
         icon: "success",
