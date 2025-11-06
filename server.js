@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import db from "./config/db.js"; // ✅ Import DB connection
+import db from "./config/db.js";
+import cookieParser from "cookie-parser";
 
 // Routes
 import inquiryRoutes from "./routes/inquiryRoutes.js";
@@ -9,6 +10,7 @@ import EnquiryRoutes from "./routes/EnquiryRoutes.js";
 import CallbackRequestRoutes from "./routes/CallbackRequestRoutes.js";
 import SubscribeRoutes from "./routes/SubscribeRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+
 
 dotenv.config();
 
@@ -24,6 +26,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(cookieParser());
 
 // ✅ Connect to SQL Server
 db();
@@ -34,6 +37,7 @@ app.use("/api", EnquiryRoutes);
 app.use("/api", inquiryRoutes);
 app.use("/api", SubscribeRoutes);
 app.use("/api", userRoutes);
+
 
 // Default route
 app.get("/", (req, res) => {
