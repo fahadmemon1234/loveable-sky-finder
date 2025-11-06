@@ -137,7 +137,7 @@ const Register = () => {
     e.preventDefault();
     if (Validation()) {
       try {
-        const res = await axios.post(`http://localhost:5000/api/register`, {
+        const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/register`, {
           name: userName,
           email,
           password,

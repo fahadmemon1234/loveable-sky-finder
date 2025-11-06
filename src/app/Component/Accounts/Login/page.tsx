@@ -91,67 +91,55 @@ const Login = () => {
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (Validation()) {
-      try {
-        debugger;
-        const res = await axios.post(
-          `http://localhost:5000/api/login`,
-          {
-            email,
-            password : password,
-          },
-          { withCredentials: true } // important for sending & receiving cookies
-        );
+    if (!Validation()) return;
 
-        if (res.data.success) {
-          toast.success(res.data.message, {
-            position: "top-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            transition: Slide,
-          });
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/login`,
+        { email, password },
+        { withCredentials: true } // ensures cookies are sent/received
+      );
 
-          setTimeout(() => {
-            router.push("/Component/Admin/Dashboard");
-          }, 3000);
+      if (res.data.success) {
+        localStorage.setItem("token", res.data.token);
 
-          setEmail("");
-          setPassword("");
-        } else {
-          toast.error(res.data.message, {
-            position: "top-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            transition: Slide,
-          });
-        }
-      } catch (error: any) {
-        console.error("Login Error:", error);
+        // optionally save user info
+        localStorage.setItem("user", JSON.stringify(res.data.user));
 
-        let errorMessage = "An error occurred. Please try again.";
-
-        toast.error(errorMessage, {
+        toast.success(res.data.message, {
           position: "top-right",
           autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+
+        setEmail("");
+        setPassword("");
+
+        setTimeout(() => {
+          router.push("/Component/Admin/Dashboard");
+        }, 2000);
+      } else {
+        toast.error(res.data.message || "Login failed", {
+          position: "top-right",
+          autoClose: 2000,
           theme: "colored",
           transition: Slide,
         });
       }
+    } catch (error: any) {
+      console.error("Login Error:", error);
+
+      toast.error(
+        error.response?.data?.message ||
+          "Something went wrong. Please try again.",
+        {
+          position: "top-right",
+          autoClose: 2000,
+          theme: "colored",
+          transition: Slide,
+        }
+      );
     }
   };
 

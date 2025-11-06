@@ -7,6 +7,7 @@ import Image from "next/image";
 import { AllData } from "../../utility/options";
 import { toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 interface DecodedToken {
   name: string;
@@ -25,18 +26,30 @@ const TopBar = () => {
     setUser(null);
   };
 
-  useEffect(() => {
-    debugger;
-    const token = Cookies.get(".AuthBearer");
-    if (token) {
-      try {
-        const decoded: DecodedToken = jwtDecode(token);
-        setUser(decoded);
-      } catch (error) {
-        console.error("Invalid token:", error);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   const verifyUser = async () => {
+  //     try {
+  //       debugger;
+  //       const res = await axios.get(
+  //         `${process.env.NEXT_PUBLIC_BASE_URL}/api/dashboard`,
+  //         {
+  //           withCredentials: true,
+  //         }
+  //       );
+
+  //       if (res.data.success) {
+  //         setUser(res.data.user);
+  //       } else {
+  //         setUser(null);
+  //       }
+  //     } catch (error) {
+  //       console.error("Token verification failed:", error);
+  //       setUser(null);
+  //     }
+  //   };
+
+  //   verifyUser();
+  // }, []);
 
   return (
     <>
