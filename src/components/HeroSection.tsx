@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import FlightSearchForm from "./FlightSearchForm";
+import { useNavigate } from "react-router-dom";
 
 // const HeroSection = () => {
 //   const slides = [
@@ -116,6 +116,8 @@ import FlightSearchForm from "./FlightSearchForm";
 // export default HeroSection;
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+
   const slides = [
     {
       img: "/assets/images/hero/hero-flight.jpg",
@@ -163,6 +165,10 @@ const HeroSection = () => {
 
   const slide = slides[index];
 
+  const handleContact = () => {
+    navigate("/contact");
+  };
+
   return (
     <section className="relative w-full min-h-[70vh] sm:min-h-[75vh] md:h-[70vh] overflow-hidden flex items-center justify-center pt-20 sm:pt-24 md:pt-0">
       {/* Background Image with Overlay */}
@@ -183,9 +189,12 @@ const HeroSection = () => {
         <p className="text-sm sm:text-base md:text-xl max-w-xl sm:max-w-2xl mx-auto mb-6 sm:mb-8 leading-relaxed text-white/90">
           {slide.text}
         </p>
-        <a href="/contact" className="bg-white text-[#05304c] font-bold px-6 py-2 sm:px-10 sm:py-4 rounded-full shadow-md hover:bg-blue-100 transition-all duration-300 text-sm sm:text-base">
+        <button
+          onClick={handleContact}
+          className="bg-white text-[#05304c] font-bold px-6 py-2 sm:px-10 sm:py-4 rounded-full shadow-md hover:bg-blue-100 transition-all duration-300 text-sm sm:text-base"
+        >
           {slide.btn}
-        </a>
+        </button>
       </div>
 
       {/* Navigation Arrows */}
