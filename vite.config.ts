@@ -19,7 +19,8 @@ export default defineConfig(({ mode }) => ({
       webp: { quality: 75 },
       avif: undefined,
     }),
-    mode === "development" && componentTagger(),
+    // mode === "development" && componentTagger(),
+    mode === "production" && componentTagger(),
     imagetools(),
   ].filter(Boolean),
   resolve: {
