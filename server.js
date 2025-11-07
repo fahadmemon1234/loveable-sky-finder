@@ -40,9 +40,14 @@ app.use("/api", userRoutes);
 
 
 // Default route
+// app.get("/", (req, res) => {
+//   res.send("🚀 Server is running using MySQL Workbench Database!");
+// });
+
 app.get("/", (req, res) => {
-  res.send("🚀 Server is running using SQL Server Database!");
+  res.send("🚀 Backend deployed successfully with frontend https://skynovatravels.co.uk");
 });
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
