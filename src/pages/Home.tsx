@@ -314,9 +314,7 @@ const Home = () => {
 
       {/* Popular Destinations */}
       <section
-        ref={sectionRef}
-        className={`relative py-24 sm:py-28 px-4 sm:px-8 bg-gradient-to-b from-blue-50 via-white to-blue-100 overflow-hidden transition-all duration-700 ease-out ${
-          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        className={`relative py-24 sm:py-28 px-4 sm:px-8 bg-gradient-to-b from-blue-50 via-white to-blue-100 overflow-hidden transition-all duration-700 ease-out opacity-100 translate-y-0
         }`}
       >
         {/* Decorative Background Blur */}

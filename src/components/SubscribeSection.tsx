@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 
 const SubscribeSection = () => {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const Validation = () => {
     if (!email) {
@@ -31,6 +32,8 @@ const SubscribeSection = () => {
     e.preventDefault();
 
     if (!Validation()) return;
+
+    setLoading(true);
 
     try {
       const response = await axios.post(
@@ -63,6 +66,8 @@ const SubscribeSection = () => {
           title: e.message,
         });
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -91,14 +96,20 @@ const SubscribeSection = () => {
             type="email"
             placeholder="Subscribe to our newsletter *"
             value={email}
+            disabled={loading}
             onChange={(e) => setEmail(e.target.value)}
             className="flex-1 w-full bg-transparent text-primary placeholder-primary outline-none px-4 py-3 text-sm sm:text-base"
           />
           <button
             type="submit"
-            className="bg-primary text-white font-semibold px-8 py-3 sm:py-2 rounded-full hover:bg-secondary hover:text-white transition-all duration-300 w-full sm:w-auto text-sm sm:text-base"
+            disabled={loading}
+            className={`bg-primary text-white font-semibold px-8 py-3 sm:py-2 rounded-full transition-all duration-300 w-full sm:w-auto text-sm sm:text-base ${
+              loading
+                ? "opacity-70 cursor-not-allowed"
+                : "hover:bg-secondary hover:text-white"
+            }`}
           >
-            SUBSCRIBE
+            {loading ? "Subscribing..." : "SUBSCRIBE"}
           </button>
         </form>
 
