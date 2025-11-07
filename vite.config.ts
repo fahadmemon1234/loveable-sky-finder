@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => ({
       png: { quality: 80 },
       jpeg: { quality: 80 },
       webp: { quality: 75 },
+      avif: undefined,
     }),
     mode === "development" && componentTagger(),
     imagetools(),
