@@ -1,6 +1,6 @@
 import express from "express";
 import { addSubscriber, getSubscribers } from "../models/Subscribe.js";
-import db from "../config/db.js"; // to manually run raw SQL when needed
+import db from "../config/db.js";
 
 const router = express.Router();
 
