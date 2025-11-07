@@ -517,7 +517,6 @@ const CheapFlights = () => {
 
       {/* Filtered Destinations */}
       <section
-        ref={popularRef}
         className={`py-20 px-4 sm:px-6 bg-gradient-to-br from-[#fffbea] via-[#fef9e7] to-[#fff3cd] 
        overflow-hidden relative`}
       >
