@@ -5,6 +5,7 @@ import { Slide, toast } from "react-toastify";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const Login = () => {
   const router = useRouter();
@@ -101,10 +102,17 @@ const Login = () => {
       );
 
       if (res.data.success) {
-        localStorage.setItem("token", res.data.token);
+        Cookies.set(".AuthBearer", res.data.token, {
+          expires: 7, // expires in 7 days
+          secure: true, // only sent over HTTPS
+          sameSite: "strict",
+        });
 
-        // optionally save user info
-        localStorage.setItem("user", JSON.stringify(res.data.user));
+        // Optionally store user info (non-sensitive)
+        Cookies.set("user", JSON.stringify(res.data.user), {
+          expires: 7,
+          sameSite: "strict",
+        });
 
         toast.success(res.data.message, {
           position: "top-right",

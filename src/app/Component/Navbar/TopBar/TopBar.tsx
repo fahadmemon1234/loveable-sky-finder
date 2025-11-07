@@ -23,33 +23,38 @@ const TopBar = () => {
 
   const hadleLogout = () => {
     Cookies.remove(".AuthBearer");
+    Cookies.remove("user");
     setUser(null);
   };
 
-  // useEffect(() => {
-  //   const verifyUser = async () => {
-  //     try {
-  //       debugger;
-  //       const res = await axios.get(
-  //         `${process.env.NEXT_PUBLIC_BASE_URL}/api/dashboard`,
-  //         {
-  //           withCredentials: true,
-  //         }
-  //       );
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        debugger;
 
-  //       if (res.data.success) {
-  //         setUser(res.data.user);
-  //       } else {
-  //         setUser(null);
-  //       }
-  //     } catch (error) {
-  //       console.error("Token verification failed:", error);
-  //       setUser(null);
-  //     }
-  //   };
+        const token = Cookies.get(".AuthBearer");
 
-  //   verifyUser();
-  // }, []);
+        if (token) {
+          const user = Cookies.get("user");
+
+          if (user) {
+            const parsedUser = JSON.parse(user);
+            setUser(parsedUser);
+          } else {
+            setUser(null);
+          }
+          // setUser(res.data.user);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        // console.log("Token verification failed:", error);
+        setUser(null);
+      }
+    };
+
+    verifyUser();
+  }, []);
 
   return (
     <>
