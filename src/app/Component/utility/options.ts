@@ -293,19 +293,19 @@ export const createdDate = new Date()
   })
   .replace(",", "");
 
-export const generateSessionOptions = (numberOfYears) => {
-  const currentYear = new Date().getFullYear();
-  const sessions = [];
+// export const generateSessionOptions = (numberOfYears) => {
+//   const currentYear = new Date().getFullYear();
+//   const sessions = [];
 
-  for (let i = 0; i < numberOfYears; i++) {
-    const year = currentYear - i;
-    sessions.push({ value: `${year}`, label: `${year}` });
-  }
+//   for (let i = 0; i < numberOfYears; i++) {
+//     const year = currentYear - i;
+//     sessions.push({ value: `${year}`, label: `${year}` });
+//   }
 
-  return sessions;
-};
+//   return sessions;
+// };
 
-export const sessionOptions = generateSessionOptions(15);
+// export const sessionOptions = generateSessionOptions(15);
 
 export const today = new Date().toISOString().split("T")[0];
 
