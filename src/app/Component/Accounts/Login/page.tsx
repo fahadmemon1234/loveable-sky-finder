@@ -95,6 +95,7 @@ const Login = () => {
     if (!Validation()) return;
 
     try {
+      debugger;
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/login`,
         {
