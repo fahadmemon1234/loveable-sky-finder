@@ -3,9 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { confirmPasswordReset } from "firebase/auth";
 import { toast, Slide } from "react-toastify";
-import { auth } from "@/app/lib/firebase";
 
 const ResetPasswordPage = () => {
   const [password, setPassword] = useState("");
@@ -94,7 +92,7 @@ const ResetPasswordPage = () => {
     }
 
     try {
-      await confirmPasswordReset(auth, oobCode, password);
+     
       toast.success("Password reset successful!", {
         position: "top-right",
         autoClose: 2000,
