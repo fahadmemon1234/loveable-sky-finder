@@ -163,7 +163,7 @@ const Register = () => {
           setConfirmPassword("");
 
           setTimeout(() => {
-            router.push("/Component/Accounts/Login");
+            router.push("/component/accounts/login");
           }, 3000);
         } else {
           toast.error(res.data.message, {
@@ -211,7 +211,7 @@ const Register = () => {
         <div className="auth-right py-40 px-24 flex-center flex-column">
           <div className="auth-right__inner mx-auto w-100">
             <Link
-              href="/Component/Accounts/Register"
+              href="/component/accounts/register"
               className="auth-right__logo"
             >
               <Image
@@ -356,7 +356,7 @@ const Register = () => {
               <p className="mt-32 text-gray-600 text-center">
                 Already have an account?
                 <Link
-                  href="/Component/Accounts/Login"
+                  href="/component/accounts/login"
                   className="text-main-600 hover-text-decoration-underline"
                   style={{ marginLeft: "5px", fontWeight: "bold" }}
                 >
