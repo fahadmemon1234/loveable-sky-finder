@@ -151,9 +151,11 @@ router.post("/register", async (req, res) => {
     res.status(201).json({ success: true, message: result.message });
   } catch (error) {
     console.error("Register error:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Error creating user", error });
+    res.status(500).json({
+      success: false,
+      message: "Error creating user",
+      error: error.message,
+    });
   }
 });
 
