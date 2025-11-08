@@ -14,12 +14,13 @@ import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
+      // "http://localhost:3000",
+      // "http://localhost:8080",
+
 const app = express();
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
-      "http://localhost:8080",
       "https://skynovatravels.co.uk",
       "https://sky-nova-travels-admin.vercel.app",
     ],
