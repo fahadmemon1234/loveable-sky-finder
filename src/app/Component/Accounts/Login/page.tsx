@@ -129,7 +129,7 @@ const Login = () => {
         setPassword("");
 
         setTimeout(() => {
-          router.push("/component/admin/dashboard");
+          router.push("/Component/Admin/Dashboard");
         }, 2000);
       } else {
         toast.error(res.data.message || "Login failed", {
@@ -171,7 +171,7 @@ const Login = () => {
         </div>
         <div className="auth-right py-40 px-24 flex-center flex-column">
           <div className="auth-right__inner mx-auto w-100">
-            <Link href="/component/accounts/login" className="auth-right__logo">
+            <Link href="/Component/Accounts/Login" className="auth-right__logo">
               <Image
                 src={"/assets/images/logo/Sky-Nova-Logo.png"}
                 alt="logo"
@@ -250,7 +250,7 @@ const Login = () => {
               </div>
               <div className="mb-32 flex-between flex-wrap gap-8">
                 <Link
-                  href="/component/accounts/forgotPassword"
+                  href="/Component/Accounts/ForgotPassword"
                   className="text-main-600 hover-text-decoration-underline text-15 fw-medium"
                 >
                   Forgot Password?
@@ -266,7 +266,7 @@ const Login = () => {
               <p className="mt-32 text-gray-600 text-center">
                 New on our platform?
                 <Link
-                  href="/component/accounts/register"
+                  href="/Component/Accounts/Register"
                   className="text-main-600 hover-text-decoration-underline"
                   style={{ marginLeft: "5px", fontWeight: "bold" }}
                 >
