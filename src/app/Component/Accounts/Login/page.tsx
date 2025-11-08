@@ -95,10 +95,15 @@ const Login = () => {
     if (!Validation()) return;
 
     try {
+      var data = {
+        email: email,
+        password: password,
+      };
+
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/login`,
-        { email, password },
-        { withCredentials: true } // ensures cookies are sent/received
+        data,
+        { withCredentials: true }
       );
 
       if (res.data.success) {
