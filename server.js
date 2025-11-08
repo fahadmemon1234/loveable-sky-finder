@@ -15,27 +15,18 @@ import userRoutes from "./routes/userRoutes.js";
 dotenv.config();
 
 const app = express();
-// app.use(
-//   cors({
-//     origin: [
-//       "http://localhost:3000",
-//       "http://localhost:8080",
-//       "https://skynovatravels.co.uk",
-//       "https://sky-nova-travels-admin.netlify.app",
-//     ],
-//     credentials: true,
-//   })
-// );
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:8080",
+      "https://skynovatravels.co.uk",
+      "https://sky-nova-travels-admin.netlify.app",
+    ],
+    credentials: true,
+  })
+);
 
-app.options("*", cors({
-  origin: [
-    "http://localhost:3000",
-    "http://localhost:8080",
-    "https://skynovatravels.co.uk",
-    "https://sky-nova-travels-admin.netlify.app",
-  ],
-  credentials: true,
-}));
 app.use(express.json());
 app.use(cookieParser());
 
