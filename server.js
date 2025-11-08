@@ -21,6 +21,7 @@ app.use(
       "http://localhost:3000",
       "http://localhost:8080",
       "https://skynovatravels.co.uk",
+      "https://sky-nova-travels-admin.netlify.app",
     ],
     credentials: true,
   })
