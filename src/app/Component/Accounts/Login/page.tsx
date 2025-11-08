@@ -20,6 +20,7 @@ const Login = () => {
 
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
+  
 
   const Validation = () => {
     if (!email) {
@@ -128,9 +129,7 @@ const Login = () => {
         setEmail("");
         setPassword("");
 
-        setTimeout(() => {
-          router.push("/Component/Admin/Dashboard");
-        }, 2000);
+        router.push("/Component/Admin/Dashboard");
       } else {
         toast.error(res.data.message || "Login failed", {
           position: "top-right",
