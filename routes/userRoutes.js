@@ -43,7 +43,6 @@
 //       { expiresIn: "1d" }
 //     );
 
-
 //     res.status(200).json({
 //       success: true,
 //       message: "Login successful",
@@ -111,11 +110,18 @@
 
 // export default router;
 
-
 import express from "express";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
-import User from "../models/User.js";
+import {
+  createUser,
+  findUserByEmail,
+  verifyPassword,
+  deleteUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
+} from "../models/User.js";
 
 const router = express.Router();
 router.use(cookieParser());
@@ -128,20 +134,26 @@ router.post("/register", async (req, res) => {
     const { name, email, password, role } = req.body;
 
     if (!name || !email || !password) {
-      return res.status(400).json({ success: false, message: "All fields are required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required" });
     }
 
     // check if email already exists
-    const existingUser = await User.findByEmail(email);
+    const existingUser = await findUserByEmail(email);
     if (existingUser) {
-      return res.status(409).json({ success: false, message: "Email already exists" });
+      return res
+        .status(409)
+        .json({ success: false, message: "Email already exists" });
     }
 
-    const result = await User.create({ name, email, password, role });
+    const result = await createUser({ name, email, password, role });
     res.status(201).json({ success: true, message: result.message });
   } catch (error) {
     console.error("Register error:", error);
-    res.status(500).json({ success: false, message: "Error creating user", error });
+    res
+      .status(500)
+      .json({ success: false, message: "Error creating user", error });
   }
 });
 
@@ -151,27 +163,27 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Email and password required" 
+      return res.status(400).json({
+        success: false,
+        message: "Email and password required",
       });
     }
 
     // ✅ Find user by email
-    const user = await User.findByEmail(email);
+    const user = await findUserByEmail(email);
     if (!user) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "User not found" 
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
       });
     }
 
     // ✅ Verify password (hashed)
-    const isMatch = await User.verifyPassword(password, user.password);
+    const isMatch = await verifyPassword(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ 
-        success: false, 
-        message: "Invalid credentials" 
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
       });
     }
 
@@ -186,10 +198,14 @@ router.post("/login", async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Login successful",
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
       token,
     });
-
   } catch (error) {
     console.error("Login error details:", error.message || error);
     res.status(500).json({
@@ -200,11 +216,10 @@ router.post("/login", async (req, res) => {
   }
 });
 
-
 // ✅ Get all users
 router.get("/", async (req, res) => {
   try {
-    const users = await User.getAll();
+    const users = await getAllUsers();
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: "Error fetching users", error });
@@ -214,7 +229,7 @@ router.get("/", async (req, res) => {
 // ✅ Get single user by ID
 router.get("/:id", async (req, res) => {
   try {
-    const user = await User.getById(req.params.id);
+    const user = await getUserById(req.params.id);
     if (!user) return res.status(404).json({ message: "User not found" });
     res.status(200).json(user);
   } catch (error) {
@@ -227,10 +242,17 @@ router.put("/:id", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
     if (!name || !email || !role) {
-      return res.status(400).json({ message: "Name, email, and role required" });
+      return res
+        .status(400)
+        .json({ message: "Name, email, and role required" });
     }
 
-    const result = await User.update(req.params.id, { name, email, password, role });
+    const result = await updateUser(req.params.id, {
+      name,
+      email,
+      password,
+      role,
+    });
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: "Error updating user", error });
@@ -240,7 +262,7 @@ router.put("/:id", async (req, res) => {
 // ✅ Delete user
 router.delete("/:id", async (req, res) => {
   try {
-    const result = await User.delete(req.params.id);
+    const result = await deleteUser(req.params.id);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: "Error deleting user", error });
@@ -248,6 +270,3 @@ router.delete("/:id", async (req, res) => {
 });
 
 export default router;
-
-
-
