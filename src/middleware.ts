@@ -8,10 +8,10 @@ export function middleware(request: NextRequest) {
 
   // Allowed pages without authentication
   const allowedPages = [
-    "/component/accounts/login",
-    "/component/accounts/register",
-    "/component/accounts/forgotPassword",
-    "/component/accounts/resetPassword",
+    "/Component/Accounts/Login",
+    "/Component/Accounts/Register",
+    "/Component/Accounts/ForgotPassword",
+    "/Component/Accounts/ResetPassword",
   ];
 
   if (allowedPages.includes(pathname)) {
@@ -21,7 +21,7 @@ export function middleware(request: NextRequest) {
   // If no authToken, redirect to login page
   if (!authToken) {
     return NextResponse.redirect(
-      new URL("/component/accounts/login", request.url)
+      new URL("/Component/Accounts/Login", request.url)
     );
   }
 
@@ -29,5 +29,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/component/:path*"],
+  matcher: ["/Component/:path*"],
 };
