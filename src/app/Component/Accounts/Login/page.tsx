@@ -20,7 +20,6 @@ const Login = () => {
 
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
-  
 
   const Validation = () => {
     if (!email) {
@@ -255,13 +254,13 @@ const Login = () => {
                   Forgot Password?
                 </Link>
               </div>
-              <button
-                type="submit"
+              <Link
+                href={"#"}
                 className="btn btn-main rounded-pill w-100"
                 onClick={handleLogin}
               >
                 Sign In
-              </button>
+              </Link>
               <p className="mt-32 text-gray-600 text-center">
                 New on our platform?
                 <Link

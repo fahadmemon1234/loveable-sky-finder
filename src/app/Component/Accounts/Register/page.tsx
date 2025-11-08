@@ -137,12 +137,16 @@ const Register = () => {
     e.preventDefault();
     if (Validation()) {
       try {
-        const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/register`, {
-          name: userName,
-          email,
-          password,
-          role: "admin",
-        }, { withCredentials: true });
+        const res = await axios.post(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/register`,
+          {
+            name: userName,
+            email,
+            password,
+            role: "admin",
+          },
+          { withCredentials: true }
+        );
 
         if (res.data.success) {
           toast.success(res.data.message, {
@@ -346,13 +350,13 @@ const Register = () => {
                 </span>
               </div>
 
-              <button
-                type="submit"
+              <Link
+                href={"#"}
                 className="btn btn-main rounded-pill w-100"
                 onClick={handleRegister}
               >
                 Sign Up
-              </button>
+              </Link>
               <p className="mt-32 text-gray-600 text-center">
                 Already have an account?
                 <Link
