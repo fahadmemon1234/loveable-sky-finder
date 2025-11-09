@@ -75,6 +75,32 @@ router.post("/fetch-all", async (req, res) => {
   }
 });
 
+// router.get("/", async (req, res) => {
+//   const { search, mode } = req.query;
+
+//   try {
+//     const connection = await db();
+//     let query = "SELECT * FROM airports ORDER BY created_at DESC";
+//     let params = [];
+
+//     if (mode === "search" && search && search.trim().length >= 1) {
+//       query =
+//         "SELECT * FROM airports WHERE airport_name LIKE ? OR airport_code LIKE ? ORDER BY created_at DESC";
+//       params = [`%${search}%`, `%${search}%`];
+//     }
+
+//     // If mode === "all" or undefined, query will return all airports
+
+//     const [rows] = await connection.execute(query, params);
+//     await connection.end();
+
+//     res.status(200).json({ success: true, airports: rows });
+//   } catch (err) {
+//     console.error("❌ Error fetching airports:", err.message);
+//     res.status(500).json({ success: false, message: err.message });
+//   }
+// });
+
 router.get("/", async (req, res) => {
   const { search, mode } = req.query;
 
@@ -89,12 +115,21 @@ router.get("/", async (req, res) => {
       params = [`%${search}%`, `%${search}%`];
     }
 
-    // If mode === "all" or undefined, query will return all airports
-
     const [rows] = await connection.execute(query, params);
     await connection.end();
 
-    res.status(200).json({ success: true, airports: rows });
+    // Remove duplicates by airport_code
+    const uniqueAirports = [];
+    const seenCodes = new Set();
+
+    for (const airport of rows) {
+      if (!seenCodes.has(airport.airport_code)) {
+        seenCodes.add(airport.airport_code);
+        uniqueAirports.push(airport);
+      }
+    }
+
+    res.status(200).json({ success: true, airports: uniqueAirports });
   } catch (err) {
     console.error("❌ Error fetching airports:", err.message);
     res.status(500).json({ success: false, message: err.message });
