@@ -3,9 +3,6 @@ import { NavLink, useLocation } from "react-router-dom";
 import { Menu, X, Plane, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { FaPhoneVolume } from "react-icons/fa6";
-import { MdEmail } from "react-icons/md";
-import { P } from "node_modules/framer-motion/dist/types.d-BJcRxCew";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -114,10 +111,10 @@ const Navbar = () => {
 
             <Button
               asChild
-              className=" flex bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-medium shadow-md hover:shadow-lg hover:scale-105 transition-transform"
+              className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-medium shadow-md hover:shadow-lg"
             >
               <NavLink to="/">
-                <Phone className="w-7 h-7" /> +91 9876543210
+                <Phone className="w-7 h-7 mr-2" /> Call for More: +91 9876543210
               </NavLink>
             </Button>
 
@@ -161,7 +158,8 @@ const Navbar = () => {
                     className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white font-medium shadow-md hover:shadow-lg"
                   >
                     <NavLink to="/">
-                      <Phone className="w-7 h-7" /> +91 9876543210
+                      <Phone className="w-7 h-7 mr-2" /> Call for More: +91
+                      9876543210
                     </NavLink>
                   </Button>
                 </nav>

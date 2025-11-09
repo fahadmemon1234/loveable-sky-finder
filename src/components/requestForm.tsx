@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
@@ -19,8 +19,8 @@ import axios from "axios";
 const FlightRequestForm = () => {
   const [departDate, setDepartDate] = useState<Date | null>(null);
   const [returnDate, setReturnDate] = useState<Date | null>(null);
-  const [departureAirport, setDepartureAirport] = useState("");
-  const [destinationAirport, setDestinationAirport] = useState("");
+  const [departureAirport, setDepartureAirport] = useState<any>(null);
+  const [destinationAirport, setDestinationAirport] = useState<any>(null);
   const [selectedcabin, setSelectedCabin] = useState<{
     value: string;
     label: string;
@@ -152,8 +152,8 @@ const FlightRequestForm = () => {
       const data = {
         departDate: format(departDate, "yyyy-MM-dd"),
         returnDate: format(returnDate, "yyyy-MM-dd"),
-        departureAirport,
-        destinationAirport,
+        departureAirport: departureAirport.label,
+        destinationAirport: destinationAirport.label,
         cabin: selectedcabin?.value || "",
         passengers: selectedPassengers ? Number(selectedPassengers.value) : 0,
         fullName,
@@ -204,8 +204,8 @@ const FlightRequestForm = () => {
 
       setDepartDate(undefined);
       setReturnDate(undefined);
-      setDepartureAirport("");
-      setDestinationAirport("");
+      setDepartureAirport(null);
+      setDestinationAirport(null);
       setSelectedCabin(null);
       setSelectedPassengers(null);
       setFullName("");
@@ -231,6 +231,99 @@ const FlightRequestForm = () => {
     setReturnDate(date);
     setOpenReturn(false);
   };
+
+  const [loadingFrom, setLoadingFrom] = useState(false);
+  const [flights, setFlights] = useState([] as any);
+  const [searchTerm, setSearchTerm] = useState<string | null>(null);
+  // From
+  useEffect(() => {
+    const fetchAirports = async () => {
+      setLoadingFrom(true);
+      try {
+        let response = null;
+
+        if (searchTerm == null || searchTerm.trim().length === 0) {
+          response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/api/airports`,
+            {
+              params: { mode: "all" },
+            }
+          );
+        } else {
+          response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/api/airports`,
+            {
+              params: { mode: "search", keyword: searchTerm },
+            }
+          );
+        }
+
+        // Map backend data to react-select options
+        const options = (response.data.airports || []).map((a) => ({
+          label: `${a.airport_code} - ${a.airport_name} (${a.city}, ${a.country})`,
+          value: a.airport_code,
+        }));
+        setFlights(options);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingFrom(false);
+      }
+    };
+
+    const delay = setTimeout(() => {
+      if (searchTerm.trim().length === 0 || searchTerm.trim().length >= 1) {
+        fetchAirports();
+      }
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [searchTerm]);
+
+  // to
+  const [searchTermTo, setSearchTermTo] = useState("");
+  const [LoadingTo, setLoadingTo] = useState(false);
+  useEffect(() => {
+    const fetchAirports = async () => {
+      setLoadingTo(true);
+      try {
+        let response = null;
+        if (searchTermTo.trim().length === 0) {
+          response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/api/airports`,
+            {
+              params: { mode: "all" },
+            }
+          );
+        } else {
+          response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/api/airports`,
+            {
+              params: { mode: "search", search: searchTermTo },
+            }
+          );
+        }
+
+        const options = (response.data.airports || []).map((a) => ({
+          label: `${a.airport_code} - ${a.airport_name} (${a.city}, ${a.country})`,
+          value: a.airport_code,
+          city: a.city,
+          country: a.country,
+        }));
+        setFlights(options);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingTo(false);
+      }
+    };
+
+    const delay = setTimeout(() => {
+      fetchAirports();
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [searchTermTo]);
 
   return (
     <section className="py-16 px-4 bg-gradient-to-b from-blue-50 via-white to-blue-100">
@@ -311,24 +404,55 @@ const FlightRequestForm = () => {
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="departureAirport">Departure Airport *</Label>
-              <Input
-                id="departureAirport"
-                type="text"
+
+              <Select
+                id="from"
                 value={departureAirport}
-                onChange={(e) => setDepartureAirport(e.target.value)}
-                placeholder="e.g., JFK"
-                className="bg-white/70 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
+                onChange={(option) => {
+                  setDepartureAirport(option); // keep selected airport visible
+                  setSearchTerm(option?.label || ""); // keep search term synced
+                }}
+                onInputChange={(value, action) => {
+                  if (action.action === "input-change") {
+                    setSearchTerm(value);
+                  }
+                }}
+                options={flights}
+                isLoading={loadingFrom}
+                placeholder="Search Departure airports..."
+                noOptionsMessage={() =>
+                  searchTerm.length < 3
+                    ? "Type 3+ letters to search"
+                    : "No results found"
+                }
+                className="react-select-container"
+                classNamePrefix="react-select"
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="destinationAirport">Destination Airport *</Label>
-              <Input
-                id="destinationAirport"
+              <Select
+                id="to"
                 value={destinationAirport}
-                onChange={(e) => setDestinationAirport(e.target.value)}
-                type="text"
-                placeholder="e.g., LHR"
-                className="bg-white/70 border border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary"
+                onChange={(option) => {
+                  setDestinationAirport(option); // keep selected airport visible
+                  setSearchTermTo(option?.label || ""); // keep search term synced
+                }}
+                onInputChange={(value, action) => {
+                  if (action.action === "input-change") {
+                    setSearchTermTo(value);
+                  }
+                }}
+                options={flights}
+                isLoading={LoadingTo}
+                placeholder="Search Destination airports..."
+                noOptionsMessage={() =>
+                  searchTermTo.length < 3
+                    ? "Type 3+ letters to search"
+                    : "No results found"
+                }
+                className="react-select-container"
+                classNamePrefix="react-select"
               />
             </div>
           </div>

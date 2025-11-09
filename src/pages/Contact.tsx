@@ -132,7 +132,7 @@ const Contact = () => {
                     title: "Email",
                     lines: [
                       "sales@skynovatravels.co.uk",
-                      "Merry@skynovatravels.co.uk",
+                      "admin@skynovatravels.co.uk",
                     ],
                   },
                   {
@@ -143,7 +143,7 @@ const Contact = () => {
                   {
                     icon: <MapPin className="h-6 w-6 text-primary" />,
                     title: "Office",
-                    lines: ["123 Travel Street", "London, UK", "EC1A 1BB"],
+                    lines: ["Ghost Mail 5 Brayford Square London E10SG"],
                   },
                 ].map((item, idx) => (
                   <Card
@@ -172,7 +172,7 @@ const Contact = () => {
           {/* Full-width Map */}
           <div className="mt-12 rounded-3xl overflow-hidden shadow-xl border border-blue-200/40 h-64 sm:h-80 md:h-96 w-full">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19800.123456!2d-0.1276!3d51.5074!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48761b33333!2sLondon!5e0!3m2!1sen!2suk!4v1698712345678!5m2!1sen!2suk"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d19836.77370839477!2d-0.069804!3d51.515282!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x48760333bcae0cb1%3A0x82b75f08f2f8e9b8!2s5%20Brayford%20Square%2C%20London%20E1%200SG%2C%20UK!5e0!3m2!1sen!2suk!4v1731178745000!5m2!1sen!2suk"
               width="100%"
               height="100%"
               className="border-0"

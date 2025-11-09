@@ -103,8 +103,9 @@ const Footer = () => {
               <li className="flex items-start gap-2">
                 <MapPin size={22} className="mt-1 text-white flex-shrink-0" />
                 <span className="leading-snug">
-                  63/66 Hatton Garden, Fifth Floor, Suite 23, London, England,
-                  EC1N 8LE
+                  {/* 63/66 Hatton Garden, Fifth Floor, Suite 23, London, England,
+                  EC1N 8LE */}
+                  Ghost Mail 5 Brayford Square London E10SG
                 </span>
               </li>
               <li className="flex items-center gap-2">
@@ -124,10 +125,11 @@ const Footer = () => {
               <li className="flex items-center gap-2">
                 <Mail size={18} className="text-white flex-shrink-0" />
                 <a
-                  href="mailto:Merry@skynovatravels.co.uk"
+                  href="mailto:admin@skynovatravels.co.uk"
                   className="hover:underline break-all"
                 >
-                  Merry@skynovatravels.co.uk
+                  {/* Merry@skynovatravels.co.uk */}
+                  admin@skynovatravels.co.uk
                 </a>
               </li>
             </ul>

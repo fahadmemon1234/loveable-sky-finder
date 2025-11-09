@@ -10,8 +10,11 @@ import {
   FaMountain,
   FaStar,
 } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const About = () => {
+  const navigate = useNavigate();
+
   const sectionRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -398,12 +401,12 @@ const About = () => {
 
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
             {/* Filled Gradient Button */}
-            <a
-              href="/contact"
+            <button
+              onClick={() => navigate("/contact")}
               className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl text-lg px-6 py-3 font-semibold text-black bg-gradient-to-r from-amber-500 via-yellow-400 to-yellow-500 shadow-lg hover:shadow-2xl hover:scale-105 transition-transform ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2"
             >
               Contact Us
-            </a>
+            </button>
 
             {/* Outlined Button using primary color */}
             <a

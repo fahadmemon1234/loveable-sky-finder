@@ -266,12 +266,12 @@ const FlightSearchForm = () => {
   //   }
   // };
 
+  const [loadingFrom, setLoadingFrom] = useState(false);
   // From
   useEffect(() => {
     const fetchAirports = async () => {
-      setLoading(true);
+      setLoadingFrom(true);
       try {
-        debugger;
         let response = null;
 
         if (searchTerm == null || searchTerm.trim().length === 0) {
@@ -290,7 +290,6 @@ const FlightSearchForm = () => {
           );
         }
 
-        debugger;
         // Map backend data to react-select options
         const options = (response.data.airports || []).map((a) => ({
           label: `${a.airport_code} - ${a.airport_name} (${a.city}, ${a.country})`,
@@ -300,7 +299,7 @@ const FlightSearchForm = () => {
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);
+        setLoadingFrom(false);
       }
     };
 
@@ -315,9 +314,10 @@ const FlightSearchForm = () => {
 
   // to
   const [searchTermTo, setSearchTermTo] = useState("");
+  const [LoadingTo, setLoadingTo] = useState(false);
   useEffect(() => {
     const fetchAirports = async () => {
-      setLoading(true);
+      setLoadingTo(true);
       try {
         let response = null;
         if (searchTermTo.trim().length === 0) {
@@ -346,7 +346,7 @@ const FlightSearchForm = () => {
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false);
+        setLoadingTo(false);
       }
     };
 
@@ -412,8 +412,8 @@ const FlightSearchForm = () => {
                 setSearchTerm(value);
               }
             }}
-            options={flights} // <-- dynamic options from backend
-            isLoading={loading}
+            options={flights}
+            isLoading={loadingFrom}
             placeholder="Search airports..."
             noOptionsMessage={() =>
               searchTerm.length < 3
@@ -442,7 +442,7 @@ const FlightSearchForm = () => {
               }
             }}
             options={flights} // same flights array used for "from"
-            isLoading={loading}
+            isLoading={LoadingTo}
             placeholder="Destination city..."
             noOptionsMessage={() =>
               searchTermTo.length < 3
