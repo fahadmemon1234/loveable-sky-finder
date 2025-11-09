@@ -15,7 +15,6 @@ import Select from "react-select";
 import { Phone } from "lucide-react";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { o } from "node_modules/framer-motion/dist/types.d-BJcRxCew";
 
 const FlightRequestForm = () => {
   const [departDate, setDepartDate] = useState<Date | null>(null);

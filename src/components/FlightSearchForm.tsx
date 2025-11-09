@@ -21,7 +21,7 @@ const FlightSearchForm = () => {
   const [loading, setLoading] = useState(false);
   const [tripType, setTripType] = useState("round");
   const [from, setFrom] = useState<any>(null);
-  const [to, setTo] = useState("");
+  const [to, setTo] = useState<any>(null);
   const [departDate, setDepartDate] = useState<Date>();
   const [returnDate, setReturnDate] = useState<Date>();
   const [adults, setAdults] = useState("1");
@@ -34,7 +34,7 @@ const FlightSearchForm = () => {
   const [phone, setPhone] = useState("");
 
   const Validation = () => {
-    if (!from) {
+    if (!from?.value) {
       Swal.fire({
         icon: "error",
         position: "center",
@@ -43,7 +43,7 @@ const FlightSearchForm = () => {
       return false;
     }
 
-    if (!to) {
+    if (!to?.value) {
       Swal.fire({
         icon: "error",
         position: "center",
@@ -52,14 +52,14 @@ const FlightSearchForm = () => {
       return false;
     }
 
-    if (from === to) {
+    if (from.value === to.value) {
       Swal.fire({
         icon: "error",
         position: "center",
         title: "Invalid Selection",
         text: "Departure and destination cannot be the same.",
       });
-      return;
+      return false;
     }
 
     if (!departDate) {
@@ -129,21 +129,24 @@ const FlightSearchForm = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/inquiry`, {
-        from: from.label,
-        to,
-        departDate: format(departDate, "yyyy-MM-dd"),
-        ...(tripType === "round" && returnDate
-          ? { returnDate: format(returnDate, "yyyy-MM-dd") }
-          : {}),
-        adults,
-        children,
-        infants,
-        name,
-        email,
-        phone,
-        tripType,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/inquiry`,
+        {
+          from: from.label,
+          to: to.label,
+          departDate: format(departDate, "yyyy-MM-dd"),
+          ...(tripType === "round" && returnDate
+            ? { returnDate: format(returnDate, "yyyy-MM-dd") }
+            : {}),
+          adults,
+          children,
+          infants,
+          name,
+          email,
+          phone,
+          tripType,
+        }
+      );
 
       if (response.status === 200) {
         Swal.fire({
@@ -177,8 +180,8 @@ const FlightSearchForm = () => {
         });
       }
 
-      setFrom("");
-      setTo("");
+      setFrom(null);
+      setTo(null);
       setDepartDate(undefined);
       setReturnDate(undefined);
       setAdults("1");
@@ -255,17 +258,6 @@ const FlightSearchForm = () => {
   //     //   value: a.iataCode,
   //     // }));
 
-  //     const formattedAirports = [
-  //       { label: "JFK - John F. Kennedy International Airport", value: "JFK" },
-  //       { label: "LAX - Los Angeles International Airport", value: "LAX" },
-  //       { label: "ORD - O'Hare International Airport", value: "ORD" },
-  //       {
-  //         label: "ATL - Hartsfield–Jackson Atlanta International Airport",
-  //         value: "ATL",
-  //       },
-  //       { label: "DXB - Dubai International Airport", value: "DXB" },
-  //     ];
-
   //     setFlights(formattedAirports);
   //   } catch (error) {
   //     console.error("Error fetching airports:", error);
@@ -273,6 +265,97 @@ const FlightSearchForm = () => {
   //     setLoading(false);
   //   }
   // };
+
+  // From
+  useEffect(() => {
+    const fetchAirports = async () => {
+      setLoading(true);
+      try {
+        debugger;
+        let response = null;
+
+        if (searchTerm == null || searchTerm.trim().length === 0) {
+          response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/api/airports`,
+            {
+              params: { mode: "all" },
+            }
+          );
+        } else {
+          response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/api/airports`,
+            {
+              params: { mode: "search", keyword: searchTerm },
+            }
+          );
+        }
+
+        debugger;
+        // Map backend data to react-select options
+        const options = (response.data.airports || []).map((a) => ({
+          label: `${a.airport_code} - ${a.airport_name} (${a.city}, ${a.country})`,
+          value: a.airport_code,
+        }));
+        setFlights(options);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const delay = setTimeout(() => {
+      if (searchTerm.trim().length === 0 || searchTerm.trim().length >= 1) {
+        fetchAirports();
+      }
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [searchTerm]);
+
+  // to
+  const [searchTermTo, setSearchTermTo] = useState("");
+  useEffect(() => {
+    const fetchAirports = async () => {
+      setLoading(true);
+      try {
+        let response = null;
+        if (searchTermTo.trim().length === 0) {
+          response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/api/airports`,
+            {
+              params: { mode: "all" },
+            }
+          );
+        } else {
+          response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/api/airports`,
+            {
+              params: { mode: "search", search: searchTermTo },
+            }
+          );
+        }
+
+        const options = (response.data.airports || []).map((a) => ({
+          label: `${a.airport_code} - ${a.airport_name} (${a.city}, ${a.country})`,
+          value: a.airport_code,
+          city: a.city,
+          country: a.country,
+        }));
+        setFlights(options);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const delay = setTimeout(() => {
+      fetchAirports();
+    }, 500);
+
+    return () => clearTimeout(delay);
+  }, [searchTermTo]);
 
   return (
     <form
@@ -316,60 +399,20 @@ const FlightSearchForm = () => {
           <Label htmlFor="from" className="font-medium text-gray-700">
             From *
           </Label>
-          {/* <Select
-            id="from"
-            value={from}
-            onChange={(option) => {
-              setFrom(option); // keep selected airport visible
-              setSearchTerm(option?.label || ""); // keep the search term same as selected label
-            }}
-            onInputChange={(value, action) => {
-              // Only update search term when typing, not when selecting
-              if (action.action === "input-change") {
-                setSearchTerm(value);
-              }
-            }}
-            options={flights}
-            isLoading={loading}
-            placeholder="Search airports..."
-            noOptionsMessage={() =>
-              searchTerm.length < 3
-                ? "Type 3+ letters to search"
-                : "No results found"
-            }
-            className="react-select-container"
-            classNamePrefix="react-select"
-          /> */}
 
           <Select
             id="from"
             value={from}
             onChange={(option) => {
               setFrom(option); // keep selected airport visible
-              setSearchTerm(option?.label || ""); // keep the search term same as selected label
+              setSearchTerm(option?.label || ""); // keep search term synced
             }}
             onInputChange={(value, action) => {
-              // Only update search term when typing, not when selecting
               if (action.action === "input-change") {
                 setSearchTerm(value);
               }
             }}
-            options={[
-              {
-                label: "JFK - John F. Kennedy International Airport",
-                value: "JFK",
-              },
-              {
-                label: "LAX - Los Angeles International Airport",
-                value: "LAX",
-              },
-              { label: "ORD - O'Hare International Airport", value: "ORD" },
-              {
-                label: "ATL - Hartsfield–Jackson Atlanta International Airport",
-                value: "ATL",
-              },
-              { label: "DXB - Dubai International Airport", value: "DXB" },
-            ]}
+            options={flights} // <-- dynamic options from backend
             isLoading={loading}
             placeholder="Search airports..."
             noOptionsMessage={() =>
@@ -386,12 +429,28 @@ const FlightSearchForm = () => {
           <Label htmlFor="to" className="font-medium text-gray-700">
             To *
           </Label>
-          <Input
+          <Select
             id="to"
-            placeholder="Destination city"
             value={to}
-            onChange={(e) => setTo(e.target.value)}
-            className="border-gray-300 focus:ring-primary focus:border-primary"
+            onChange={(option) => {
+              setTo(option); // keep selected airport visible
+              setSearchTermTo(option?.label || ""); // optional: track search term
+            }}
+            onInputChange={(value, action) => {
+              if (action.action === "input-change") {
+                setSearchTermTo(value);
+              }
+            }}
+            options={flights} // same flights array used for "from"
+            isLoading={loading}
+            placeholder="Destination city..."
+            noOptionsMessage={() =>
+              searchTermTo.length < 3
+                ? "Type 3+ letters to search"
+                : "No results found"
+            }
+            className="react-select-container"
+            classNamePrefix="react-select"
           />
         </div>
       </div>
