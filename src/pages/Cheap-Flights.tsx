@@ -5,8 +5,12 @@ import FlightSearchForm from "@/components/FlightSearchForm";
 import heroImage from "@/assets/hero-flight.jpg";
 import { FaCalendarCheck, FaDollarSign, FaGlobeAmericas } from "react-icons/fa";
 import { PiCurrencyGbpBold } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
 
 const CheapFlights = () => {
+
+  const navigate = useNavigate();
+
   const destinations = [
     {
       city: "Dar-Es-Salaam",
@@ -458,6 +462,11 @@ const CheapFlights = () => {
     return () => observer.disconnect();
   }, []);
 
+    const handleNext = (url: string) => {
+    navigate(url);
+  };
+
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -561,12 +570,12 @@ const CheapFlights = () => {
                 </div>
 
                 <div className="absolute inset-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
-                  <a
-                    href={url}
+                  <button
+                    onClick={() => handleNext(url)}
                     className="px-6 py-3 border border-white text-white rounded-md font-semibold text-lg hover:bg-white hover:text-[#1c448e] transition-colors"
                   >
                     More Info
-                  </a>
+                  </button>
                 </div>
               </div>
             ))}

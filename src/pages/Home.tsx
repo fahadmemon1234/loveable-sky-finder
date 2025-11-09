@@ -16,8 +16,11 @@ import { MdOutlineFlightTakeoff } from "react-icons/md";
 import HeroSection from "@/components/HeroSection";
 import FlightSearchForm from "@/components/FlightSearchForm";
 import SubscribeSection from "@/components/SubscribeSection";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate();
+
   const formRef = useRef(null);
   const [formisVisible, setFormIsVisible] = useState(false);
 
@@ -210,6 +213,10 @@ const Home = () => {
     },
   ];
 
+  const handleNext = (url: string) => {
+    navigate(url);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -366,12 +373,12 @@ const Home = () => {
 
                 {/* Hover CTA */}
                 <div className="absolute inset-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-20">
-                  <a
-                    href={url}
+                  <button
+                    onClick={() => handleNext(url)}
                     className="px-5 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-semibold rounded-full text-sm sm:text-base hover:scale-105 hover:shadow-xl transition-all duration-300"
                   >
                     Book Now
-                  </a>
+                  </button>
                 </div>
               </div>
             ))}
