@@ -71,6 +71,7 @@ import EnquiryRoutes from "./routes/EnquiryRoutes.js";
 import CallbackRequestRoutes from "./routes/CallbackRequestRoutes.js";
 import SubscribeRoutes from "./routes/SubscribeRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import airportRoutes from "./routes/airportRoutes.js";
 
 dotenv.config();
 
@@ -107,12 +108,17 @@ app.use(cookieParser());
 // ✅ Connect to SQL Server
 db();
 
+
+app.use("/api/airports", airportRoutes);
+
 // API Routes
 app.use("/api", CallbackRequestRoutes);
 app.use("/api", EnquiryRoutes);
 app.use("/api", inquiryRoutes);
 app.use("/api", SubscribeRoutes);
 app.use("/api", userRoutes);
+
+
 
 app.get("/", (req, res) => {
   res.send(
