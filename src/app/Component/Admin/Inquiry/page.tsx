@@ -234,7 +234,7 @@ const Inquiry = () => {
         });
 
         setRefresh(!refresh);
-        router.push(`/Component/Admin/inquiryFollowup/${encryptData(id)}`);
+        router.push(`/Component/Admin/InquiryFollowup/${encryptData(id)}`);
       } else if (response.status === 404) {
         toast.error(response.data.message, {
           position: "top-right",
@@ -265,7 +265,7 @@ const Inquiry = () => {
 
   const handlePush = async (userId: number) => {
     if (userId) {
-      router.push(`/Component/Admin/inquiryFollowup/${encryptData(userId)}`);
+      router.push(`/Component/Admin/InquiryFollowup/${encryptData(userId)}`);
     }
   };
 
