@@ -7,6 +7,8 @@ import DataTable from "react-data-table-component";
 import axios from "axios";
 import { toast, Slide } from "react-toastify";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+import { encryptData } from "../../utility/encryptDecrypt";
 
 interface Inquiry {
   id: number;
@@ -44,6 +46,8 @@ const FilterComponent = ({
 );
 
 const Inquiry = () => {
+  const router = useRouter();
+
   // --------------------Browse Data start--------------------
 
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
@@ -105,7 +109,7 @@ const Inquiry = () => {
     {
       name: "Sr. No",
       cell: (row: Inquiry, index: number) => (
-        <strong>{(row.id).toString().padStart(3, "0")}</strong>
+        <strong>{row.id.toString().padStart(3, "0")}</strong>
       ),
       width: "80px",
       sortable: false,
@@ -178,19 +182,26 @@ const Inquiry = () => {
     },
     {
       name: "Action",
+      cell: (row: Inquiry) => {
+        const isViewed = !!row.view_id;
 
-      cell: (row: Inquiry) => (
-        <button
-          type="button"
-          className={`btn ${row.view_id ? "btn-viewed" : "btn-view"} btn-sm`}
-          onClick={(e) => {
-            e.preventDefault();
-            handleView(row.id, userId);
-          }}
-        >
-          {row.view_id ? row.user_name : "View"}
-        </button>
-      ),
+        return (
+          <button
+            type="button"
+            className={`btn ${isViewed ? "btn-viewed" : "btn-view"} btn-sm`}
+            onClick={(e) => {
+              e.preventDefault();
+              if (isViewed && row.view_id) {
+                handlePush(row.view_id);
+              } else {
+                handleView(row.id, userId);
+              }
+            }}
+          >
+            {isViewed ? row.user_name : "View"}
+          </button>
+        );
+      },
     },
   ];
 
@@ -223,6 +234,7 @@ const Inquiry = () => {
         });
 
         setRefresh(!refresh);
+        router.push(`/Component/Admin/inquiryFollowup/${encryptData(id)}`);
       } else if (response.status === 404) {
         toast.error(response.data.message, {
           position: "top-right",
@@ -248,6 +260,12 @@ const Inquiry = () => {
         theme: "colored",
         transition: Slide,
       });
+    }
+  };
+
+  const handlePush = async (userId: number) => {
+    if (userId) {
+      router.push(`/Component/Admin/inquiryFollowup/${encryptData(userId)}`);
     }
   };
 
