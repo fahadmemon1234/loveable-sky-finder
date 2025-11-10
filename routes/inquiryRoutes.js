@@ -49,7 +49,7 @@
 // ---------------------------------------------------------
 
 import express from "express";
-import { addInquiry, getInquiries } from "../models/Inquiry.js";
+import { addInquiry, getInquiries, updateInquiry } from "../models/Inquiry.js";
 
 const router = express.Router();
 
@@ -91,6 +91,22 @@ router.get("/inquiries", async (req, res) => {
   } catch (err) {
     console.error("❌ Error fetching inquiries:", err);
     res.status(500).json({ message: "Error fetching inquiries" });
+  }
+});
+
+router.post("/update-inquiry", async (req, res) => {
+  try {
+    const { id, view_id } = req.body;
+
+    if (!id || !view_id) {
+      return res.status(400).json({ message: "id and view_id are required" });
+    }
+
+    const result = await updateInquiry(id, view_id);
+    res.status(200).json({ message: "Inquiry updated successfully", result });
+  } catch (err) {
+    console.error("❌ Error updating inquiry:", err);
+    res.status(500).json({ message: "Error updating inquiry" });
   }
 });
 

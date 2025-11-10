@@ -32,9 +32,9 @@
 //       .input("phone", phone)
 //       .input("tripType", tripType)
 //       .query(`
-//         INSERT INTO inquiry 
+//         INSERT INTO inquiry
 //         (from_location, to_location, departDate, returnDate, adults, children, infants, name, email, phone, tripType)
-//         VALUES 
+//         VALUES
 //         (@from_location, @to_location, @departDate, @returnDate, @adults, @children, @infants, @name, @email, @phone, @tripType)
 //       `);
 
@@ -114,12 +114,39 @@ export const getInquiries = async () => {
   try {
     const connection = await db();
     const [rows] = await connection.execute(
-      "SELECT * FROM inquiry ORDER BY id DESC"
+      `
+      SELECT 
+        i.*,
+        u.name AS user_name
+      FROM inquiry i
+      LEFT JOIN users u ON i.view_id = u.id
+      ORDER BY i.id DESC
+      `
     );
     await connection.end();
     return rows;
   } catch (err) {
     console.error("❌ Error fetching inquiries:", err);
+    throw err;
+  }
+};
+
+export const updateInquiry = async (id, view_id) => {
+  try {
+    const connection = await db();
+    const query = `
+      UPDATE inquiry
+      SET view_id = ?
+      WHERE id = ?
+    `;
+    const values = [view_id, id];
+
+    const [result] = await connection.execute(query, values);
+    await connection.end();
+
+    return { message: "Inquiry updated successfully", result };
+  } catch (err) {
+    console.error("❌ Error updating inquiry:", err);
     throw err;
   }
 };
