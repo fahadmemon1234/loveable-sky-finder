@@ -586,9 +586,15 @@ input:disabled {
   color: white !important;
 }
 
-
 .btn-view {
   background: #ebb11d !important;
+  color: black !important;
+  border: none !important;
+  padding: 8px 20px !important;
+}
+
+.btn-viewed {
+  background: hsl(var(--main)) !important;
   color: black !important;
   border: none !important;
   padding: 8px 20px !important;
