@@ -65,7 +65,12 @@ const Sidebar = ({ children }: NavbarProps) => {
           href="/"
           className="sidebar__logo text-center p-20 position-sticky inset-block-start-0 bg-white w-100 z-1 pb-10"
         >
-          <img src="/assets/images/logo/Sky-Nova-Logo.png" alt="Logo" width={80} height={80} />
+          <img
+            src="/assets/images/logo/Sky-Nova-Logo.png"
+            alt="Logo"
+            width={80}
+            height={80}
+          />
         </Link>
 
         <div className="sidebar-menu-wrapper overflow-y-auto scroll-sm">
@@ -84,6 +89,22 @@ const Sidebar = ({ children }: NavbarProps) => {
                     <i className="ph ph-squares-four"></i>
                   </span>
                   <span className="text">Dashboard</span>
+                </Link>
+              </li>
+
+              <li
+                className={`sidebar-menu__item ${
+                  isActive("/Component/Admin/Inquiry") ? "activePage" : ""
+                }`}
+              >
+                <Link
+                  href="/Component/Admin/Inquiry"
+                  className={`sidebar-menu__link `}
+                >
+                  <span className="icon">
+                    <i className="ph ph-chat-circle-text"></i>
+                  </span>
+                  <span className="text">Inquiry</span>
                 </Link>
               </li>
             </ul>
