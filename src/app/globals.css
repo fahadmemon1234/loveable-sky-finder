@@ -599,3 +599,15 @@ input:disabled {
   border: none !important;
   padding: 8px 20px !important;
 }
+
+.text-customColor{
+  color: hsl(var(--main));
+}
+
+.text-customColor-2{
+  color: #ECB51E !important;
+}
+
+.btn-custom{
+  background-color: #ECB51E !important;
+}

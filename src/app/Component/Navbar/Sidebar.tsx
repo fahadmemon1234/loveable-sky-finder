@@ -107,6 +107,23 @@ const Sidebar = ({ children }: NavbarProps) => {
                   <span className="text">Inquiry</span>
                 </Link>
               </li>
+
+
+               <li
+                className={`sidebar-menu__item ${
+                  isActive("/Component/Admin/InquiryFollowup") ? "activePage" : ""
+                }`}
+                >
+                <Link
+                  href="/Component/Admin/InquiryFollowup"
+                  className={`sidebar-menu__link `}
+                >
+                  <span className="icon">
+                    <i className="ph ph-chat-circle-text"></i>
+                  </span>
+                  <span className="text">Inquiry Follow Up</span>
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { withLayout } from "../../Layout";
 import Link from "next/link";
 import { FaChevronRight } from "react-icons/fa";
@@ -7,8 +7,9 @@ import DataTable from "react-data-table-component";
 import axios from "axios";
 import { toast, Slide } from "react-toastify";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
-import { encryptData } from "../../utility/encryptDecrypt";
+import { FaRegComment, FaRegCalendarAlt } from "react-icons/fa";
+import AddComment from "./_AddComment";
+import SmallModal from "../../Modal/smallModal";
 
 interface Inquiry {
   id: number;
@@ -45,9 +46,8 @@ const FilterComponent = ({
   />
 );
 
-const Inquiry = () => {
-
-// --------------------Browse Data start--------------------
+const InquiryFollowup = () => {
+  // --------------------Browse Data start--------------------
 
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [refresh, setRefresh] = useState(false);
@@ -72,7 +72,7 @@ const Inquiry = () => {
 
       if (parsedUser.role !== "admin") {
         sortedData = sortedData.filter((inquiry: Inquiry) => {
-          return inquiry.view_id === null || inquiry.view_id === parsedUser.id;
+          return inquiry.view_id === parsedUser.id;
         });
       }
 
@@ -107,8 +107,8 @@ const Inquiry = () => {
   const columns = [
     {
       name: "Sr. No",
-      cell: (row: Inquiry, index: number) => (
-        <strong>{row.id.toString().padStart(3, "0")}</strong>
+      cell: (_row: Inquiry, index: number) => (
+        <strong>{(index + 1).toString().padStart(3, "0")}</strong>
       ),
       width: "80px",
       sortable: false,
@@ -124,6 +124,15 @@ const Inquiry = () => {
         }).format(new Date(row.created_at)),
       sortable: true,
       width: "140px",
+    },
+
+    {
+      name: "Inquiry ID",
+      cell: (_row: Inquiry, index: number) => (
+        <strong>{_row.id.toString().padStart(3, "0")}</strong>
+      ),
+      width: "100px",
+      sortable: false,
     },
     {
       name: "Inquiry Title",
@@ -143,28 +152,29 @@ const Inquiry = () => {
       sortable: true,
       width: "250px",
     },
-    { name: "Name", selector: (row: Inquiry) => row.name, sortable: true },
     {
-      name: "Email",
+      name: "Going Date + Pax",
       selector: (row: Inquiry) => {
-        const email = row.email || "";
-        const [namePart, domainPart] = email.split("@");
+        const formattedDate = new Intl.DateTimeFormat("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }).format(new Date(row.departDate));
 
-        if (!namePart || !domainPart) return email;
+        const totalPax =
+          (Number(row.adults) || 0) +
+          (Number(row.children) || 0) +
+          (Number(row.infants) || 0);
 
-        const hiddenName = namePart.slice(0, 3) + "***";
-        const hiddenDomain = domainPart.slice(0, 2) + "...";
-
-        return `${hiddenName}@${hiddenDomain}`;
+        return `${formattedDate} | ${totalPax} Pax`;
       },
       sortable: true,
+      width: "160px",
     },
     {
       name: "Phone",
       selector: (row: Inquiry) => {
         const phone = row.phone || "";
-
-        // Keep first 4 characters visible (country code + first digits)
         const visibleCount = 4;
         if (phone.length <= visibleCount) return phone;
 
@@ -176,39 +186,37 @@ const Inquiry = () => {
       sortable: true,
     },
     {
-      name: "Brand",
-      cell: (row: Inquiry) => <span>Sky Nova Travels</span>,
+      name: "Pick By",
+      width: "150px",
+      cell: (row: Inquiry) => {
+        const name = String(row.user_name || "");
+        const displayName = name.length > 10 ? name.slice(0, 10) + "..." : name;
+
+        return <span title={name}>{displayName}</span>;
+      },
     },
+
     {
       name: "Action",
-      width: "180px",
+      width: "120px",
       cell: (row: Inquiry) => {
         const isViewed = !!row.view_id;
 
-        // Shorten long names
-        const displayName = isViewed
-          ? String(row.user_name || "").length > 10
-            ? String(row.user_name).slice(0, 10) + "..."
-            : String(row.user_name)
-          : "View";
-
         return (
-          <button
-            type="button"
-            className={`btn ${isViewed ? "btn-viewed" : "btn-view"} btn-sm`}
-            style={{
-              maxWidth: "100%",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-            }}
-            onClick={(e) => {
-              e.preventDefault();
-              handleView(row.id, userId);
-            }}
-          >
-            {displayName}
-          </button>
+          <div className="flex items-center justify-center gap-2">
+            <button
+              type="button"
+              className="cursor-pointer"
+              style={{ paddingRight: "10px" }}
+              onClick={() => openModal(row.id)}
+            >
+              <FaRegComment className="w-20 h-20 font-bold text-customColor" />
+            </button>
+
+            <button type="button" className="cursor-pointer">
+              <FaRegCalendarAlt className="w-20 h-20 font-bold text-customColor-2" />
+            </button>
+          </div>
         );
       },
     },
@@ -216,20 +224,76 @@ const Inquiry = () => {
 
   // ------------------ Column End------------------
 
-  // ----------------- Update data ------------------------
+  // ------------------ Model Box Start------------------
 
-  const handleView = async (id: number, userId: number) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [Title, setTile] = useState("");
+  const [selectedInquiryId, setSelectedInquiryId] = useState<number | null>(
+    null
+  );
+
+  const [comment, setComment] = useState<string>("");
+  const commentRef = useRef<HTMLTextAreaElement>(null);
+
+  const openModal = (id?: number) => {
+    setTile("Add Comment");
+    resetFields();
+    if (typeof id === "number") {
+      setSelectedInquiryId(id);
+      setIsModalOpen(true);
+    }
+  };
+
+  const resetFields = () => {
+    setComment("");
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedInquiryId(null);
+    resetFields();
+  };
+
+  const Validation = () => {
+    if (!comment) {
+      toast.error("Comment is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      commentRef.current?.focus();
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
     try {
+      e.preventDefault();
+      if (!Validation()) return;
       debugger;
+      var user = Cookies.get("user");
+      var parsedUser = JSON.parse(user!);
+
+      const data = {
+        userId: parsedUser.id,
+        inquiry_id: selectedInquiryId,
+        comment: comment,
+      };
+
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/update-inquiry`,
-        {
-          id: id,
-          view_id: userId,
-        }
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/inquiry/AddComment`,
+        data
       );
 
-      if (response.status === 200) {
+      if (response.data.status === 200) {
         toast.success(response.data.message, {
           position: "top-right",
           autoClose: 2000,
@@ -242,9 +306,11 @@ const Inquiry = () => {
           transition: Slide,
         });
 
+        setIsModalOpen(false);
+        setSelectedInquiryId(null);
+        resetFields();
         setRefresh(!refresh);
-        // router.push(`/Component/Admin/InquiryFollowup`);
-      } else if (response.status === 404) {
+      } else if (response.data.status === 400) {
         toast.error(response.data.message, {
           position: "top-right",
           autoClose: 2000,
@@ -258,7 +324,7 @@ const Inquiry = () => {
         });
       }
     } catch (error: any) {
-      toast.error("Error updating inquiry: " + error.message, {
+      toast.error(error.message, {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -272,16 +338,12 @@ const Inquiry = () => {
     }
   };
 
-  // const handlePush = async (userId: number) => {
-  //   if (userId) {
-  //     router.push(`/Component/Admin/InquiryFollowup/${encryptData(userId)}`);
-  //   }
-  // };
+  // ------------------ Model Box End------------------
 
   return (
     <>
       <div className="breadcrumbs-area">
-        <h3>Inquiry</h3>
+        <h3>Inquiry Follow-Up</h3>
         <ul>
           <li>
             <Link href="/Component/Admin/Dashboard">Admin</Link>
@@ -293,7 +355,7 @@ const Inquiry = () => {
               }}
             />
           </li>
-          <li>Inquiry</li>
+          <li>Inquiry Follow-Up</li>
         </ul>
       </div>
 
@@ -301,7 +363,7 @@ const Inquiry = () => {
         <div className="card-header">
           <div className="row row-header">
             <div className="col-md-6">
-              <h4>Inquiry</h4>
+              <h4>Inquiry Follow-Up</h4>
             </div>
             <div className="col-md-6 btn-Header">
               <FilterComponent
@@ -326,8 +388,22 @@ const Inquiry = () => {
           </div>
         </div>
       </div>
+
+      <SmallModal
+        title={Title}
+        smallModalView={
+          <AddComment
+            comment={comment}
+            setComment={setComment}
+            commentRef={commentRef}
+          />
+        }
+        onClose={closeModal}
+        onSave={handleSave}
+        show={isModalOpen}
+      />
     </>
   );
 };
 
-export default withLayout(Inquiry);
+export default withLayout(InquiryFollowup);
