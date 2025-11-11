@@ -150,3 +150,23 @@ export const updateInquiry = async (id, view_id) => {
     throw err;
   }
 };
+
+export const addInquiryComment = async (data) => {
+  const { userId, inquiry_id, comment } = data;
+  try {
+    const connection = await db();
+    const query = `
+      INSERT INTO inquiry_comments 
+      (user_id, inquiry_id, comment)
+      VALUES (?,?,?)
+    `;
+    const values = [userId, inquiry_id, comment];
+    await connection.execute(query, values);
+    await connection.end();
+
+    return { message: "Inquiry added successfully" };
+  } catch (err) {
+    console.error("❌ Error adding inquiry:", err);
+    throw err;
+  }
+};

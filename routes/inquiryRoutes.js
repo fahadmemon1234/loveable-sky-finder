@@ -49,7 +49,7 @@
 // ---------------------------------------------------------
 
 import express from "express";
-import { addInquiry, getInquiries, updateInquiry } from "../models/Inquiry.js";
+import { addInquiry, getInquiries, updateInquiry, addInquiryComment } from "../models/Inquiry.js";
 
 const router = express.Router();
 
@@ -110,4 +110,32 @@ router.post("/update-inquiry", async (req, res) => {
   }
 });
 
+router.post("/inquiry/AddComment", async (req, res) => {
+  try {
+    const { userId, inquiry_id, comment } = req.body;
+
+    // Validate required fields
+    if (!userId || !inquiry_id || !comment) {
+      return res.status(400).json({
+        message: "userId, inquiry_id, and comment are required",
+        status: 400,
+      });
+    }
+
+    // Call your model function
+    const result = await addInquiryComment({ userId, inquiry_id, comment });
+
+    return res.status(200).json({
+      message: "Comment added successfully",
+      status: 200,
+      result,
+    });
+  } catch (err) {
+    console.error("❌ Error adding inquiry comment:", err);
+    return res.status(500).json({
+      message: "Error adding inquiry comment",
+      status: 500,
+    });
+  }
+});
 export default router;
