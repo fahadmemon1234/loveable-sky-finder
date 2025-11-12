@@ -170,3 +170,25 @@ export const addInquiryComment = async (data) => {
     throw err;
   }
 };
+
+
+export const getCommentByID = async (inquiry_id) => {
+  try {
+    const connection = await db();
+    const [rows] = await connection.execute(
+      `
+      SELECT 
+        *
+      FROM inquiry_comments i
+      WHERE i.inquiry_id = ?
+      ORDER BY i.id DESC
+      `,
+      [inquiry_id] // Pass the parameter here
+    );
+    await connection.end();
+    return rows;
+  } catch (err) {
+    console.error("❌ Error fetching comments:", err);
+    throw err;
+  }
+};

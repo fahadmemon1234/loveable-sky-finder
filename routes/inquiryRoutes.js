@@ -49,7 +49,7 @@
 // ---------------------------------------------------------
 
 import express from "express";
-import { addInquiry, getInquiries, updateInquiry, addInquiryComment } from "../models/Inquiry.js";
+import { addInquiry, getInquiries, updateInquiry, addInquiryComment, getCommentByID } from "../models/Inquiry.js";
 
 const router = express.Router();
 
@@ -138,4 +138,23 @@ router.post("/inquiry/AddComment", async (req, res) => {
     });
   }
 });
+
+
+
+router.get("/inquiry/GetCommentsByID/:inquiry_id", async (req, res) => {
+  try {
+    const { inquiry_id } = req.params;
+
+    if (!inquiry_id) {
+      return res.status(400).json({ message: "Inquiry ID is required" });
+    }
+
+    const comments = await getCommentByID(inquiry_id);
+    res.status(200).json(comments);
+  } catch (err) {
+    console.error("❌ Error fetching comments:", err);
+    res.status(500).json({ message: "Error fetching comments" });
+  }
+});
+
 export default router;
