@@ -192,3 +192,25 @@ export const getCommentByID = async (inquiry_id) => {
     throw err;
   }
 };
+
+
+export const addInquiryCalendar = async (data) => {
+  const { user_id, inquiry_id, follow_up_date, follow_up_time } = data;
+
+  try {
+    const connection = await db();
+    const query = `
+      INSERT INTO follow_up_schedule 
+      (user_id, inquiry_id, follow_up_date, follow_up_time)
+      VALUES (?,?,?,?)
+    `;
+    const values = [user_id, inquiry_id, follow_up_date, follow_up_time];
+    await connection.execute(query, values);
+    await connection.end();
+
+    return { message: "Follow-up scheduled successfully" };
+  } catch (err) {
+    console.error("❌ Error adding follow-up:", err);
+    throw err;
+  }
+};

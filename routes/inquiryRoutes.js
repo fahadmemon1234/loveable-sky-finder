@@ -49,7 +49,14 @@
 // ---------------------------------------------------------
 
 import express from "express";
-import { addInquiry, getInquiries, updateInquiry, addInquiryComment, getCommentByID } from "../models/Inquiry.js";
+import {
+  addInquiry,
+  getInquiries,
+  updateInquiry,
+  addInquiryComment,
+  getCommentByID,
+  addInquiryCalendar,
+} from "../models/Inquiry.js";
 
 const router = express.Router();
 
@@ -139,8 +146,6 @@ router.post("/inquiry/AddComment", async (req, res) => {
   }
 });
 
-
-
 router.get("/inquiry/GetCommentsByID/:inquiry_id", async (req, res) => {
   try {
     const { inquiry_id } = req.params;
@@ -154,6 +159,39 @@ router.get("/inquiry/GetCommentsByID/:inquiry_id", async (req, res) => {
   } catch (err) {
     console.error("❌ Error fetching comments:", err);
     res.status(500).json({ message: "Error fetching comments" });
+  }
+});
+
+router.post("/inquiry/SaveFollowUpDate", async (req, res) => {
+  try {
+    const { user_id, inquiry_id, follow_up_date, follow_up_time } = req.body;
+
+    if (!user_id || !inquiry_id || !follow_up_date || !follow_up_time) {
+      return res.status(400).json({
+        message:
+          "user_id, inquiry_id, follow_up_date, and follow_up_time are required",
+        status: 400,
+      });
+    }
+
+    const result = await addInquiryCalendar({
+      user_id,
+      inquiry_id,
+      follow_up_date,
+      follow_up_time,
+    });
+
+    return res.status(200).json({
+      message: "Follow-up added successfully",
+      status: 200,
+      result,
+    });
+  } catch (err) {
+    console.error("❌ Error adding follow-up:", err);
+    return res.status(500).json({
+      message: "Error adding follow-up",
+      status: 500,
+    });
   }
 });
 
