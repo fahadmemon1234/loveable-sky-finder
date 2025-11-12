@@ -10,7 +10,10 @@ import Cookies from "js-cookie";
 import { FaRegComment, FaRegCalendarAlt } from "react-icons/fa";
 import AddComment from "./_AddComment";
 import SmallModal from "../../Modal/smallModal";
+import LargeModal from "../../Modal/largeModal";
 import Loader from "../../utility/Loader";
+import AddCalander from "./_AddCalender";
+import { convertTo24Hour } from "../../utility/options";
 
 interface Inquiry {
   id: number;
@@ -164,17 +167,18 @@ const InquiryFollowup = () => {
         const loc = row.to_location || "";
         const firstVisible = 3; // starting characters
         const visibleStart = loc.slice(0, firstVisible);
-        const hiddenPart = "*******"; // hamesha 5 stars
 
         return (
           <span style={{ whiteSpace: "nowrap" }}>
             <strong>Flight Search: </strong>
-            {visibleStart} - {hiddenPart}
+            {row.to_location}
           </span>
         );
       },
       sortable: true,
-      width: "250px",
+      wrap: true, // allows text to wrap if needed
+      width: "350px",
+      grow: 1, // lets DataTable auto-adjust column width
     },
     {
       name: "Going Date + Pax",
@@ -199,13 +203,8 @@ const InquiryFollowup = () => {
       name: "Phone",
       selector: (row: Inquiry) => {
         const phone = row.phone || "";
-        const visibleCount = 4;
-        if (phone.length <= visibleCount) return phone;
 
-        const visiblePart = phone.slice(0, visibleCount);
-        const hiddenPart = "*".repeat(phone.length - visibleCount);
-
-        return visiblePart + hiddenPart;
+        return phone;
       },
       sortable: true,
     },
@@ -237,7 +236,11 @@ const InquiryFollowup = () => {
               <FaRegComment className="w-20 h-20 font-bold text-customColor" />
             </button>
 
-            <button type="button" className="cursor-pointer">
+            <button
+              type="button"
+              className="cursor-pointer"
+              onClick={() => openModalCalander(row.id)}
+            >
               <FaRegCalendarAlt className="w-20 h-20 font-bold text-customColor-2" />
             </button>
           </div>
@@ -456,6 +459,139 @@ const InquiryFollowup = () => {
   };
   // --------------------- Detail Row End -------------------------
 
+  // ---------------------------- Calender Start --------------------------
+
+  const [isModalOpenCalander, setIsModalOpenCalander] = useState(false);
+  const [TitleCalander, setTileCalander] = useState("");
+
+  const [followUpDate, setFollowUpDate] = useState<string>("");
+  const [followUpTime, setFollowUpTime] = useState<string>("");
+
+  const followUpDateRef = useRef<HTMLInputElement>(null);
+  const followUpTimeRef = useRef<HTMLInputElement>(null);
+
+  const openModalCalander = (id?: number) => {
+    setTileCalander("Add Calander");
+    resetCalanderFields();
+    if (typeof id === "number") {
+      setSelectedInquiryId(id);
+      setIsModalOpenCalander(true);
+    }
+  };
+
+  const resetCalanderFields = () => {
+    setFollowUpDate("");
+    setFollowUpTime("");
+  };
+
+  const closeCalanderModal = () => {
+    setIsModalOpenCalander(false);
+    setSelectedInquiryId(null);
+    resetCalanderFields();
+  };
+
+  const ValidationCalander = () => {
+    if (!followUpDate) {
+      toast.error("Follow-up Date is required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      followUpDateRef.current?.focus();
+      return false;
+    } else if (!followUpTime) {
+      toast.error("Follow-up Time is required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      followUpTimeRef.current?.focus();
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSaveCalander = async () => {
+    try {
+      if (!ValidationCalander) {
+        return;
+      }
+      
+       var user = Cookies.get("user");
+      var parsedUser = JSON.parse(user!);
+
+      const followUpTime24 = convertTo24Hour(followUpTime);
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/inquiry/SaveFollowUpDate`,
+        {
+          user_id: parsedUser.id,
+          inquiry_id: selectedInquiryId,
+          follow_up_date: followUpDate,
+          follow_up_time: followUpTime24,
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success(response.data.message, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+
+        setIsModalOpenCalander(false);
+        setSelectedInquiryId(null);
+        resetCalanderFields();
+        setRefresh(!refresh);
+      } else if (response.status === 404) {
+        toast.error(response.data.message, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+      }
+    } catch (error: any) {
+      toast.error(error.message, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+    }
+  };
+
+  // ---------------------------- Calender End --------------------------
+
   return (
     <>
       <div className="breadcrumbs-area">
@@ -527,6 +663,23 @@ const InquiryFollowup = () => {
         onClose={closeModal}
         onSave={handleSave}
         show={isModalOpen}
+      />
+
+      <LargeModal
+        title={TitleCalander}
+        largeModalView={
+          <AddCalander
+            followUpDate={followUpDate}
+            followUpTime={followUpTime}
+            setFollowUpDate={setFollowUpDate}
+            setFollowUpTime={setFollowUpTime}
+            followUpDateRef={followUpDateRef}
+            followUpTimeRef={followUpTimeRef}
+          />
+        }
+        onClose={closeCalanderModal}
+        onSave={handleSaveCalander}
+        show={isModalOpenCalander}
       />
     </>
   );

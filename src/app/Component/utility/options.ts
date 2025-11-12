@@ -318,3 +318,17 @@ export const formatNumberWithCommas = (value: string): string => {
   value = value.replace(/,/g, "");
   return isNaN(Number(value)) ? "" : Number(value).toLocaleString("en-US"); // Format with commas
 };
+
+
+
+export const convertTo24Hour = (time12h: string | null) => {
+  if (!time12h) return "00:00:00";
+
+  const [time, modifier] = time12h.split(" "); // ["11:12", "PM"]
+  let [hours, minutes] = time.split(":").map(Number);
+
+  if (modifier === "PM" && hours < 12) hours += 12;
+  if (modifier === "AM" && hours === 12) hours = 0;
+
+  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:00`;
+};
