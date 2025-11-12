@@ -14,6 +14,7 @@ import LargeModal from "../../Modal/largeModal";
 import Loader from "../../utility/Loader";
 import AddCalander from "./_AddCalender";
 import { convertTo24Hour } from "../../utility/options";
+import { encryptData } from "../../utility/encryptDecrypt";
 
 interface Inquiry {
   id: number;
@@ -156,7 +157,9 @@ const InquiryFollowup = () => {
     {
       name: "Inquiry ID",
       cell: (_row: Inquiry, index: number) => (
-        <strong>{_row.id.toString().padStart(3, "0")}</strong>
+        <Link href={`/Component/Admin/inquiryDetail/${encryptData(_row.id)}`}>
+          <strong>{_row.id.toString().padStart(3, "0")}</strong>
+        </Link>
       ),
       width: "100px",
       sortable: false,
@@ -529,8 +532,8 @@ const InquiryFollowup = () => {
       if (!ValidationCalander) {
         return;
       }
-      
-       var user = Cookies.get("user");
+
+      var user = Cookies.get("user");
       var parsedUser = JSON.parse(user!);
 
       const followUpTime24 = convertTo24Hour(followUpTime);
