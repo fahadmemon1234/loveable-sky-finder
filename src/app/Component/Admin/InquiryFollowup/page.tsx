@@ -116,22 +116,22 @@ const InquiryFollowup = () => {
 
   // ------------------ Column Start------------------
   const columns = [
-    {
-      name: "",
-      cell: (row: Inquiry) => (
-        <button
-          type="button"
-          onClick={() => handleRowClick(row)}
-          className="cursor-pointer"
-        >
-          <FaChevronRight className="text-gray-600 hover:text-black w-4 h-4" />
-        </button>
-      ),
-      width: "50px",
-      ignoreRowClick: true,
-      allowOverflow: true,
-      button: true,
-    },
+    // {
+    //   name: "",
+    //   cell: (row: Inquiry) => (
+    //     <button
+    //       type="button"
+    //       onClick={() => handleRowClick(row)}
+    //       className="cursor-pointer"
+    //     >
+    //       <FaChevronRight className="text-gray-600 hover:text-black w-4 h-4" />
+    //     </button>
+    //   ),
+    //   width: "50px",
+    //   ignoreRowClick: true,
+    //   allowOverflow: true,
+    //   button: true,
+    // },
     {
       name: "Sr. No",
       cell: (_row: Inquiry, index: number) => (
@@ -641,10 +641,10 @@ const InquiryFollowup = () => {
                 pagination
                 highlightOnHover
                 striped
-                expandableRows
-                expandableRowExpanded={(row) => row.id === expandedRowId}
-                expandableRowsComponent={DetailRow}
-                onRowClicked={(row) => handleRowClick(row)}
+                // expandableRows
+                // expandableRowExpanded={(row) => row.id === expandedRowId}
+                // expandableRowsComponent={DetailRow}
+                // onRowClicked={(row) => handleRowClick(row)}
               />
             </div>
           </div>
