@@ -29,6 +29,13 @@ interface Inquiry {
   user_name?: string;
 }
 
+interface Comment {
+  id: number;
+  inquiry_id: number;
+  comment: string;
+  created_at: string;
+}
+
 const FilterComponent = ({
   onFilter,
   filterText,
@@ -105,6 +112,22 @@ const InquiryFollowup = () => {
 
   // ------------------ Column Start------------------
   const columns = [
+    {
+      name: "",
+      cell: (row: Inquiry) => (
+        <button
+          type="button"
+          onClick={() => handleRowClick(row)}
+          className="cursor-pointer"
+        >
+          <FaChevronRight className="text-gray-600 hover:text-black w-4 h-4" />
+        </button>
+      ),
+      width: "50px",
+      ignoreRowClick: true,
+      allowOverflow: true,
+      button: true,
+    },
     {
       name: "Sr. No",
       cell: (_row: Inquiry, index: number) => (
@@ -340,6 +363,60 @@ const InquiryFollowup = () => {
 
   // ------------------ Model Box End------------------
 
+  // --------------------- Detail Row Start -------------------------
+
+  const [detailRow, setDetailRow] = useState<Comment[]>([]);
+  const [expandedRowId, setExpandedRowId] = useState<number | null>(null);
+
+  const handleRowClick = async (row: Inquiry) => {
+    try {
+      if (expandedRowId === row.id) {
+        setExpandedRowId(null);
+        setDetailRow([]);
+        return;
+      }
+
+      setExpandedRowId(row.id);
+
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/inquiry/GetCommentsByID/${row.id}`
+      );
+      setDetailRow(response.data);
+    } catch (error: any) {
+      toast.error(error.message, {
+        position: "top-right",
+        autoClose: 2000,
+        theme: "colored",
+        transition: Slide,
+      });
+    }
+  };
+
+  // Define DetailRow as a proper component for DataTable
+  const DetailRow = ({ data }: { data: Inquiry }) => {
+    // Only show data if it matches the expanded row
+    if (data.id !== expandedRowId) return null;
+
+    return (
+      <div className="p-3 bg-gray-50 border border-gray-200 rounded-md">
+        <h4 className="font-semibold mb-2">Comments</h4>
+        {detailRow.length === 0 ? (
+          <p className="text-sm text-gray-500">No comments available.</p>
+        ) : (
+          <ul className="space-y-1 text-sm text-gray-700">
+            {detailRow.map((comment) => (
+              <li key={comment.id}>
+                <strong>#{comment.id}:</strong> {comment.comment}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  };
+
+  // --------------------- Detail Row End -------------------------
+
   return (
     <>
       <div className="breadcrumbs-area">
@@ -383,6 +460,10 @@ const InquiryFollowup = () => {
                 pagination
                 highlightOnHover
                 striped
+                expandableRows
+                expandableRowExpanded={(row) => row.id === expandedRowId}
+                expandableRowsComponent={DetailRow}
+                onRowClicked={(row) => handleRowClick(row)}
               />
             </div>
           </div>
