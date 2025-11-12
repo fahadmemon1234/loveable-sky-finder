@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 import { FaRegComment, FaRegCalendarAlt } from "react-icons/fa";
 import AddComment from "./_AddComment";
 import SmallModal from "../../Modal/smallModal";
+import Loader from "../../utility/Loader";
 
 interface Inquiry {
   id: number;
@@ -367,6 +368,7 @@ const InquiryFollowup = () => {
 
   const [detailRow, setDetailRow] = useState<Comment[]>([]);
   const [expandedRowId, setExpandedRowId] = useState<number | null>(null);
+  const [loader, setLoader] = useState(false);
 
   const handleRowClick = async (row: Inquiry) => {
     try {
@@ -376,12 +378,14 @@ const InquiryFollowup = () => {
         return;
       }
 
-      setExpandedRowId(row.id);
-
+      setLoader(true);
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/inquiry/GetCommentsByID/${row.id}`
       );
+
       setDetailRow(response.data);
+
+      setExpandedRowId(row.id);
     } catch (error: any) {
       toast.error(error.message, {
         position: "top-right",
@@ -389,32 +393,67 @@ const InquiryFollowup = () => {
         theme: "colored",
         transition: Slide,
       });
+    } finally {
+      setLoader(false); // stop loader
     }
   };
 
+  const detailColumns: Array<{
+    name: string;
+    selector: (row: Comment) => string | number;
+    sortable?: boolean;
+    wrap?: boolean;
+    width?: string;
+  }> = [
+    {
+      name: "#",
+      selector: (row) => row.id,
+      sortable: true,
+      width: "60px",
+    },
+    {
+      name: "Comment",
+      selector: (row) => row.comment,
+      sortable: true,
+      wrap: true,
+      width: "200px",
+    },
+    {
+      name: "Created Date",
+      selector: (row: Comment) =>
+        new Intl.DateTimeFormat("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }).format(new Date(row.created_at)),
+      sortable: true,
+      width: "140px",
+    },
+  ];
+
   // Define DetailRow as a proper component for DataTable
   const DetailRow = ({ data }: { data: Inquiry }) => {
-    // Only show data if it matches the expanded row
     if (data.id !== expandedRowId) return null;
 
     return (
-      <div className="p-3 bg-gray-50 border border-gray-200 rounded-md">
-        <h4 className="font-semibold mb-2">Comments</h4>
+      <>
         {detailRow.length === 0 ? (
-          <p className="text-sm text-gray-500">No comments available.</p>
+          <p className="text-sm text-gray-500 italic">No comments available.</p>
         ) : (
-          <ul className="space-y-1 text-sm text-gray-700">
-            {detailRow.map((comment) => (
-              <li key={comment.id}>
-                <strong>#{comment.id}:</strong> {comment.comment}
-              </li>
-            ))}
-          </ul>
+          <div style={{ padding: "10px" }}>
+            <DataTable
+              columns={detailColumns}
+              data={detailRow}
+              pagination={false}
+              highlightOnHover
+              striped
+              dense
+            />
+          </div>
         )}
-      </div>
+      </>
     );
   };
-
   // --------------------- Detail Row End -------------------------
 
   return (
@@ -453,6 +492,12 @@ const InquiryFollowup = () => {
         <div className="card-body">
           <div className="row">
             <div className="col-md-12 col-lg-12 col-sm-12">
+              {loader && (
+                <div className="flex justify-center items-center py-4">
+                  <Loader />
+                </div>
+              )}
+
               <DataTable
                 columns={columns}
                 data={filteredItems}

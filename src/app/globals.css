@@ -600,14 +600,19 @@ input:disabled {
   padding: 8px 20px !important;
 }
 
-.text-customColor{
+.text-customColor {
   color: hsl(var(--main));
 }
 
-.text-customColor-2{
-  color: #ECB51E !important;
+.text-customColor-2 {
+  color: #ecb51e !important;
 }
 
-.btn-custom{
-  background-color: #ECB51E !important;
+.btn-custom {
+  background-color: #ecb51e !important;
+}
+
+.sc-fhHczv.fdUfPW.rdt_TableHeadRow {
+  background-color: #ecb51e !important;
+  color: black !important;
 }
