@@ -35,177 +35,6 @@ const InquiryDetail = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
-  const Validation = () => {
-    if (!from?.value) {
-      Swal.fire({
-        icon: "error",
-        position: "center",
-        title: "Please enter the departure city.",
-      });
-      return false;
-    }
-
-    if (!to?.value) {
-      Swal.fire({
-        icon: "error",
-        position: "center",
-        title: "Please enter the destination city.",
-      });
-      return false;
-    }
-
-    if (from.value === to.value) {
-      Swal.fire({
-        icon: "error",
-        position: "center",
-        title: "Invalid Selection",
-        text: "Departure and destination cannot be the same.",
-      });
-      return false;
-    }
-
-    if (!departDate) {
-      Swal.fire({
-        icon: "error",
-        position: "center",
-        title: "Please select the departure date.",
-      });
-      return false;
-    }
-
-    if (tripType === "round" && !returnDate) {
-      Swal.fire({
-        icon: "error",
-        position: "center",
-        title: "Please select the return date.",
-      });
-      return false;
-    }
-
-    if (!name) {
-      Swal.fire({
-        icon: "error",
-        position: "center",
-        title: "Please enter your name.",
-      });
-      return false;
-    }
-
-    if (!email) {
-      Swal.fire({
-        icon: "error",
-        position: "center",
-        title: "Please enter your email.",
-      });
-      return false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      Swal.fire({
-        icon: "error",
-        position: "center",
-        title: "Please enter a valid email address.",
-      });
-      return false;
-    }
-
-    if (!phone) {
-      Swal.fire({
-        icon: "error",
-        position: "center",
-        title: "Please enter your phone number.",
-      });
-      return false;
-    }
-    return true;
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!Validation()) {
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/inquiry`,
-        {
-          from: from.label,
-          to: to.label,
-          departDate: format(departDate as Date, "yyyy-MM-dd"),
-          ...(tripType === "round" && returnDate
-            ? { returnDate: format(returnDate, "yyyy-MM-dd") }
-            : {}),
-          adults,
-          children,
-          infants,
-          name,
-          email,
-          phone,
-          tripType,
-        }
-      );
-
-      if (response.status === 200) {
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Inquiry saved successfully",
-          text: "Agent will contact you soon on your email or phone number.",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      } else if (response.status === 400) {
-        Swal.fire({
-          icon: "error",
-          position: "center",
-          title: "Bad Request",
-          text: "Please check your details and try again.",
-        });
-      } else if (response.status === 500) {
-        Swal.fire({
-          icon: "error",
-          position: "center",
-          title: "Server Error",
-          text: "Something went wrong on the server. Please try later.",
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          position: "center",
-          title: "Unexpected Error",
-          text: "An unexpected error occurred. Please try again.",
-        });
-      }
-
-      setFrom(null);
-      setTo(null);
-      setDepartDate(undefined);
-      setReturnDate(undefined);
-      setAdults("1");
-      setChildren("0");
-      setInfants("0");
-      setName("");
-      setEmail("");
-      setPhone("");
-    } catch (error: any) {
-      Swal.fire({
-        icon: "error",
-        position: "center",
-        title: "Connection Error",
-        text:
-          error.response?.data?.message ||
-          "Unable to connect to the server. Please try again.",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // const [departDate, setDepartDate] = useState<Date | undefined>()
   const [open, setOpen] = useState(false);
 
@@ -314,21 +143,45 @@ const InquiryDetail = () => {
     return () => clearTimeout(delay);
   }, [searchTermTo]);
 
-
+  const [inquiry, setInquiry] = useState<any>(null);
 
   useEffect(() => {
-      const fetchInquiry = async () => {
-        try {
-          const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/inquiry/GetInquiryByID/${inquiryId}`
-          );
+    const fetchInquiry = async () => {
+      try {
+        if (!id) return;
 
-          console.log(response.data)
-        } catch (err) {
-          console.error(err);
-        }
+        debugger;
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/inquiry/GetInquiryByID/${id}`
+        );
+
+        const data = response.data[0];
+        // console.log("✅ Inquiry Data:", data);
+        setInquiry(data);
+
+        setFrom({
+          label: data.from_location,
+          value: data.from_location,
+        });
+        setTo({
+          label: data.to_location,
+          value: data.to_location,
+        });
+
+        setAdults(data.adults);
+        setChildren(data.children);
+        setInfants(data.infants);
+
+        setName(data.name);
+        setEmail(data.email);
+        setPhone(data.phone);
+      } catch (err) {
+        console.error("❌ Error fetching inquiry:", err);
       }
-  })
+    };
+
+    fetchInquiry();
+  }, [id]);
 
   return (
     <div className="card shadow-sm rounded">
@@ -342,8 +195,10 @@ const InquiryDetail = () => {
                 name="tripType"
                 id="round"
                 value="round"
-                checked={tripType === "round"}
-                onChange={() => setTripType("round")}
+                checked={inquiry?.tripType === "round"}
+                onChange={() =>
+                  setInquiry((prev: any) => ({ ...prev, tripType: "round" }))
+                }
               />
               <label
                 className="form-check-label fw-semibold"
@@ -361,8 +216,10 @@ const InquiryDetail = () => {
                 name="tripType"
                 id="one"
                 value="one"
-                checked={tripType === "one"}
-                onChange={() => setTripType("one")}
+                checked={inquiry?.tripType === "one"}
+                onChange={() =>
+                  setInquiry((prev: any) => ({ ...prev, tripType: "one" }))
+                }
               />
               <label
                 className="form-check-label fw-semibold"
@@ -452,20 +309,10 @@ const InquiryDetail = () => {
                   Depart Date *
                 </label>
 
-                <input
-                  type="date"
-                  id="DepartDate"
-                  className="form-control"
-                  value={
-                    departDate
-                      ? departDate.toISOString().split("T")[0] // convert Date -> string (YYYY-MM-DD)
-                      : ""
-                  }
-                  onChange={(e) => setDepartDate(new Date(e.target.value))} // convert string -> Date
-                />
+                <input type="date" id="DepartDate" className="form-control" />
               </div>
 
-              {tripType === "round" && (
+              {inquiry?.tripType === "round" && (
                 <div className="col-md-6">
                   <label
                     className="form-check-label mb-10 fw-semibold"
@@ -474,17 +321,7 @@ const InquiryDetail = () => {
                     Return Date *
                   </label>
 
-                  <input
-                    type="date"
-                    id="returnDate"
-                    className="form-control"
-                    value={
-                      returnDate
-                        ? returnDate.toISOString().split("T")[0] // convert Date -> string (YYYY-MM-DD)
-                        : ""
-                    }
-                    onChange={(e) => setReturnDate(new Date(e.target.value))} // convert string -> Date
-                  />
+                  <input type="date" id="returnDate" className="form-control" />
                 </div>
               )}
             </div>
@@ -620,7 +457,7 @@ const InquiryDetail = () => {
                 />
               </div>
 
-               <div className="col-md-4">
+              <div className="col-md-4">
                 <label
                   className="form-check-label mb-10 fw-semibold"
                   htmlFor="Phone"
