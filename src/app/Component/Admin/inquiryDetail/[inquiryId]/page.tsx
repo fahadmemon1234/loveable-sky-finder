@@ -38,33 +38,16 @@ const InquiryDetail = () => {
   const id = decryptData(inquiryId);
 
   const [loading, setLoading] = useState(false);
-  const [tripType, setTripType] = useState("round");
   const [from, setFrom] = useState<any>(null);
   const [to, setTo] = useState<any>(null);
-  const [departDate, setDepartDate] = useState<Date>();
-  const [returnDate, setReturnDate] = useState<Date>();
+  const [departDate, setDepartDate] = useState<Date | undefined>();
+  const [returnDate, setReturnDate] = useState<Date | undefined>();
   const [adults, setAdults] = useState("1");
   const [children, setChildren] = useState("0");
   const [infants, setInfants] = useState("0");
-  // const [flightClass, setFlightClass] = useState("0");
-  // const [directOnly, setDirectOnly] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-
-  // const [departDate, setDepartDate] = useState<Date | undefined>()
-  const [open, setOpen] = useState(false);
-
-  const handleSelect = (date: Date | undefined) => {
-    setDepartDate(date);
-    setOpen(false);
-  };
-
-  const [openReturn, setOpenReturn] = useState(false);
-  const handleSelectReturn = (date: Date | undefined) => {
-    setReturnDate(date);
-    setOpenReturn(false);
-  };
 
   const [searchTerm, setSearchTerm] = useState("");
   const [flights, setFlights] = useState([]);
@@ -191,6 +174,9 @@ const InquiryDetail = () => {
         setChildren(data.children);
         setInfants(data.infants);
 
+        setDepartDate(new Date(data.departDate));
+        setReturnDate(new Date(data.returnDate));
+
         setName(data.name);
         setEmail(data.email);
         setPhone(data.phone);
@@ -211,7 +197,6 @@ const InquiryDetail = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [refresh, setRefresh] = useState(false);
   const [filterText, setFilterText] = useState("");
-  const [userId, setUserId] = useState(0);
 
   const fetchInquiries = async () => {
     try {
@@ -429,6 +414,21 @@ const InquiryDetail = () => {
                       type="date"
                       id="DepartDate"
                       className="form-control"
+                      value={
+                        departDate
+                          ? new Date(
+                              departDate.getTime() -
+                                departDate.getTimezoneOffset() * 60000
+                            )
+                              .toISOString()
+                              .split("T")[0]
+                          : ""
+                      } // Adjust for timezone to show correct local date
+                      onChange={(e) =>
+                        setDepartDate(
+                          e.target.value ? new Date(e.target.value) : undefined
+                        )
+                      }
                     />
                   </div>
 
@@ -445,6 +445,23 @@ const InquiryDetail = () => {
                         type="date"
                         id="returnDate"
                         className="form-control"
+                        value={
+                          returnDate
+                            ? new Date(
+                                returnDate.getTime() -
+                                  returnDate.getTimezoneOffset() * 60000
+                              )
+                                .toISOString()
+                                .split("T")[0]
+                            : ""
+                        } // Adjust for timezone to show correct local date
+                        onChange={(e) =>
+                          setReturnDate(
+                            e.target.value
+                              ? new Date(e.target.value)
+                              : undefined
+                          )
+                        }
                       />
                     </div>
                   )}
