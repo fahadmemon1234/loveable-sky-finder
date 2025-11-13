@@ -56,6 +56,7 @@ import {
   addInquiryComment,
   getCommentByID,
   addInquiryCalendar,
+  getInquiryByID,
 } from "../models/Inquiry.js";
 
 const router = express.Router();
@@ -162,6 +163,7 @@ router.get("/inquiry/GetCommentsByID/:inquiry_id", async (req, res) => {
   }
 });
 
+
 router.post("/inquiry/SaveFollowUpDate", async (req, res) => {
   try {
     const { user_id, inquiry_id, follow_up_date, follow_up_time } = req.body;
@@ -195,4 +197,24 @@ router.post("/inquiry/SaveFollowUpDate", async (req, res) => {
   }
 });
 
+
+router.get("/inquiry/GetInquiryByID/:inquiry_id", async (req, res) => {
+  try {
+    const { inquiry_id } = req.params;
+
+    if (!inquiry_id) {
+      return res.status(400).json({ message: "Inquiry ID is required" });
+    }
+
+    const comments = await getInquiryByID(inquiry_id);
+    res.status(200).json(comments);
+  } catch (err) {
+    console.error("❌ Error fetching comments:", err);
+    res.status(500).json({ message: "Error fetching comments" });
+  }
+});
+
 export default router;
+
+
+

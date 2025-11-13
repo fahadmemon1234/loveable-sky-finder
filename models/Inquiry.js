@@ -214,3 +214,25 @@ export const addInquiryCalendar = async (data) => {
     throw err;
   }
 };
+
+
+export const getInquiryByID = async (inquiry_id) => {
+  try {
+    const connection = await db();
+    const [rows] = await connection.execute(
+      `
+      SELECT 
+        *
+      FROM inquiry i
+      WHERE i.id = ?
+      ORDER BY i.id DESC
+      `,
+      [inquiry_id]
+    );
+    await connection.end();
+    return rows;
+  } catch (err) {
+    console.error("❌ Error fetching comments:", err);
+    throw err;
+  }
+};
