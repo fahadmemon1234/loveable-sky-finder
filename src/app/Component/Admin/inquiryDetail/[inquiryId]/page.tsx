@@ -330,7 +330,7 @@ const InquiryDetail = () => {
                 onChange={() => setTripType("round")}
               />
               <label
-                className="form-check-label font-bold"
+                className="form-check-label fw-semibold"
                 htmlFor="round"
                 style={{ paddingLeft: "10px" }}
               >
@@ -349,7 +349,7 @@ const InquiryDetail = () => {
                 onChange={() => setTripType("one")}
               />
               <label
-                className="form-check-label font-bold"
+                className="form-check-label fw-semibold"
                 htmlFor="one"
                 style={{ paddingLeft: "10px" }}
               >
@@ -359,9 +359,12 @@ const InquiryDetail = () => {
           </div>
 
           <div className="container">
-            <div className="row mt-20">
+            <div className="row mt-20 mb-20">
               <div className="col-md-6">
-                <label className="form-check-label mb-10 font-bold" htmlFor="from">
+                <label
+                  className="form-check-label mb-10 fw-semibold"
+                  htmlFor="from"
+                >
                   From *
                 </label>
 
@@ -391,7 +394,10 @@ const InquiryDetail = () => {
               </div>
 
               <div className="col-md-6">
-                <label className="form-check-label mb-10 font-bold" htmlFor="to">
+                <label
+                  className="form-check-label mb-10 fw-semibold"
+                  htmlFor="to"
+                >
                   To *
                 </label>
 
@@ -417,6 +423,202 @@ const InquiryDetail = () => {
                   }
                   className="react-select-container"
                   classNamePrefix="react-select"
+                />
+              </div>
+            </div>
+
+            <div className="row mt-20 mb-20">
+              <div className="col-md-6">
+                <label
+                  className="form-check-label mb-10 fw-semibold"
+                  htmlFor="DepartDate"
+                >
+                  Depart Date *
+                </label>
+
+                <input
+                  type="date"
+                  id="DepartDate"
+                  className="form-control"
+                  value={
+                    departDate
+                      ? departDate.toISOString().split("T")[0] // convert Date -> string (YYYY-MM-DD)
+                      : ""
+                  }
+                  onChange={(e) => setDepartDate(new Date(e.target.value))} // convert string -> Date
+                />
+              </div>
+
+              {tripType === "round" && (
+                <div className="col-md-6">
+                  <label
+                    className="form-check-label mb-10 fw-semibold"
+                    htmlFor="returnDate"
+                  >
+                    Return Date *
+                  </label>
+
+                  <input
+                    type="date"
+                    id="returnDate"
+                    className="form-control"
+                    value={
+                      returnDate
+                        ? returnDate.toISOString().split("T")[0] // convert Date -> string (YYYY-MM-DD)
+                        : ""
+                    }
+                    onChange={(e) => setReturnDate(new Date(e.target.value))} // convert string -> Date
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="row g-4 my-4 mb-20">
+              {[
+                {
+                  label: "Adults (12+ years)",
+                  value: adults,
+                  setValue: setAdults,
+                },
+                {
+                  label: "Children (2–11 years)",
+                  value: children,
+                  setValue: setChildren,
+                },
+                {
+                  label: "Infants (below 2 years)",
+                  value: infants,
+                  setValue: setInfants,
+                },
+              ].map(({ label, value, setValue }) => (
+                <div className="col-md-4" key={label}>
+                  <label className="form-label fw-semibold d-block mb-10">
+                    {label}
+                  </label>
+
+                  <div
+                    className="d-flex align-items-center justify-content-between border rounded-4 shadow-sm px-2 py-1 bg-white"
+                    style={{ minHeight: "48px" }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setValue((prev: any) =>
+                          Number(prev) > 0 ? String(Number(prev) - 1) : "0"
+                        )
+                      }
+                      className="btn fw-bold flex-fill"
+                      style={{
+                        backgroundColor: "#ecb51e",
+                        color: "black !important",
+                        border: "none",
+                        borderRadius: "8px",
+                        marginRight: "6px",
+                        transition: "all 0.2s ease-in-out",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.opacity = "0.9")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.opacity = "1")
+                      }
+                    >
+                      –
+                    </button>
+
+                    <span
+                      className="text-center fw-semibold flex-fill py-1"
+                      style={{
+                        minWidth: "50px",
+                        border: "1px solid #eee",
+                        borderRadius: "8px",
+                      }}
+                    >
+                      {value}
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setValue((prev: any) =>
+                          Number(prev) < 9 ? String(Number(prev) + 1) : "9"
+                        )
+                      }
+                      className="btn fw-bold flex-fill"
+                      style={{
+                        backgroundColor: "#ecb51e",
+                        color: "black !important",
+                        border: "none",
+                        borderRadius: "8px",
+                        marginLeft: "6px",
+                        transition: "all 0.2s ease-in-out",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.opacity = "0.9")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.opacity = "1")
+                      }
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="row g-4 my-4 mb-20">
+              <div className="col-md-4">
+                <label
+                  className="form-check-label mb-10 fw-semibold"
+                  htmlFor="Name"
+                >
+                  Name *
+                </label>
+
+                <input
+                  type="text"
+                  id="Name"
+                  className="form-control"
+                  placeholder="Enter Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+
+              <div className="col-md-4">
+                <label
+                  className="form-check-label mb-10 fw-semibold"
+                  htmlFor="Email"
+                >
+                  Email *
+                </label>
+
+                <input
+                  type="text"
+                  id="Email"
+                  className="form-control"
+                  placeholder="Enter Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+               <div className="col-md-4">
+                <label
+                  className="form-check-label mb-10 fw-semibold"
+                  htmlFor="Phone"
+                >
+                  Phone *
+                </label>
+
+                <input
+                  type="text"
+                  id="Phone"
+                  className="form-control"
+                  placeholder="Enter Phone"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
             </div>
