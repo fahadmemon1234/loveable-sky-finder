@@ -314,6 +314,22 @@ const InquiryDetail = () => {
     return () => clearTimeout(delay);
   }, [searchTermTo]);
 
+
+
+  useEffect(() => {
+      const fetchInquiry = async () => {
+        try {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/inquiry/GetInquiryByID/${inquiryId}`
+          );
+
+          console.log(response.data)
+        } catch (err) {
+          console.error(err);
+        }
+      }
+  })
+
   return (
     <div className="card shadow-sm rounded">
       <div className="p-4 ">
@@ -321,7 +337,7 @@ const InquiryDetail = () => {
           <div className="d-flex flex-wrap justify-content-center gap-3 mb-3">
             <div className="form-check-inline form-check-inline">
               <input
-                className="form-check-input"
+                className="form-check-input custom-radio"
                 type="radio"
                 name="tripType"
                 id="round"
@@ -340,7 +356,7 @@ const InquiryDetail = () => {
 
             <div className="form-check-inline form-check-inline">
               <input
-                className="form-check-input"
+                className="form-check-input custom-radio"
                 type="radio"
                 name="tripType"
                 id="one"

@@ -616,3 +616,15 @@ input:disabled {
   background-color: #ecb51e !important;
   color: black !important;
 }
+
+
+.custom-radio {
+    accent-color: hsl(var(--main));
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+  }
+
+  .form-check-label {
+    cursor: pointer;
+  }
