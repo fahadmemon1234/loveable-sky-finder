@@ -19,28 +19,28 @@ const Sidebar = ({ children }: NavbarProps) => {
     }));
   };
 
-  useEffect(() => {
-    const studentPaths = [
-      "/Component/Admin/admissionForm",
-      "/Component/Admin/Student",
-      "/Component/Admin/StudentDetail",
-    ];
-    const accountPaths = [
-      "/Component/Admin/Account/Expenses",
-      "/Component/Admin/Account/Fees",
-      "/Component/Admin/Account/TeacherSalary",
-    ];
-    const attendancePaths = [
-      "/Component/Admin/Attendance",
-      "/Component/Admin/ViewAttendance",
-    ];
+  // useEffect(() => {
+  //   const studentPaths = [
+  //     "/Component/Admin/admissionForm",
+  //     "/Component/Admin/Student",
+  //     "/Component/Admin/StudentDetail",
+  //   ];
+  //   const accountPaths = [
+  //     "/Component/Admin/Account/Expenses",
+  //     "/Component/Admin/Account/Fees",
+  //     "/Component/Admin/Account/TeacherSalary",
+  //   ];
+  //   const attendancePaths = [
+  //     "/Component/Admin/Attendance",
+  //     "/Component/Admin/ViewAttendance",
+  //   ];
 
-    setOpenMenus({
-      students: studentPaths.includes(pathname),
-      accounts: accountPaths.includes(pathname),
-      attendence: attendancePaths.includes(pathname),
-    });
-  }, [pathname]);
+  //   setOpenMenus({
+  //     students: studentPaths.includes(pathname),
+  //     accounts: accountPaths.includes(pathname),
+  //     attendence: attendancePaths.includes(pathname),
+  //   });
+  // }, [pathname]);
 
   const isActive = (path: string | string[]) => {
     if (Array.isArray(path)) {
@@ -122,6 +122,22 @@ const Sidebar = ({ children }: NavbarProps) => {
                     <i className="ph ph-chat-circle-text"></i>
                   </span>
                   <span className="text">Inquiry Follow Up</span>
+                </Link>
+              </li>
+
+              <li
+                className={`sidebar-menu__item ${
+                  isActive("/Component/Admin/followupReminder") ? "activePage" : ""
+                }`}
+                >
+                <Link
+                  href="/Component/Admin/followupReminder"
+                  className={`sidebar-menu__link `}
+                >
+                  <span className="icon">
+                    <i className="ph ph-bell"></i>
+                  </span>
+                  <span className="text">Follow-Up Reminder</span>
                 </Link>
               </li>
             </ul>
