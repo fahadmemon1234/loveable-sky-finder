@@ -131,6 +131,7 @@ export const getInquiries = async () => {
   }
 };
 
+
 export const updateInquiry = async (id, view_id) => {
   try {
     const connection = await db();
@@ -233,6 +234,48 @@ export const getInquiryByID = async (inquiry_id) => {
     return rows;
   } catch (err) {
     console.error("❌ Error fetching comments:", err);
+    throw err;
+  }
+};
+
+
+export const getfollowupschedule = async () => {
+  try {
+    const connection = await db();
+    const [rows] = await connection.execute(
+      `
+           select s.*, u.name from follow_up_schedule s
+      LEFT JOIN users u ON s.user_id = u.id
+ORDER BY s.id DESC;
+      `
+    );
+    await connection.end();
+    return rows;
+  } catch (err) {
+    console.error("❌ Error fetching inquiries:", err);
+    throw err;
+  }
+};
+
+
+export const updateFollowupschedule = async (id, is_read) => {
+  try {
+    const connection = await db();
+
+    const query = `
+      UPDATE follow_up_schedule
+      SET is_read = ?
+      WHERE id = ?
+    `;
+
+    const values = [is_read, id];
+
+    const [result] = await connection.execute(query, values);
+    await connection.end();
+
+    return { message: "Follow-up status updated", result };
+  } catch (err) {
+    console.error("Error updating follow-up schedule:", err);
     throw err;
   }
 };

@@ -57,6 +57,8 @@ import {
   getCommentByID,
   addInquiryCalendar,
   getInquiryByID,
+  getfollowupschedule,  
+  updateFollowupschedule,
 } from "../models/Inquiry.js";
 
 const router = express.Router();
@@ -211,6 +213,41 @@ router.get("/inquiry/GetInquiryByID/:inquiry_id", async (req, res) => {
   } catch (err) {
     console.error("❌ Error fetching comments:", err);
     res.status(500).json({ message: "Error fetching comments" });
+  }
+});
+
+
+router.get("/inquiry/getfollowupschedule", async (req, res) => {
+  try {
+
+    const comments = await getfollowupschedule();
+    res.status(200).json(comments);
+  } catch (err) {
+    console.error("❌ Error fetching comments:", err);
+    res.status(500).json({ message: "Error fetching comments" });
+  }
+});
+
+router.post("/update-followup", async (req, res) => {
+  try {
+    const { id, is_read } = req.body;
+
+    if (id === undefined || is_read === undefined) {
+      return res
+        .status(400)
+        .json({ message: "id and is_read are required" });
+    }
+
+    const result = await updateFollowupschedule(id, is_read);
+
+    return res
+      .status(200)
+      .json({ message: "Follow-up status updated successfully", result });
+  } catch (err) {
+    console.error("Error updating follow-up schedule:", err);
+    return res
+      .status(500)
+      .json({ message: "Error updating follow-up status" });
   }
 });
 
