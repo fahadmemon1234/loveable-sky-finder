@@ -59,6 +59,7 @@ import {
   getInquiryByID,
   getfollowupschedule,  
   updateFollowupschedule,
+  deleteFollowupschedule,
 } from "../models/Inquiry.js";
 
 const router = express.Router();
@@ -77,10 +78,11 @@ router.post("/inquiry", async (req, res) => {
     email,
     phone,
     tripType,
+    deviceInfo,
   } = req.body;
 
   // ✅ Validation
-  if (!from || !to || !departDate || !name || !email || !phone) {
+  if (!from || !to || !departDate || !name || !email || !phone || !deviceInfo) {
     return res.status(400).json({ message: "Please fill all required fields" });
   }
 
@@ -250,6 +252,29 @@ router.post("/update-followup", async (req, res) => {
       .json({ message: "Error updating follow-up status" });
   }
 });
+
+
+router.post("/delete-followup", async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: "id is required" });
+    }
+
+    const result = await deleteFollowupschedule(id);
+
+    if (!result.success) {
+      return res.status(404).json({ message: result.message });
+    }
+
+    return res.status(200).json({ message: result.message });
+  } catch (err) {
+    console.error("Error deleting follow-up schedule:", err);
+    return res.status(500).json({ message: "Error deleting record" });
+  }
+});
+
 
 export default router;
 

@@ -75,14 +75,15 @@ export const addInquiry = async (data) => {
     email,
     phone,
     tripType,
+    deviceInfo,
   } = data;
 
   try {
     const connection = await db();
     const query = `
       INSERT INTO inquiry 
-      (from_location, to_location, departDate, returnDate, adults, children, infants, name, email, phone, tripType)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (from_location, to_location, departDate, returnDate, adults, children, infants, name, email, phone, tripType, deviceInfo)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
@@ -97,6 +98,7 @@ export const addInquiry = async (data) => {
       email,
       phone,
       tripType,
+      JSON.stringify(deviceInfo),
     ];
 
     await connection.execute(query, values);
@@ -130,7 +132,6 @@ export const getInquiries = async () => {
     throw err;
   }
 };
-
 
 export const updateInquiry = async (id, view_id) => {
   try {
@@ -172,7 +173,6 @@ export const addInquiryComment = async (data) => {
   }
 };
 
-
 export const getCommentByID = async (inquiry_id) => {
   try {
     const connection = await db();
@@ -193,7 +193,6 @@ export const getCommentByID = async (inquiry_id) => {
     throw err;
   }
 };
-
 
 export const addInquiryCalendar = async (data) => {
   const { user_id, inquiry_id, follow_up_date, follow_up_time } = data;
@@ -216,7 +215,6 @@ export const addInquiryCalendar = async (data) => {
   }
 };
 
-
 export const getInquiryByID = async (inquiry_id) => {
   try {
     const connection = await db();
@@ -238,7 +236,6 @@ export const getInquiryByID = async (inquiry_id) => {
   }
 };
 
-
 export const getfollowupschedule = async () => {
   try {
     const connection = await db();
@@ -256,7 +253,6 @@ ORDER BY s.id DESC;
     throw err;
   }
 };
-
 
 export const updateFollowupschedule = async (id, is_read) => {
   try {
@@ -279,3 +275,30 @@ export const updateFollowupschedule = async (id, is_read) => {
     throw err;
   }
 };
+
+export const deleteFollowupschedule = async (id) => {
+  try {
+    const connection = await db();
+
+    const query = `
+      DELETE FROM follow_up_schedule
+      WHERE id = ?;
+    `;
+
+    const values = [id];
+
+    const [result] = await connection.execute(query, values);
+    await connection.end();
+
+    // If no row deleted
+    if (result.affectedRows === 0) {
+      return { success: false, message: "Record not found" };
+    }
+
+    return { success: true, message: "Record deleted successfully" };
+  } catch (err) {
+    console.error("Error deleting follow-up schedule:", err);
+    throw err;
+  }
+};
+
