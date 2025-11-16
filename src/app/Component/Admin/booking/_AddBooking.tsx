@@ -318,6 +318,104 @@ const AddBooking: React.FC<AddBookingProps> = ({ bookings, setBookings }) => {
           </div>
         </div>
       </div>
+
+      <div className="row mb-10">
+        <div className="col-md-4 col-lg-4 col-sm-12">
+          <div className="mb-4">
+            <label className="form-label" htmlFor="deposit">
+              Deposit Amount: <span className="validate">*</span>
+            </label>
+
+            <input
+              type="text"
+              id="deposit"
+              className="form-control"
+              placeholder="Enter Deposit..."
+              name="deposit_amount"
+              value={
+                booking.deposit_amount
+                  ? booking.deposit_amount.toLocaleString("en-US")
+                  : ""
+              }
+              onChange={(e) => {
+                const raw = e.target.value.replace(/,/g, "");
+                const num = Number(raw);
+
+                const remaining = booking.total_amount
+                  ? booking.total_amount - num
+                  : 0;
+
+                setBookings([
+                  {
+                    ...booking,
+                    deposit_amount: num,
+                    remaining_amount: remaining,
+                  },
+                ]);
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="col-md-4 col-lg-4 col-sm-12">
+          <div className="mb-4">
+            <label className="form-label" htmlFor="Remaining">
+              Remaining Amount: <span className="validate">*</span>
+            </label>
+
+            <input
+              type="text"
+              id="Remaining"
+              className="form-control"
+              placeholder="Enter Remaining..."
+              name="remaining_amount"
+              value={
+                booking.remaining_amount
+                  ? booking.remaining_amount.toLocaleString("en-US")
+                  : ""
+              }
+              readOnly
+            />
+          </div>
+        </div>
+
+        <div className="col-md-4 col-lg-4 col-sm-12">
+          <div className="mb-4">
+            <label className="form-label" htmlFor="totalAmount">
+              Total Amount: <span className="validate">*</span>
+            </label>
+
+            <input
+              type="text"
+              id="totalAmount"
+              className="form-control"
+              placeholder="Enter Total Amount..."
+              name="totalAmount"
+              value={
+                booking.total_amount
+                  ? booking.total_amount.toLocaleString("en-US")
+                  : ""
+              }
+              onChange={(e) => {
+                const raw = e.target.value.replace(/,/g, "");
+                const num = Number(raw);
+
+                const remaining = booking.deposit_amount
+                  ? num - booking.deposit_amount
+                  : num;
+
+                setBookings([
+                  {
+                    ...booking,
+                    total_amount: num,
+                    remaining_amount: remaining,
+                  },
+                ]);
+              }}
+            />
+          </div>
+        </div>
+      </div>
     </>
   );
 };
