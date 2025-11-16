@@ -27,7 +27,7 @@ const ExtraLargeModal: React.FC<ExtraLargeModalProps> = ({
           <Button variant="secondary" onClick={onClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={onSave}>
+          <Button variant="primary" onClick={onSave} className="btn-custom">
             Save changes
           </Button>
         </Modal.Footer>

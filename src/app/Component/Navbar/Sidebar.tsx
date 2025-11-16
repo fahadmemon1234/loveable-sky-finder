@@ -140,6 +140,22 @@ const Sidebar = ({ children }: NavbarProps) => {
                   <span className="text">Follow-Up Reminder</span>
                 </Link>
               </li>
+
+              <li
+                className={`sidebar-menu__item ${
+                  isActive("/Component/Admin/booking") ? "activePage" : ""
+                }`}
+                >
+                <Link
+                  href="/Component/Admin/booking"
+                  className={`sidebar-menu__link `}
+                >
+                  <span className="icon">
+                    <i className="ph ph-book"></i>
+                  </span>
+                  <span className="text">Booking</span>
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
