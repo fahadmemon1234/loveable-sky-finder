@@ -32,6 +32,7 @@ interface Inquiry {
   created_at: string;
   view_id?: number;
   user_name?: string;
+  deviceInfo?: string;
 }
 
 interface Comment {
@@ -117,22 +118,6 @@ const InquiryFollowup = () => {
 
   // ------------------ Column Start------------------
   const columns = [
-    // {
-    //   name: "",
-    //   cell: (row: Inquiry) => (
-    //     <button
-    //       type="button"
-    //       onClick={() => handleRowClick(row)}
-    //       className="cursor-pointer"
-    //     >
-    //       <FaChevronRight className="text-gray-600 hover:text-black w-4 h-4" />
-    //     </button>
-    //   ),
-    //   width: "50px",
-    //   ignoreRowClick: true,
-    //   allowOverflow: true,
-    //   button: true,
-    // },
     {
       name: "Sr. No",
       cell: (_row: Inquiry, index: number) => (
@@ -167,21 +152,34 @@ const InquiryFollowup = () => {
     {
       name: "Inquiry Title",
       cell: (row: Inquiry) => {
-        const loc = row.to_location || "";
-        const firstVisible = 3; // starting characters
-        const visibleStart = loc.slice(0, firstVisible);
+        const shortText =
+          row.to_location.length > 20
+            ? row.to_location.slice(0, 20) + "..."
+            : row.to_location;
+
+        let deviceName = "";
+        if (row.deviceInfo) {
+          try {
+            deviceName = JSON.parse(row.deviceInfo).device || "";
+          } catch (error) {
+            console.error("Invalid deviceInfo JSON", error);
+          }
+        }
 
         return (
           <span style={{ whiteSpace: "nowrap" }}>
             <strong>Flight Search: </strong>
-            {row.to_location}
+            {shortText}
+
+            <br />
+            {deviceName}
           </span>
         );
       },
       sortable: true,
-      wrap: true, // allows text to wrap if needed
-      width: "350px",
-      grow: 1, // lets DataTable auto-adjust column width
+      wrap: false, // wrap off for short text
+      width: "270px", // adjust as needed
+      grow: 0,
     },
     {
       name: "Going Date + Pax",
