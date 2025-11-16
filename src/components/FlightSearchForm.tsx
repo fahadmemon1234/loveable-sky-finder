@@ -119,8 +119,40 @@ const FlightSearchForm = () => {
     return true;
   };
 
+  const getDeviceInfo = () => {
+    debugger;
+  const userAgent = navigator.userAgent.toLowerCase();
+
+  let device = "Desktop";
+
+  if (/mobile|iphone|ipad|android/.test(userAgent)) {
+    device = "Mobile";
+  }
+
+  if (/tablet/.test(userAgent)) {
+    device = "Tablet";
+  }
+
+  const browser = (() => {
+    if (/chrome/.test(userAgent)) return "Chrome";
+    if (/firefox/.test(userAgent)) return "Firefox";
+    if (/safari/.test(userAgent)) return "Safari";
+    if (/edge/.test(userAgent)) return "Edge";
+    return "Unknown Browser";
+  })();
+
+  return {
+    device,
+    browser,
+    userAgent: navigator.userAgent,
+    platform: navigator.platform,
+  };
+};
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const deviceInfo = getDeviceInfo();
 
     if (!Validation()) {
       return;
@@ -145,6 +177,7 @@ const FlightSearchForm = () => {
           email,
           phone,
           tripType,
+          deviceInfo,
         }
       );
 
