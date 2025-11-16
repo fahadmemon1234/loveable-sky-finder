@@ -628,3 +628,7 @@ input:disabled {
   .form-check-label {
     cursor: pointer;
   }
+
+  .trash-btn{
+    color: red;
+  }

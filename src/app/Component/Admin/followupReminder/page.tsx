@@ -9,6 +9,7 @@ import { toast, Slide } from "react-toastify";
 import Cookies from "js-cookie";
 import { encryptData } from "../../utility/encryptDecrypt";
 import { useRouter } from "next/navigation";
+import { MdDeleteForever } from "react-icons/md";
 
 export interface FollowUpSchedule {
   id: number;
@@ -143,7 +144,10 @@ const FollowupReminder = () => {
     {
       name: "Inquiry ID",
       cell: (row: FollowUpSchedule) => (
-        <a style={{ cursor: "pointer", color: "#007BFF" }} onClick={() => handleNext(row)}>
+        <a
+          style={{ cursor: "pointer", color: "#007BFF" }}
+          onClick={() => handleNext(row)}
+        >
           <strong>{row.inquiry_id.toString().padStart(3, "0")}</strong>
         </a>
       ),
@@ -172,6 +176,24 @@ const FollowupReminder = () => {
       name: "Brand",
       cell: (row: FollowUpSchedule) => <span>Sky Nova Travels</span>,
     },
+    {
+      name: "Action",
+      width: "120px",
+      cell: (row: FollowUpSchedule) => {
+        return (
+          <div className="flex items-center justify-center gap-2">
+            <button
+              type="button"
+              className="cursor-pointer trash-btn text-red-600"
+              
+              onClick={(e) => handleDelete(row.id)}
+            >
+              <MdDeleteForever className="w-20 h-20 font-bold text-red-600" />
+            </button>
+          </div>
+        );
+      },
+    },
   ];
 
   // ------------------ Column End------------------
@@ -194,6 +216,48 @@ const FollowupReminder = () => {
         route.push(
           `/Component/Admin/inquiryDetail/${encryptData(row.inquiry_id)}`
         );
+      }
+    } catch (error: any) {
+      toast.error("Error fetching inquiries: " + error.message, {
+        position: "top-right",
+      });
+    }
+  };
+
+  // --------------------- Delete -------------------
+  const handleDelete = async (id: number) => {
+    try {
+      const result = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/delete-followup`,
+        { id }
+      );
+
+      if (result.status === 200) {
+        toast.success(result.data.message, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+
+        setRefresh(!refresh);
+      } else if (result.status === 404) {
+        toast.error(result.data.message, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
       }
     } catch (error: any) {
       toast.error("Error fetching inquiries: " + error.message, {
