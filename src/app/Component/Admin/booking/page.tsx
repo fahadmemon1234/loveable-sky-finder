@@ -8,36 +8,40 @@ import axios from "axios";
 import { toast, Slide } from "react-toastify";
 import Cookies from "js-cookie";
 import ExtraLargeModal from "../../Modal/extraLargeModal";
+import AddBooking from "./_AddBooking";
 
 interface TravelBooking {
   id: number; // Auto Increment ID
   user_id: number; // Foreign Key
 
-  file_path?: string | null; // Uploaded File Path
+  file_path: string; // Uploaded File Path
 
   booking_date: string;
-  travelling_date?: string | null; // YYYY-MM-DD
-  ref_no?: string | null;
+  travelling_date: string; // YYYY-MM-DD
+  ref_no: string;
 
-  payment_date?: string | null; // YYYY-MM-DD
-  payment_type?: "Cash" | "Card" | "Bank" | "Online" | "Other" | null;
+  payment_date: string; // YYYY-MM-DD
+  payment_type?: "0";
 
   total_amount?: number | null;
   deposit_amount?: number | null;
   remaining_amount?: number | null;
 
-  file_status?: string | null;
+  file_status: "0";
 
-  customer_name?: string | null;
-  qty?: number | null;
+  customer_name?: string | "";
+  email: string;
+  phone: string;
+  qty: number;
   travel_type?: string | null;
 
   status?: string | null;
-  remarks?: string | null;
+  remarks?: string | "";
 
   created_at: string; // timestamp
   updated_at?: string | null; // timestamp
 }
+
 
 const FilterComponent = ({
   onFilter,
@@ -142,10 +146,12 @@ const Booking = () => {
       travelling_date: "",
       ref_no: "",
       payment_date: "",
-      payment_type: "Cash",
-      file_status: "",
+      payment_type: "0",
+      file_status: "0",
       customer_name: "",
-      qty: 1,
+      email: "",
+      phone: "",
+      qty: 0,
       travel_type: "",
       status: "Pending",
       remarks: "",
@@ -198,10 +204,10 @@ const Booking = () => {
       booking.travelling_date = "";
       booking.ref_no = "";
       booking.payment_date = "";
-      booking.payment_type = "Cash";
-      booking.file_status = "";
+      booking.payment_type = "0";
+      booking.file_status = "0";
       booking.customer_name = "";
-      booking.qty = 1;
+      booking.qty = 0;
       booking.travel_type = "";
       booking.status = "Pending";
       booking.remarks = "";
@@ -365,7 +371,12 @@ const Booking = () => {
 
       <ExtraLargeModal
         title={Title}
-        extralargeModalView={<h1>Hello</h1>}
+        extralargeModalView={
+          <AddBooking
+            bookings={bookings} // pass bookings as prop
+            setBookings={setBookings}
+          />
+        }
         onClose={closeModal}
         onSave={handleSave}
         show={isModalOpen}
