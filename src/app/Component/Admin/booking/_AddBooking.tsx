@@ -448,6 +448,8 @@ const AddBooking: React.FC<AddBookingProps> = ({
 
   const [inquiryDetails, setInquiryDetails] = useState("");
 
+  const [customerDetails, setCustomerDetails] = useState("");
+
   return (
     <>
       <div className="row mb-10">
@@ -873,12 +875,25 @@ const AddBooking: React.FC<AddBookingProps> = ({
         <div className="col-md-6 col-lg-6 col-sm-12">
           <div className="mb-4">
             <label className="form-label" htmlFor="InquiryDetails">
-              Inquiry Details: <span className="validate">*</span>
+              Agent Flight Details: <span className="validate">*</span>
             </label>
 
             <RichTextEditor
             value={inquiryDetails}
             onChange={setInquiryDetails} // updates state when user types
+          />
+          </div>
+        </div>
+
+        <div className="col-md-6 col-lg-6 col-sm-12">
+          <div className="mb-4">
+            <label className="form-label" htmlFor="InquiryDetails">
+              Customer Flight Details: <span className="validate">*</span>
+            </label>
+
+            <RichTextEditor
+            value={customerDetails}
+            onChange={setCustomerDetails} // updates state when user types
           />
           </div>
         </div>

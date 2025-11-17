@@ -41,7 +41,6 @@ export default function RichTextEditor({
 }) {
   return (
     <div>
-      <label className="form-label mb-2 font-bold text-lg">Bio</label>
       <ReactQuill
         theme="snow"
         value={value}
