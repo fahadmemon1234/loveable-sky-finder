@@ -36,12 +36,34 @@ interface TravelBooking {
   updated_at?: string | null; // timestamp
 }
 
+interface RowType {
+  category: { value: string; label: string } | null;
+  title: string;
+  firstName: string;
+  midName: string;
+  surName: string;
+  age: string;
+  salePrice: string;
+  adminPrice: string;
+}
+
 interface AddBookingProps {
   bookings: TravelBooking[];
   setBookings: React.Dispatch<React.SetStateAction<TravelBooking[]>>;
+  passanger: string;
+  setPassanger: React.Dispatch<React.SetStateAction<string>>;
+  rows: RowType[];
+  setRows: React.Dispatch<React.SetStateAction<RowType[]>>;
 }
 
-const AddBooking: React.FC<AddBookingProps> = ({ bookings, setBookings }) => {
+const AddBooking: React.FC<AddBookingProps> = ({
+  bookings,
+  setBookings,
+  passanger,
+  setPassanger,
+  rows,
+  setRows,
+}) => {
   const booking = bookings[0]; // single booking form
 
   const handleChange = (
@@ -379,6 +401,36 @@ const AddBooking: React.FC<AddBookingProps> = ({ bookings, setBookings }) => {
     return () => clearTimeout(delay);
   }, [returnSearchTerm]);
 
+  const categoryOptions = [
+    { value: "Adult", label: "Adult" },
+    { value: "Child", label: "Child" },
+    { value: "Infant", label: "Infant" },
+  ];
+
+  const numPassengers = Math.max(1, parseInt(passanger || "1", 10));
+
+  // Generate rows based on passenger count
+  useEffect(() => {
+    const count = Math.min(numPassengers, 7); // max 7 passengers
+    const newRows = Array.from({ length: count }, (_, i) => ({
+      category: null,
+      title: "",
+      firstName: "",
+      midName: "",
+      surName: "",
+      age: "",
+      salePrice: "",
+      adminPrice: "",
+    }));
+    setRows(newRows);
+  }, [numPassengers]);
+
+  const handleRow = (index: number, field: keyof RowType, value: any) => {
+    const newRows = [...rows];
+    newRows[index][field] = value;
+    setRows(newRows);
+  };
+
   return (
     <>
       <div className="row mb-10">
@@ -638,7 +690,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ bookings, setBookings }) => {
               onChange={(option) => {
                 setReturnStopOver(option);
                 setReturnSearchTerm(option?.label || "");
-              } }
+              }}
               onInputChange={(value, action) => {
                 if (action.action === "input-change") {
                   setReturnSearchTerm(value);
@@ -785,7 +837,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ bookings, setBookings }) => {
         </div>
       </div>
 
-      <div className="row mb-10">
+      {/* <div className="row mb-10">
         <div className="col-md-6 col-lg-6 col-sm-12">
           <div className="mb-4">
             <label className="form-label" htmlFor="InquiryDetails">
@@ -797,6 +849,160 @@ const AddBooking: React.FC<AddBookingProps> = ({ bookings, setBookings }) => {
                 <textarea id="editor"></textarea>
               </div>
             )}
+          </div>
+        </div>
+      </div> */}
+
+      <div className="row mb-10">
+        <div className="col-md-6 col-lg-6 col-sm-12">
+          <div className="mb-4">
+            <label className="form-label" htmlFor="Passanger">
+              Passanger: <span className="validate">*</span>
+            </label>
+
+            <input
+              type="text"
+              id="Passanger"
+              className="form-control"
+              placeholder="Enter Passanger"
+              value={passanger}
+              onChange={(e) => setPassanger(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="row mb-10">
+        <div className="col-md-12 col-lg-12 col-sm-12">
+          <div className="table-responsive">
+            <table className="table table-bordered table-striped">
+              <thead className="custom-head">
+                <tr>
+                  <th className="col-category">Category</th>
+                  <th className="col-title">Title</th>
+                  <th className="col-name">First Name</th>
+                  <th className="col-name">Mid Name</th>
+                  <th className="col-name">Sur Name</th>
+                  <th className="col-age">Age</th>
+                  <th className="col-sale">Sale Price (£)</th>
+                  <th className="col-admin">Admin</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {rows.map((row, index) => (
+                  <tr key={index}>
+                    <td>
+                      <Select
+                        value={row.category}
+                        onChange={(option) =>
+                          handleRow(index, "category", option)
+                        }
+                        options={categoryOptions}
+                        placeholder="Select Category"
+                        className="react-select-container"
+                        classNamePrefix="react-select"
+                        menuPortalTarget={
+                          typeof window !== "undefined" ? document.body : null
+                        }
+                        styles={{
+                          menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                          option: (provided) => ({
+                            ...provided,
+                            color: "#000",
+                          }),
+                          control: (provided) => ({
+                            ...provided,
+                            color: "#000",
+                          }),
+                          singleValue: (provided) => ({
+                            ...provided,
+                            color: "#000",
+                          }),
+                        }}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Title"
+                        value={row.title}
+                        onChange={(e) =>
+                          handleRow(index, "title", e.target.value)
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="First Name"
+                        value={row.firstName}
+                        onChange={(e) =>
+                          handleRow(index, "firstName", e.target.value)
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Mid Name"
+                        value={row.midName}
+                        onChange={(e) =>
+                          handleRow(index, "midName", e.target.value)
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Sur Name"
+                        value={row.surName}
+                        onChange={(e) =>
+                          handleRow(index, "surName", e.target.value)
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        className="form-control"
+                        placeholder="Age"
+                        value={row.age}
+                        onChange={(e) =>
+                          handleRow(index, "age", e.target.value)
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        className="form-control"
+                        placeholder="Sale Price"
+                        value={row.salePrice}
+                        onChange={(e) =>
+                          handleRow(index, "salePrice", e.target.value)
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        className="form-control"
+                        placeholder="Admin Price"
+                        value={row.adminPrice}
+                        onChange={(e) =>
+                          handleRow(index, "adminPrice", e.target.value)
+                        }
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

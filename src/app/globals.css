@@ -632,3 +632,49 @@ input:disabled {
   .trash-btn{
     color: red;
   }
+
+  .custom-head{
+    background-color: hsl(var(--main)) !important;
+  }
+
+  .custom-head tr th{
+    color: white !important;
+    text-align: center;
+  }
+
+
+  .table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table th,
+.table td {
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Column widths */
+.col-category {
+  width: 140px;
+}
+
+.col-title {
+  width: 120px;
+}
+
+.col-name {
+  width: 150px;
+}
+
+.col-age {
+  width: 80px;
+}
+
+.col-sale {
+  width: 120px;
+}
+
+.col-admin {
+  width: 120px;
+}

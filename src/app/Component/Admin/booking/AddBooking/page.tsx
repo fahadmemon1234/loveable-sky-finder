@@ -62,6 +62,20 @@ const AddBookingData = () => {
     },
   ]);
 
+
+
+    const [passanger, setPassanger] = useState("0");
+    const [rows, setRows] = useState<Array<{
+  category: { value: string; label: string } | null;
+  title: string;
+  firstName: string;
+  midName: string;
+  surName: string;
+  age: string;
+  salePrice: string;
+  adminPrice: string;
+}>>([]);
+
   return (
     <>
       <div className="card">
@@ -71,7 +85,7 @@ const AddBookingData = () => {
         <div className="card-body">
           <div className="row">
             <div className="col-md-12">
-              <AddBooking bookings={bookings} setBookings={setBookings} />
+              <AddBooking bookings={bookings} setBookings={setBookings} passanger={passanger} setPassanger={setPassanger} rows={rows} setRows={setRows}  />
             </div>
           </div>
         </div>

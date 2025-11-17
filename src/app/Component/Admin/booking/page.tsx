@@ -164,6 +164,9 @@ const Booking = () => {
     },
   ]);
 
+
+
+
   const filePathRef = useRef<HTMLInputElement>(null);
   const bookingDateRef = useRef<HTMLInputElement>(null);
   const travellingDateRef = useRef<HTMLInputElement>(null);
