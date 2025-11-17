@@ -7,8 +7,9 @@ import DataTable from "react-data-table-component";
 import axios from "axios";
 import { toast, Slide } from "react-toastify";
 import Cookies from "js-cookie";
-import ExtraLargeModal from "../../Modal/extraLargeModal";
+import LargeModal from "../../Modal/largeModal";
 import AddBooking from "./_AddBooking";
+import { useRouter } from "next/navigation";
 
 interface TravelBooking {
   id: number; // Auto Increment ID
@@ -41,7 +42,6 @@ interface TravelBooking {
   created_at: string; // timestamp
   updated_at?: string | null; // timestamp
 }
-
 
 const FilterComponent = ({
   onFilter,
@@ -316,6 +316,12 @@ const Booking = () => {
 
   // ------------------ Model Box End------------------
 
+  const route = useRouter();
+
+  const handleBooking = () => {
+    route.push('/Component/Admin/booking/AddBooking');
+  }
+
   return (
     <>
       <div className="breadcrumbs-area">
@@ -342,7 +348,7 @@ const Booking = () => {
               <h4>Booking</h4>
             </div>
             <div className="col-md-6 btn-Header">
-              <button className="btn btn-custom" onClick={() => openModal()}>
+              <button className="btn btn-custom" onClick={() => handleBooking()}>
                 Add Booking
               </button>
               <br />
@@ -369,9 +375,9 @@ const Booking = () => {
         </div>
       </div>
 
-      <ExtraLargeModal
+      <LargeModal
         title={Title}
-        extralargeModalView={
+        largeModalView={
           <AddBooking
             bookings={bookings} // pass bookings as prop
             setBookings={setBookings}

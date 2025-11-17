@@ -86,6 +86,9 @@ export default function RootLayout({
 
         {/* <!-- main js --> */}
         <Script src="/assets/js/main.js" />
+
+        <Script src="https://cdn.ckeditor.com/ckeditor5/41.2.0/classic/ckeditor.js"></Script>
+
       </body>
     </html>
   );
