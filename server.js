@@ -111,6 +111,7 @@ db();
 
 
 app.use("/api/airports", airportRoutes);
+app.use("/api/airlines", bookingRoutes);
 
 // API Routes
 app.use("/api", bookingRoutes);
