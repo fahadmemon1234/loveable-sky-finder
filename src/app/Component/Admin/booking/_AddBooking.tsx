@@ -3,6 +3,7 @@ import React, { ChangeEvent, useState, useEffect } from "react";
 import Select from "react-select";
 import axios from "axios";
 import { toast, Slide } from "react-toastify";
+import RichTextEditor from "../../utility/RichTextEditor";
 
 interface TravelBooking {
   id: number; // Auto Increment ID
@@ -444,6 +445,9 @@ const AddBooking: React.FC<AddBookingProps> = ({
 
   const [deposit, setDeposit] = useState(0);
 
+
+  const [inquiryDetails, setInquiryDetails] = useState("");
+
   return (
     <>
       <div className="row mb-10">
@@ -865,21 +869,20 @@ const AddBooking: React.FC<AddBookingProps> = ({
         </div>
       </div>
 
-      {/* <div className="row mb-10">
+      <div className="row mb-10">
         <div className="col-md-6 col-lg-6 col-sm-12">
           <div className="mb-4">
             <label className="form-label" htmlFor="InquiryDetails">
               Inquiry Details: <span className="validate">*</span>
             </label>
 
-            {editorLoaded && (
-              <div id="editorContainer">
-                <textarea id="editor"></textarea>
-              </div>
-            )}
+            <RichTextEditor
+            value={inquiryDetails}
+            onChange={setInquiryDetails} // updates state when user types
+          />
           </div>
         </div>
-      </div> */}
+      </div>
 
       <div className="row mb-10">
         <div className="col-md-6 col-lg-6 col-sm-12">
