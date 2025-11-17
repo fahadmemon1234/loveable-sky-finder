@@ -72,15 +72,15 @@ const AddBookingData = () => {
   midName: string;
   surName: string;
   age: string;
-  salePrice: string;
-  adminPrice: string;
+  salePrice: number;
+  adminPrice: number;
 }>>([]);
 
   return (
     <>
       <div className="card">
         <div className="card-header">
-          <h3 className="card-title">Create Booking</h3>
+          <h3 className="card-title">Create New Booking</h3>
         </div>
         <div className="card-body">
           <div className="row">

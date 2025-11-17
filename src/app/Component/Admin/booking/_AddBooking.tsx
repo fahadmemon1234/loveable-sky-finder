@@ -43,8 +43,8 @@ interface RowType {
   midName: string;
   surName: string;
   age: string;
-  salePrice: string;
-  adminPrice: string;
+  salePrice: number;
+  adminPrice: number;
 }
 
 interface AddBookingProps {
@@ -411,25 +411,38 @@ const AddBooking: React.FC<AddBookingProps> = ({
 
   // Generate rows based on passenger count
   useEffect(() => {
-    const count = Math.min(numPassengers, 7); // max 7 passengers
-    const newRows = Array.from({ length: count }, (_, i) => ({
+    const count = Math.min(Math.max(1, parseInt(passanger || "1", 10)), 7); // 1-7 passengers
+    const newRows = Array.from({ length: count }, () => ({
       category: null,
       title: "",
       firstName: "",
       midName: "",
       surName: "",
       age: "",
-      salePrice: "",
-      adminPrice: "",
+      salePrice: 0,
+      adminPrice: 0,
     }));
     setRows(newRows);
   }, [numPassengers]);
 
-  const handleRow = (index: number, field: keyof RowType, value: any) => {
+  const handleRow = <K extends keyof RowType>(
+    index: number,
+    field: K,
+    value: RowType[K]
+  ) => {
     const newRows = [...rows];
     newRows[index][field] = value;
     setRows(newRows);
   };
+
+  const formatPrice = (value: number) => {
+    return value.toLocaleString("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    });
+  };
+
+  const [deposit, setDeposit] = useState(0);
 
   return (
     <>
@@ -616,6 +629,28 @@ const AddBooking: React.FC<AddBookingProps> = ({
       <div className="row mb-10">
         <div className="col-md-6 col-lg-6 col-sm-12">
           <div className="mb-4">
+            <label className="form-label" htmlFor="DepartureDate">
+              Departure Date: <span className="validate">*</span>
+            </label>
+
+            <input type="date" id="DepartDate" className="form-control" />
+          </div>
+        </div>
+
+        <div className="col-md-6 col-lg-6 col-sm-12">
+          <div className="mb-4">
+            <label className="form-label" htmlFor="ReturnDate">
+              Return Date: <span className="validate">*</span>
+            </label>
+
+            <input type="date" id="ReturnDate" className="form-control" />
+          </div>
+        </div>
+      </div>
+
+      <div className="row mb-10">
+        <div className="col-md-6 col-lg-6 col-sm-12">
+          <div className="mb-4">
             <label className="form-label" htmlFor="FlightType">
               Flight Type: <span className="validate">*</span>
             </label>
@@ -707,28 +742,6 @@ const AddBooking: React.FC<AddBookingProps> = ({
               className="react-select-container"
               classNamePrefix="react-select"
             />
-          </div>
-        </div>
-      </div>
-
-      <div className="row mb-10">
-        <div className="col-md-6 col-lg-6 col-sm-12">
-          <div className="mb-4">
-            <label className="form-label" htmlFor="DepartureDate">
-              Departure Date: <span className="validate">*</span>
-            </label>
-
-            <input type="date" id="DepartDate" className="form-control" />
-          </div>
-        </div>
-
-        <div className="col-md-6 col-lg-6 col-sm-12">
-          <div className="mb-4">
-            <label className="form-label" htmlFor="ReturnDate">
-              Return Date: <span className="validate">*</span>
-            </label>
-
-            <input type="date" id="ReturnDate" className="form-control" />
           </div>
         </div>
       </div>
@@ -835,6 +848,21 @@ const AddBooking: React.FC<AddBookingProps> = ({
             <input type="date" id="FareExpiryDate" className="form-control" />
           </div>
         </div>
+
+        <div className="col-md-6 col-lg-6 col-sm-12">
+          <div className="mb-4">
+            <label className="form-label" htmlFor="PaymentType">
+              Payment Type: <span className="validate">*</span>
+            </label>
+
+             <Select
+              id="PaymentType"
+              options={paymentOptions}
+              placeholder="Select Payment Type"
+              isClearable={false}
+            />
+          </div>
+        </div>
       </div>
 
       {/* <div className="row mb-10">
@@ -885,7 +913,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
                   <th className="col-name">Sur Name</th>
                   <th className="col-age">Age</th>
                   <th className="col-sale">Sale Price (£)</th>
-                  <th className="col-admin">Admin</th>
+                  <th className="col-admin">Admin (£)</th>
                 </tr>
               </thead>
 
@@ -928,6 +956,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
                         className="form-control"
                         placeholder="Title"
                         value={row.title}
+                        disabled={passanger < '1' ? true : false}
                         onChange={(e) =>
                           handleRow(index, "title", e.target.value)
                         }
@@ -937,6 +966,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
                       <input
                         type="text"
                         className="form-control"
+                        disabled={passanger < '1' ? true : false}
                         placeholder="First Name"
                         value={row.firstName}
                         onChange={(e) =>
@@ -949,6 +979,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
                         type="text"
                         className="form-control"
                         placeholder="Mid Name"
+                        disabled={passanger < '1' ? true : false}
                         value={row.midName}
                         onChange={(e) =>
                           handleRow(index, "midName", e.target.value)
@@ -960,6 +991,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
                         type="text"
                         className="form-control"
                         placeholder="Sur Name"
+                        disabled={passanger < '1' ? true : false}
                         value={row.surName}
                         onChange={(e) =>
                           handleRow(index, "surName", e.target.value)
@@ -970,6 +1002,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
                       <input
                         type="number"
                         className="form-control"
+                        disabled={passanger < '1' ? true : false}
                         placeholder="Age"
                         value={row.age}
                         onChange={(e) =>
@@ -979,30 +1012,103 @@ const AddBooking: React.FC<AddBookingProps> = ({
                     </td>
                     <td>
                       <input
-                        type="number"
+                        type="text"
                         className="form-control"
-                        placeholder="Sale Price"
-                        value={row.salePrice}
-                        onChange={(e) =>
-                          handleRow(index, "salePrice", e.target.value)
-                        }
+                        disabled={passanger < '1' ? true : false}
+                        value={formatPrice(row.salePrice)}
+                        onChange={(e) => {
+                          // remove commas and convert to number
+                          const val = Number(e.target.value.replace(/,/g, ""));
+                          handleRow(index, "salePrice", isNaN(val) ? 0 : val);
+                        }}
                       />
                     </td>
                     <td>
                       <input
-                        type="number"
+                        type="text"
                         className="form-control"
                         placeholder="Admin Price"
-                        value={row.adminPrice}
-                        onChange={(e) =>
-                          handleRow(index, "adminPrice", e.target.value)
-                        }
+                        disabled={passanger < '1' ? true : false}
+                        value={formatPrice(row.adminPrice)}
+                        onChange={(e) => {
+                          // remove commas and convert to number
+                          const val = Number(e.target.value.replace(/,/g, ""));
+                          handleRow(index, "adminPrice", isNaN(val) ? 0 : val);
+                        }}
                       />
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      <div className="row mb-10">
+        <div className="col-md-3 col-lg-3 col-sm-6">
+          <div className="mb-4">
+            <label className="form-label">Total (£):</label>
+            <input
+              type="text"
+              className="form-control"
+              value={formatPrice(
+                rows.reduce(
+                  (sum, row) =>
+                    sum + (row.salePrice || 0) + (row.adminPrice || 0),
+                  0
+                )
+              )}
+              readOnly
+            />
+          </div>
+        </div>
+
+        <div className="col-md-3 col-lg-3 col-sm-6">
+          <div className="mb-4">
+            <label className="form-label">Deposit (£):</label>
+            <input
+              type="text"
+              className="form-control"
+              value={formatPrice(deposit)}
+              onChange={(e) => {
+                const val = parseFloat(e.target.value.replace(/,/g, ""));
+                setDeposit(isNaN(val) ? 0 : val);
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="col-md-3 col-lg-3 col-sm-6">
+          <div className="mb-4">
+            <label className="form-label">Remaining (£):</label>
+            <input
+              type="text"
+              className="form-control"
+              value={formatPrice(
+                rows.reduce(
+                  (sum, row) =>
+                    sum + (row.salePrice || 0) + (row.adminPrice || 0),
+                  0
+                ) - deposit
+              )}
+              readOnly
+            />
+          </div>
+        </div>
+
+        <div className="col-md-3 col-lg-3 col-sm-6">
+          <div className="mb-4">
+            <label className="form-label">Profit (£):</label>
+            <input
+              type="text"
+              className="form-control"
+              value={formatPrice(
+                rows.reduce((sum, row) => sum + (row.salePrice || 0), 0) -
+                  rows.reduce((sum, row) => sum + (row.adminPrice || 0), 0)
+              )}
+              readOnly
+            />
           </div>
         </div>
       </div>
