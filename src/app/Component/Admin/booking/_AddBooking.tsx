@@ -1084,7 +1084,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
 
         <div className="col-md-3 col-lg-3 col-sm-6">
           <div className="mb-4">
-            <label className="form-label">Deposit (£):</label>
+            <label className="form-label">Received Amount (£):</label>
             <input
               type="text"
               className="form-control"
@@ -1117,7 +1117,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
 
         <div className="col-md-3 col-lg-3 col-sm-6">
           <div className="mb-4">
-            <label className="form-label">Profit (£):</label>
+            <label className="form-label">Remaining Profit (£):</label>
             <input
               type="text"
               className="form-control"
