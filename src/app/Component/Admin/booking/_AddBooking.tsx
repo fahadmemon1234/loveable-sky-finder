@@ -4,6 +4,7 @@ import Select from "react-select";
 import axios from "axios";
 import { toast, Slide } from "react-toastify";
 import RichTextEditor from "../../utility/RichTextEditor";
+import Cookies from "js-cookie";
 
 interface RowType {
   category: { value: string; label: string } | null;
@@ -407,15 +408,6 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
 
   // ------------------ details ------------------
 
-  const [Category, setCategory] = useState<string>("");
-  const [Title, setTitle] = useState("");
-  const [FirstName, setFirstName] = useState("");
-  const [MidName, setMidName] = useState("");
-  const [SurName, setSurName] = useState("");
-  const [Age, setAge] = useState("");
-  const [SalePrice, setSalePrice] = useState<number>(0);
-  const [AdminPrice, setAdminPrice] = useState<number>(0);
-
   const handlePassangerChange = (val: string) => {
     if (parseInt(val) > 7) {
       toast.error("Maximum 7 Passengers are allowed", {
@@ -432,6 +424,96 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
       return false;
     }
     return true;
+  };
+
+  const handleSubmit = async () => {
+    try {
+      var user = Cookies.get("user");
+      var parsedUser = JSON.parse(user!);
+      debugger;
+      var data = {
+        BookingDate: BookingDate,
+        user_id: parsedUser.id,
+        SupplierName: SupplierName,
+        ReferencesNO: ReferencesNO,
+        FullName: FullName,
+        Email: Email,
+        Phone: Phone,
+        DepartureDate: DepartureDate,
+        ReturnDate: ReturnDate,
+        FlightType: FlightType,
+        FlightClass: FlightClass,
+        PNRno: PNRno,
+        airlineLocator: airlineLocator,
+        PNRExpiryDate: PNRExpiryDate,
+        FareExpiryDate: FareExpiryDate,
+        PaymentType: PaymentType,
+        AgentFlightDetails: AgentFlightDetails,
+        CustomerFlightDetails: CustomerFlightDetails,
+        Total: Total,
+        PayableToSupplier: PayableToSupplier,
+        ReceivedAmount: ReceivedAmount,
+        RemainingProfit: RemainingProfit,
+        Passengers: Passanger,
+        PassengerDetails: rows.map((row) => ({
+          Category: row.category?.value || "",
+          Title: row.title,
+          FirstName: row.firstName,
+          MidName: row.midName,
+          SurName: row.surName,
+          Age: row.age,
+          SalePrice: row.salePrice,
+          AdminPrice: row.adminPrice,
+        })),
+      };
+
+      var result = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/add-booking`,
+        data,
+        {
+          headers: { "Content-Type": "application/json" },
+          timeout: 120000, // 2 minutes
+        }
+      );
+
+      if (result.status == 200) {
+        toast.success(result.data.message, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+      } else if (result.status == 404) {
+        toast.error(result.data.message, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+      }
+    } catch (error: any) {
+      toast.error(error.message, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+    }
   };
 
   return (
@@ -1149,7 +1231,11 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
       <div className="row mb-10 mt-10">
         <div className="col-md-6 col-lg-6 col-sm-12"></div>
         <div className="col-md-6 col-lg-6 col-sm-12 d-flex justify-content-end">
-          <button type="button" className="btn custom-btn">
+          <button
+            type="button"
+            className="btn custom-btn"
+            onClick={() => handleSubmit()}
+          >
             Submit Booking
           </button>
         </div>
