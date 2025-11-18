@@ -35,7 +35,11 @@ const FilterComponent = ({
 const InquiryDetail = () => {
   const params = useParams();
   const { inquiryId } = params;
-  const id = decryptData(inquiryId);
+  // const id = decryptData(inquiryId);
+
+const id = decryptData(
+  Array.isArray(inquiryId) ? inquiryId[0] : inquiryId
+);
 
   const [loading, setLoading] = useState(false);
   const [from, setFrom] = useState<any>(null);
