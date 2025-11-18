@@ -445,7 +445,6 @@ const AddBooking: React.FC<AddBookingProps> = ({
 
   const [deposit, setDeposit] = useState(0);
 
-
   const [inquiryDetails, setInquiryDetails] = useState("");
 
   const [customerDetails, setCustomerDetails] = useState("");
@@ -861,7 +860,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
               Payment Type: <span className="validate">*</span>
             </label>
 
-             <Select
+            <Select
               id="PaymentType"
               options={paymentOptions}
               placeholder="Select Payment Type"
@@ -879,9 +878,9 @@ const AddBooking: React.FC<AddBookingProps> = ({
             </label>
 
             <RichTextEditor
-            value={inquiryDetails}
-            onChange={setInquiryDetails} // updates state when user types
-          />
+              value={inquiryDetails}
+              onChange={setInquiryDetails} // updates state when user types
+            />
           </div>
         </div>
 
@@ -892,9 +891,9 @@ const AddBooking: React.FC<AddBookingProps> = ({
             </label>
 
             <RichTextEditor
-            value={customerDetails}
-            onChange={setCustomerDetails} // updates state when user types
-          />
+              value={customerDetails}
+              onChange={setCustomerDetails} // updates state when user types
+            />
           </div>
         </div>
       </div>
@@ -974,7 +973,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
                         className="form-control"
                         placeholder="Title"
                         value={row.title}
-                        disabled={passanger < '1' ? true : false}
+                        disabled={passanger < "1" ? true : false}
                         onChange={(e) =>
                           handleRow(index, "title", e.target.value)
                         }
@@ -984,7 +983,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
                       <input
                         type="text"
                         className="form-control"
-                        disabled={passanger < '1' ? true : false}
+                        disabled={passanger < "1" ? true : false}
                         placeholder="First Name"
                         value={row.firstName}
                         onChange={(e) =>
@@ -997,7 +996,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
                         type="text"
                         className="form-control"
                         placeholder="Mid Name"
-                        disabled={passanger < '1' ? true : false}
+                        disabled={passanger < "1" ? true : false}
                         value={row.midName}
                         onChange={(e) =>
                           handleRow(index, "midName", e.target.value)
@@ -1009,7 +1008,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
                         type="text"
                         className="form-control"
                         placeholder="Sur Name"
-                        disabled={passanger < '1' ? true : false}
+                        disabled={passanger < "1" ? true : false}
                         value={row.surName}
                         onChange={(e) =>
                           handleRow(index, "surName", e.target.value)
@@ -1020,7 +1019,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
                       <input
                         type="number"
                         className="form-control"
-                        disabled={passanger < '1' ? true : false}
+                        disabled={passanger < "1" ? true : false}
                         placeholder="Age"
                         value={row.age}
                         onChange={(e) =>
@@ -1032,7 +1031,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
                       <input
                         type="text"
                         className="form-control"
-                        disabled={passanger < '1' ? true : false}
+                        disabled={passanger < "1" ? true : false}
                         value={formatPrice(row.salePrice)}
                         onChange={(e) => {
                           // remove commas and convert to number
@@ -1046,7 +1045,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
                         type="text"
                         className="form-control"
                         placeholder="Admin Price"
-                        disabled={passanger < '1' ? true : false}
+                        disabled={passanger < "1" ? true : false}
                         value={formatPrice(row.adminPrice)}
                         onChange={(e) => {
                           // remove commas and convert to number
@@ -1076,6 +1075,20 @@ const AddBooking: React.FC<AddBookingProps> = ({
                     sum + (row.salePrice || 0) + (row.adminPrice || 0),
                   0
                 )
+              )}
+              readOnly
+            />
+          </div>
+        </div>
+
+        <div className="col-md-3 col-lg-3 col-sm-6">
+          <div className="mb-4">
+            <label className="form-label">Payable to Supplier (£):</label>
+            <input
+              type="text"
+              className="form-control"
+              value={formatPrice(
+                rows.reduce((sum, row) => sum + (row.adminPrice || 0), 0)
               )}
               readOnly
             />
