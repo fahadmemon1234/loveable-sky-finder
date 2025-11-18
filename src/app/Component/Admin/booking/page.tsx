@@ -7,8 +7,6 @@ import DataTable from "react-data-table-component";
 import axios from "axios";
 import { toast, Slide } from "react-toastify";
 import Cookies from "js-cookie";
-import LargeModal from "../../Modal/largeModal";
-import AddBooking from "./_AddBooking";
 import { useRouter } from "next/navigation";
 
 interface TravelBooking {
@@ -138,55 +136,7 @@ const Booking = () => {
 
   // ------------------ Column End------------------
 
-  const [bookings, setBookings] = useState<TravelBooking[]>([
-    {
-      user_id: 0,
-      file_path: "",
-      booking_date: "",
-      travelling_date: "",
-      ref_no: "",
-      payment_date: "",
-      payment_type: "0",
-      file_status: "0",
-      customer_name: "",
-      email: "",
-      phone: "",
-      qty: 0,
-      travel_type: "",
-      status: "Pending",
-      remarks: "",
-      total_amount: 0,
-      deposit_amount: 0,
-      remaining_amount: 0,
-      created_at: "",
-      updated_at: "",
-      id: 0,
-    },
-  ]);
-
-
-
-
-  const filePathRef = useRef<HTMLInputElement>(null);
-  const bookingDateRef = useRef<HTMLInputElement>(null);
-  const travellingDateRef = useRef<HTMLInputElement>(null);
-  const refNoRef = useRef<HTMLInputElement>(null);
-
-  const paymentDateRef = useRef<HTMLInputElement>(null);
-  const paymentTypeRef = useRef<HTMLSelectElement>(null);
-
-  const totalAmountRef = useRef<HTMLInputElement>(null);
-  const depositAmountRef = useRef<HTMLInputElement>(null);
-  const remainingAmountRef = useRef<HTMLInputElement>(null);
-
-  const fileStatusRef = useRef<HTMLInputElement>(null);
-
-  const customerNameRef = useRef<HTMLInputElement>(null);
-  const qtyRef = useRef<HTMLInputElement>(null);
-  const travelTypeRef = useRef<HTMLInputElement>(null);
-
-  const statusRef = useRef<HTMLInputElement>(null);
-  const remarksRef = useRef<HTMLTextAreaElement>(null);
+  
 
   // ------------------ Model Box Start------------------
 
@@ -378,18 +328,7 @@ const Booking = () => {
         </div>
       </div>
 
-      <LargeModal
-        title={Title}
-        largeModalView={
-          <AddBooking
-            bookings={bookings} // pass bookings as prop
-            setBookings={setBookings}
-          />
-        }
-        onClose={closeModal}
-        onSave={handleSave}
-        show={isModalOpen}
-      />
+      
     </>
   );
 };
