@@ -5,38 +5,6 @@ import axios from "axios";
 import { toast, Slide } from "react-toastify";
 import RichTextEditor from "../../utility/RichTextEditor";
 
-interface TravelBooking {
-  id: number; // Auto Increment ID
-  user_id: number; // Foreign Key
-
-  file_path: string; // Uploaded File Path
-
-  booking_date: string;
-  travelling_date: string; // YYYY-MM-DD
-  ref_no: string;
-
-  payment_date: string; // YYYY-MM-DD
-  payment_type?: "0";
-
-  total_amount?: number | null;
-  deposit_amount?: number | null;
-  remaining_amount?: number | null;
-
-  file_status: "0";
-
-  customer_name?: string | "";
-  email: string;
-  phone: string;
-  qty: number;
-  travel_type?: string | null;
-
-  status?: string | null;
-  remarks?: string | "";
-
-  created_at: string; // timestamp
-  updated_at?: string | null; // timestamp
-}
-
 interface RowType {
   category: { value: string; label: string } | null;
   title: string;
@@ -49,31 +17,11 @@ interface RowType {
 }
 
 interface AddBookingProps {
-  bookings: TravelBooking[];
-  setBookings: React.Dispatch<React.SetStateAction<TravelBooking[]>>;
-  passanger: string;
-  setPassanger: React.Dispatch<React.SetStateAction<string>>;
   rows: RowType[];
   setRows: React.Dispatch<React.SetStateAction<RowType[]>>;
 }
 
-const AddBooking: React.FC<AddBookingProps> = ({
-  bookings,
-  setBookings,
-  passanger,
-  setPassanger,
-  rows,
-  setRows,
-}) => {
-  const booking = bookings[0]; // single booking form
-
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setBookings([{ ...booking, [name]: value }]);
-  };
-
+const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
   const paymentOptions = [
     { value: "0", label: "Select Payment Type", disabled: true },
     { value: "Cash", label: "Cash" },
@@ -82,40 +30,6 @@ const AddBooking: React.FC<AddBookingProps> = ({
     { value: "Online", label: "Online" },
     { value: "Other", label: "Other" },
   ];
-
-  const handleSelectChange = (
-    selected: { value: string; label: string } | null
-  ) => {
-    if (selected && selected.value !== "0") {
-      setBookings([
-        {
-          ...booking,
-          payment_type: selected.value as "0",
-        },
-      ]);
-    }
-  };
-
-  const fileStatusOptions = [
-    { value: "0", label: "Select File Status", isDisabled: true },
-    { value: "Paid", label: "Paid" },
-    { value: "Pending", label: "Pending" },
-    { value: "Partial", label: "Partial" },
-  ];
-
-  // handle change
-  const handleFileStatusChange = (
-    selected: { value: string; label: string } | null
-  ) => {
-    if (selected && selected.value !== "0") {
-      setBookings([
-        {
-          ...booking,
-          file_status: selected.value as "0",
-        },
-      ]);
-    }
-  };
 
   const FlightTypeOption = [
     { value: "0", label: "Select Flight Type", disabled: true },
@@ -281,12 +195,6 @@ const AddBooking: React.FC<AddBookingProps> = ({
     return () => clearTimeout(delay);
   }, [searchTermAirline]);
 
-  const [editorLoaded, setEditorLoaded] = useState(false);
-
-  useEffect(() => {
-    setEditorLoaded(true);
-  }, []);
-
   // Going Stop-Over------------------
 
   const [goingStopOver, setGoingStopOver] = useState<any>(null);
@@ -408,11 +316,13 @@ const AddBooking: React.FC<AddBookingProps> = ({
     { value: "Infant", label: "Infant" },
   ];
 
-  const numPassengers = Math.max(1, parseInt(passanger || "1", 10));
+  const [Passanger, setPassanger] = useState("");
+
+  const numPassengers = Math.max(1, parseInt(Passanger || "1", 10));
 
   // Generate rows based on passenger count
   useEffect(() => {
-    const count = Math.min(Math.max(1, parseInt(passanger || "1", 10)), 7); // 1-7 passengers
+    const count = Math.min(Math.max(1, parseInt(Passanger || "1", 10)), 7); // 1-7 passengers
     const newRows = Array.from({ length: count }, () => ({
       category: null,
       title: "",
@@ -449,6 +359,81 @@ const AddBooking: React.FC<AddBookingProps> = ({
 
   const [customerDetails, setCustomerDetails] = useState("");
 
+  // header ------------------------------
+
+  const [BookingDate, setBookingDate] = useState("");
+  const [SupplierName, setSupplierName] = useState("");
+  const [ReferencesNO, setReferencesNO] = useState("");
+  const [FullName, setFullName] = useState("");
+  const [Email, setEmail] = useState("");
+  const [Phone, setPhone] = useState("");
+  const [DepartureDate, setDepartureDate] = useState("");
+  const [ReturnDate, setReturnDate] = useState("");
+  const [FlightType, setFlightType] = useState("");
+  const [FlightClass, setFlightClass] = useState("");
+  const [PNRno, setPNRno] = useState("");
+  const [airlineLocator, setairlineLocator] = useState("");
+  const [PNRExpiryDate, setPNRExpiryDate] = useState("");
+  const [FareExpiryDate, setFareExpiryDate] = useState("");
+  const [PaymentType, setPaymentType] = useState("");
+  const [AgentFlightDetails, setAgentFlightDetails] = useState("");
+  const [CustomerFlightDetails, setCustomerFlightDetails] = useState("");
+  const [Total, setTotal] = useState<number>(0);
+  const [PayableToSupplier, setPayableToSupplier] = useState<number>(0);
+  const [ReceivedAmount, setReceivedAmount] = useState<number>(0);
+  const [RemainingProfit, setRemainingProfit] = useState<number>(0);
+
+  useEffect(() => {
+    const total = rows.reduce(
+      (sum, row) =>
+        sum + Number(row.salePrice || 0) + Number(row.adminPrice || 0),
+      0
+    );
+    const payable = rows.reduce(
+      (sum, row) => sum + Number(row.adminPrice || 0),
+      0
+    );
+    const remaining =
+      rows.reduce((sum, row) => sum + Number(row.salePrice || 0), 0) - payable;
+
+    setTotal(total);
+    setPayableToSupplier(payable);
+    setRemainingProfit(remaining);
+  }, [rows]);
+
+  useEffect(() => {
+    setReceivedAmount(deposit);
+  }, [deposit]);
+
+  // ------------------ details ------------------
+
+  const [Category, setCategory] = useState<string>("");
+  const [Title, setTitle] = useState("");
+  const [FirstName, setFirstName] = useState("");
+  const [MidName, setMidName] = useState("");
+  const [SurName, setSurName] = useState("");
+  const [Age, setAge] = useState("");
+  const [SalePrice, setSalePrice] = useState<number>(0);
+  const [AdminPrice, setAdminPrice] = useState<number>(0);
+
+  const handlePassangerChange = (val: string) => {
+    if (parseInt(val) > 7) {
+      toast.error("Maximum 7 Passengers are allowed", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+    return true;
+  };
+
   return (
     <>
       <div className="row mb-10">
@@ -464,8 +449,8 @@ const AddBooking: React.FC<AddBookingProps> = ({
               className="form-control"
               placeholder="Enter Booking Date..."
               name="booking_date"
-              value={booking.booking_date}
-              onChange={handleChange}
+              value={BookingDate}
+              onChange={(e) => setBookingDate(e.target.value)}
             />
           </div>
         </div>
@@ -482,6 +467,8 @@ const AddBooking: React.FC<AddBookingProps> = ({
               className="form-control"
               placeholder="Enter Supplier Name..."
               name="Supplier_Name"
+              value={SupplierName}
+              onChange={(e) => setSupplierName(e.target.value)}
             />
           </div>
         </div>
@@ -502,8 +489,8 @@ const AddBooking: React.FC<AddBookingProps> = ({
               className="form-control"
               placeholder="Enter References NO..."
               name="Referencesno"
-              value={booking.ref_no}
-              onChange={handleChange}
+              value={ReferencesNO}
+              onChange={(e) => setReferencesNO(e.target.value)}
             />
           </div>
         </div>
@@ -520,8 +507,8 @@ const AddBooking: React.FC<AddBookingProps> = ({
               className="form-control"
               placeholder="Enter Full Name..."
               name="customer_name"
-              value={booking.customer_name}
-              onChange={handleChange}
+              value={FullName}
+              onChange={(e) => setFullName(e.target.value)}
             />
           </div>
         </div>
@@ -540,8 +527,8 @@ const AddBooking: React.FC<AddBookingProps> = ({
               className="form-control"
               placeholder="Enter Email..."
               name="customer_email"
-              value={booking.email}
-              onChange={handleChange}
+              value={Email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
         </div>
@@ -558,8 +545,8 @@ const AddBooking: React.FC<AddBookingProps> = ({
               className="form-control"
               placeholder="Enter Phone..."
               name="customer_phone"
-              value={booking.phone}
-              onChange={handleChange}
+              value={Phone}
+              onChange={(e) => setPhone(e.target.value)}
             />
           </div>
         </div>
@@ -638,7 +625,13 @@ const AddBooking: React.FC<AddBookingProps> = ({
               Departure Date: <span className="validate">*</span>
             </label>
 
-            <input type="date" id="DepartDate" className="form-control" />
+            <input
+              type="date"
+              id="DepartDate"
+              className="form-control"
+              value={DepartureDate}
+              onChange={(e) => setDepartureDate(e.target.value)}
+            />
           </div>
         </div>
 
@@ -648,7 +641,13 @@ const AddBooking: React.FC<AddBookingProps> = ({
               Return Date: <span className="validate">*</span>
             </label>
 
-            <input type="date" id="ReturnDate" className="form-control" />
+            <input
+              type="date"
+              id="ReturnDate"
+              className="form-control"
+              value={ReturnDate}
+              onChange={(e) => setReturnDate(e.target.value)}
+            />
           </div>
         </div>
       </div>
@@ -665,6 +664,10 @@ const AddBooking: React.FC<AddBookingProps> = ({
               options={FlightTypeOption}
               placeholder="Select Flight Type"
               isClearable={false}
+              value={FlightTypeOption.find(
+                (option) => option.value === FlightType
+              )}
+              onChange={(option) => setFlightType(option?.value || "")}
             />
           </div>
         </div>
@@ -680,6 +683,10 @@ const AddBooking: React.FC<AddBookingProps> = ({
               options={FlightClassOption}
               placeholder="Select Flight Class"
               isClearable={false}
+              value={FlightClassOption.find(
+                (option) => option.value === FlightClass
+              )}
+              onChange={(option) => setFlightClass(option?.value || "")}
             />
           </div>
         </div>
@@ -794,6 +801,8 @@ const AddBooking: React.FC<AddBookingProps> = ({
               id="PNRno"
               className="form-control"
               placeholder="Enter PNR no"
+              value={PNRno}
+              onChange={(e) => setPNRno(e.target.value)}
             />
           </div>
         </div>
@@ -806,28 +815,13 @@ const AddBooking: React.FC<AddBookingProps> = ({
               airline Locator: <span className="validate">*</span>
             </label>
 
-            <Select
-              id="to"
-              value={to}
-              onChange={(option) => {
-                setTo(option); // keep selected airport visible
-                setSearchTermTo(option?.label || ""); // optional: track search term
-              }}
-              onInputChange={(value, action) => {
-                if (action.action === "input-change") {
-                  setSearchTermTo(value);
-                }
-              }}
-              options={flights} // same flights array used for "from"
-              isLoading={LoadingTo}
-              placeholder=" Search airports..."
-              noOptionsMessage={() =>
-                searchTermTo.length < 3
-                  ? "Type 3+ letters to search"
-                  : "No results found"
-              }
-              className="react-select-container"
-              classNamePrefix="react-select"
+            <input
+              type="text"
+              id="airlineLocator"
+              className="form-control"
+              placeholder="Enter airline Locator"
+              value={airlineLocator}
+              onChange={(e) => setairlineLocator(e.target.value)}
             />
           </div>
         </div>
@@ -838,7 +832,13 @@ const AddBooking: React.FC<AddBookingProps> = ({
               PNR Expiry Date : <span className="validate">*</span>
             </label>
 
-            <input type="date" id="PNRExpiryDate" className="form-control" />
+            <input
+              type="date"
+              id="PNRExpiryDate"
+              className="form-control"
+              value={PNRExpiryDate}
+              onChange={(e) => setPNRExpiryDate(e.target.value)}
+            />
           </div>
         </div>
       </div>
@@ -850,7 +850,13 @@ const AddBooking: React.FC<AddBookingProps> = ({
               Fare Expiry Date: <span className="validate">*</span>
             </label>
 
-            <input type="date" id="FareExpiryDate" className="form-control" />
+            <input
+              type="date"
+              id="FareExpiryDate"
+              className="form-control"
+              value={FareExpiryDate}
+              onChange={(e) => setFareExpiryDate(e.target.value)}
+            />
           </div>
         </div>
 
@@ -865,6 +871,10 @@ const AddBooking: React.FC<AddBookingProps> = ({
               options={paymentOptions}
               placeholder="Select Payment Type"
               isClearable={false}
+              value={paymentOptions.find(
+                (option) => option.value === PaymentType
+              )}
+              onChange={(option) => setPaymentType(option?.value || "")}
             />
           </div>
         </div>
@@ -878,8 +888,8 @@ const AddBooking: React.FC<AddBookingProps> = ({
             </label>
 
             <RichTextEditor
-              value={inquiryDetails}
-              onChange={setInquiryDetails} // updates state when user types
+              value={AgentFlightDetails}
+              onChange={setAgentFlightDetails} // updates state when user types
             />
           </div>
         </div>
@@ -891,8 +901,8 @@ const AddBooking: React.FC<AddBookingProps> = ({
             </label>
 
             <RichTextEditor
-              value={customerDetails}
-              onChange={setCustomerDetails} // updates state when user types
+              value={CustomerFlightDetails}
+              onChange={setCustomerFlightDetails} // updates state when user types
             />
           </div>
         </div>
@@ -910,27 +920,37 @@ const AddBooking: React.FC<AddBookingProps> = ({
               id="Passanger"
               className="form-control"
               placeholder="Enter Passanger"
-              value={passanger}
-              onChange={(e) => setPassanger(e.target.value)}
+              value={Passanger}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (handlePassangerChange(val)) {
+                  setPassanger(val);
+                }
+              }}
+              min={1}
+              max={7}
             />
           </div>
         </div>
       </div>
 
       <div className="row mb-10">
-        <div className="col-md-12 col-lg-12 col-sm-12">
-          <div className="table-responsive">
-            <table className="table table-bordered table-striped">
-              <thead className="custom-head">
+        <div className="col-12">
+          <div
+            className="table-responsive shadow-sm rounded-3"
+            style={{ overflowX: "auto" }}
+          >
+            <table className="table table-bordered table-striped align-middle mb-0">
+              <thead className="table-dark text-center">
                 <tr>
-                  <th className="col-category">Category</th>
-                  <th className="col-title">Title</th>
-                  <th className="col-name">First Name</th>
-                  <th className="col-name">Mid Name</th>
-                  <th className="col-name">Sur Name</th>
-                  <th className="col-age">Age</th>
-                  <th className="col-sale">Sale Price (£)</th>
-                  <th className="col-admin">Admin (£)</th>
+                  <th style={{ width: "120px" }}>Category</th>
+                  <th style={{ width: "100px" }}>Title</th>
+                  <th style={{ width: "120px" }}>First Name</th>
+                  <th style={{ width: "120px" }}>Mid Name</th>
+                  <th style={{ width: "120px" }}>Sur Name</th>
+                  <th style={{ width: "60px" }}>Age</th>
+                  <th style={{ width: "100px" }}>Sale Price (£)</th>
+                  <th style={{ width: "100px" }}>Admin (£)</th>
                 </tr>
               </thead>
 
@@ -959,6 +979,9 @@ const AddBooking: React.FC<AddBookingProps> = ({
                           control: (provided) => ({
                             ...provided,
                             color: "#000",
+                            minHeight: "38px",
+                            borderRadius: "0.5rem",
+                            boxShadow: "0 0 5px rgba(0,0,0,0.1)",
                           }),
                           singleValue: (provided) => ({
                             ...provided,
@@ -967,88 +990,94 @@ const AddBooking: React.FC<AddBookingProps> = ({
                         }}
                       />
                     </td>
+
                     <td>
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control shadow-sm rounded-pill border-1"
                         placeholder="Title"
-                        value={row.title}
-                        disabled={passanger < "1" ? true : false}
+                        disabled={Passanger < "1"}
+                        value={row.title || ""}
                         onChange={(e) =>
                           handleRow(index, "title", e.target.value)
                         }
                       />
                     </td>
+
                     <td>
                       <input
                         type="text"
-                        className="form-control"
-                        disabled={passanger < "1" ? true : false}
+                        className="form-control shadow-sm rounded-pill border-1"
                         placeholder="First Name"
-                        value={row.firstName}
+                        disabled={Passanger < "1"}
+                        value={row.firstName || ""}
                         onChange={(e) =>
                           handleRow(index, "firstName", e.target.value)
                         }
                       />
                     </td>
+
                     <td>
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control shadow-sm rounded-pill border-1"
                         placeholder="Mid Name"
-                        disabled={passanger < "1" ? true : false}
-                        value={row.midName}
+                        disabled={Passanger < "1"}
+                        value={row.midName || ""}
                         onChange={(e) =>
                           handleRow(index, "midName", e.target.value)
                         }
                       />
                     </td>
+
                     <td>
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control shadow-sm rounded-pill border-1"
                         placeholder="Sur Name"
-                        disabled={passanger < "1" ? true : false}
-                        value={row.surName}
+                        disabled={Passanger < "1"}
+                        value={row.surName || ""}
                         onChange={(e) =>
                           handleRow(index, "surName", e.target.value)
                         }
                       />
                     </td>
+
                     <td>
                       <input
                         type="number"
-                        className="form-control"
-                        disabled={passanger < "1" ? true : false}
+                        className="form-control shadow-sm rounded-pill border-1"
                         placeholder="Age"
+                        disabled={Passanger < "1"}
                         value={row.age}
                         onChange={(e) =>
                           handleRow(index, "age", e.target.value)
                         }
                       />
                     </td>
+
                     <td>
                       <input
                         type="text"
-                        className="form-control"
-                        disabled={passanger < "1" ? true : false}
+                        className="form-control shadow-sm rounded-pill border-1"
+                        placeholder="Sale Price"
+                        disabled={Passanger < "1"}
                         value={formatPrice(row.salePrice)}
                         onChange={(e) => {
-                          // remove commas and convert to number
                           const val = Number(e.target.value.replace(/,/g, ""));
                           handleRow(index, "salePrice", isNaN(val) ? 0 : val);
                         }}
                       />
                     </td>
+
                     <td>
                       <input
                         type="text"
-                        className="form-control"
+                        className="form-control shadow-sm rounded-pill border-1"
                         placeholder="Admin Price"
-                        disabled={passanger < "1" ? true : false}
+                        disabled={Passanger < "1"}
                         value={formatPrice(row.adminPrice)}
                         onChange={(e) => {
-                          // remove commas and convert to number
                           const val = Number(e.target.value.replace(/,/g, ""));
                           handleRow(index, "adminPrice", isNaN(val) ? 0 : val);
                         }}
@@ -1062,20 +1091,15 @@ const AddBooking: React.FC<AddBookingProps> = ({
         </div>
       </div>
 
-      <div className="row mb-10">
+      <div className="row mb-10 mt-10">
         <div className="col-md-3 col-lg-3 col-sm-6">
           <div className="mb-4">
             <label className="form-label">Total (£):</label>
             <input
               type="text"
               className="form-control"
-              value={formatPrice(
-                rows.reduce(
-                  (sum, row) =>
-                    sum + (row.salePrice || 0) + (row.adminPrice || 0),
-                  0
-                )
-              )}
+              placeholder="Total"
+              value={formatPrice(Total)}
               readOnly
             />
           </div>
@@ -1087,9 +1111,8 @@ const AddBooking: React.FC<AddBookingProps> = ({
             <input
               type="text"
               className="form-control"
-              value={formatPrice(
-                rows.reduce((sum, row) => sum + (row.adminPrice || 0), 0)
-              )}
+              placeholder="Payable to Supplier"
+              value={formatPrice(PayableToSupplier)}
               readOnly
             />
           </div>
@@ -1101,7 +1124,7 @@ const AddBooking: React.FC<AddBookingProps> = ({
             <input
               type="text"
               className="form-control"
-              value={formatPrice(deposit)}
+              value={formatPrice(ReceivedAmount)}
               onChange={(e) => {
                 const val = parseFloat(e.target.value.replace(/,/g, ""));
                 setDeposit(isNaN(val) ? 0 : val);
@@ -1112,35 +1135,23 @@ const AddBooking: React.FC<AddBookingProps> = ({
 
         <div className="col-md-3 col-lg-3 col-sm-6">
           <div className="mb-4">
-            <label className="form-label">Remaining (£):</label>
-            <input
-              type="text"
-              className="form-control"
-              value={formatPrice(
-                rows.reduce(
-                  (sum, row) =>
-                    sum + (row.salePrice || 0) + (row.adminPrice || 0),
-                  0
-                ) - deposit
-              )}
-              readOnly
-            />
-          </div>
-        </div>
-
-        <div className="col-md-3 col-lg-3 col-sm-6">
-          <div className="mb-4">
             <label className="form-label">Remaining Profit (£):</label>
             <input
               type="text"
               className="form-control"
-              value={formatPrice(
-                rows.reduce((sum, row) => sum + (row.salePrice || 0), 0) -
-                  rows.reduce((sum, row) => sum + (row.adminPrice || 0), 0)
-              )}
+              value={formatPrice(RemainingProfit)}
               readOnly
             />
           </div>
+        </div>
+      </div>
+
+      <div className="row mb-10 mt-10">
+        <div className="col-md-6 col-lg-6 col-sm-12"></div>
+        <div className="col-md-6 col-lg-6 col-sm-12 d-flex justify-content-end">
+          <button type="button" className="btn custom-btn">
+            Submit Booking
+          </button>
         </div>
       </div>
     </>

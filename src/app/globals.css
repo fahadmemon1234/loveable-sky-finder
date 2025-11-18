@@ -678,3 +678,8 @@ input:disabled {
 .col-admin {
   width: 120px;
 }
+
+.custom-btn{
+  background-color: hsl(var(--main)) !important;
+  color: white !important;
+}
