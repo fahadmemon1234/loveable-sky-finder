@@ -73,6 +73,7 @@ import SubscribeRoutes from "./routes/SubscribeRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import airportRoutes from "./routes/airportRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
 
 dotenv.config();
 
@@ -112,6 +113,9 @@ db();
 
 app.use("/api/airports", airportRoutes);
 app.use("/api/airlines", bookingRoutes);
+
+app.use("/api", uploadRoutes);
+
 
 // API Routes
 app.use("/api", bookingRoutes);

@@ -11,6 +11,11 @@ export const addBookingHeader = async (headerData) => {
     FullName,
     Email,
     Phone,
+    Departureairport,
+    Returnairport,
+    Goingstopover,
+    Returnstopover,
+    Airline,
     DepartureDate,
     ReturnDate,
     FlightType,
@@ -30,11 +35,12 @@ export const addBookingHeader = async (headerData) => {
 
   const [result] = await connection.execute(
     `INSERT INTO booking_header
-      (user_id, booking_date, supplier_name, reference_no, full_name, email, phone,
-       departure_date, return_date, flight_type, flight_class, pnr, airline_locator,
-       pnr_expiry, fare_expiry, payment_type, agent_flight_details, customer_flight_details,
-       total, payable_supplier, received_amount, remaining_profit)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    (user_id, booking_date, supplier_name, reference_no, full_name, email, phone,
+     departure_airport, return_airport, going_stopover, return_stopover, airline,
+     departure_date, return_date, flight_type, flight_class, pnr, airline_locator,
+     pnr_expiry, fare_expiry, payment_type, agent_flight_details, customer_flight_details,
+     total, payable_supplier, received_amount, remaining_profit)
+   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       user_id,
       BookingDate,
@@ -43,6 +49,11 @@ export const addBookingHeader = async (headerData) => {
       FullName,
       Email,
       Phone,
+      Departureairport,
+      Returnairport,
+      Goingstopover,
+      Returnstopover,
+      Airline,
       DepartureDate,
       ReturnDate,
       FlightType,
