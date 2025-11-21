@@ -5,6 +5,7 @@ import {
   addBookingDetails,
   addInvoice,
   getAllBookings,
+  getBookingById,
 } from "../models/booking.js";
 
 const router = express.Router();
@@ -81,6 +82,7 @@ router.post("/add-booking", async (req, res) => {
       PaymentType,
       AgentFlightDetails,
       CustomerFlightDetails,
+      Passengers,
       Total,
       PayableToSupplier,
       ReceivedAmount,
@@ -113,6 +115,7 @@ router.post("/add-booking", async (req, res) => {
       PaymentType,
       AgentFlightDetails,
       CustomerFlightDetails,
+      Passengers,
       Total,
       PayableToSupplier,
       ReceivedAmount,
@@ -131,5 +134,24 @@ router.post("/add-booking", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+
+router.get("/get-booking-by-id/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const booking = await getBookingById(id);
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    res.status(200).json(booking);
+  } catch (err) {
+    console.error("❌ Error fetching booking by ID:", err.message);
+    res.status(500).json({ message: "Error fetching booking" });
+  }
+});
+
 
 export default router;

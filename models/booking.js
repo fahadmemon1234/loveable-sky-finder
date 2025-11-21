@@ -27,6 +27,7 @@ export const addBookingHeader = async (headerData) => {
     PaymentType,
     AgentFlightDetails,
     CustomerFlightDetails,
+    Passengers,
     Total,
     PayableToSupplier,
     ReceivedAmount,
@@ -38,9 +39,9 @@ export const addBookingHeader = async (headerData) => {
     (user_id, booking_date, supplier_name, reference_no, full_name, email, phone,
      departure_airport, return_airport, going_stopover, return_stopover, airline,
      departure_date, return_date, flight_type, flight_class, pnr, airline_locator,
-     pnr_expiry, fare_expiry, payment_type, agent_flight_details, customer_flight_details,
+     pnr_expiry, fare_expiry, payment_type, agent_flight_details, customer_flight_details,passanger,
      total, payable_supplier, received_amount, remaining_profit)
-   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       user_id,
       BookingDate,
@@ -65,6 +66,7 @@ export const addBookingHeader = async (headerData) => {
       PaymentType,
       AgentFlightDetails,
       CustomerFlightDetails,
+      Passengers,
       Total,
       PayableToSupplier,
       ReceivedAmount,
@@ -131,4 +133,36 @@ export const getAllBookings = async () => {
   );
   await connection.end();
   return rows;
+};
+
+
+export const getBookingById = async (id) => {
+  const connection = await db();
+
+  try {
+    // Booking header
+    const [headerRows] = await connection.execute(
+      `SELECT bh.*, u.name AS user_name
+       FROM booking_header bh
+       LEFT JOIN users u ON u.id = bh.user_id
+       WHERE bh.id = ?`,
+      [id]
+    );
+
+    if ((headerRows).length === 0) return null;
+
+    const bookingHeader = (headerRows)[0];
+
+    // Booking details
+    const [detailRows] = await connection.execute(
+      `SELECT * FROM booking_details WHERE booking_header_id = ?`,
+      [id]
+    );
+
+    bookingHeader.details = detailRows;
+
+    return bookingHeader;
+  } finally {
+    await connection.end();
+  }
 };
