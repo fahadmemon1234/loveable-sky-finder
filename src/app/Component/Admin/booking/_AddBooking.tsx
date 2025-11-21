@@ -1,10 +1,12 @@
 "use client";
-import React, { ChangeEvent, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import axios from "axios";
 import { toast, Slide } from "react-toastify";
 import RichTextEditor from "../../utility/RichTextEditor";
 import Cookies from "js-cookie";
+import Loader from "../../utility/Loader";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface RowType {
   category: { value: string; label: string } | null;
@@ -23,6 +25,8 @@ interface AddBookingProps {
 }
 
 const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
+  const router = useRouter();
+
   const paymentOptions = [
     { value: "0", label: "Select Payment Type", disabled: true },
     { value: "Cash", label: "Cash" },
@@ -52,7 +56,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
   const [to, setTo] = useState<any>(null);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [flights, setFlights] = useState([]);
+  const [fromFlights, setFromFlights] = useState([]);
 
   const [loadingFrom, setLoadingFrom] = useState(false);
   // From
@@ -60,9 +64,9 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
     const fetchAirports = async () => {
       setLoadingFrom(true);
       try {
-        let response = null;
+        let response;
 
-        if (searchTerm == null || searchTerm.trim().length === 0) {
+        if (!searchTerm.trim()) {
           response = await axios.get(
             `${process.env.NEXT_PUBLIC_BASE_URL}/api/airports`,
             {
@@ -78,37 +82,32 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
           );
         }
 
-        // Map backend data to react-select options
         const options = (response.data.airports || []).map((a: any) => ({
           label: `${a.airport_code} - ${a.airport_name} (${a.city}, ${a.country})`,
           value: a.airport_code,
         }));
-        setFlights(options);
-      } catch (err) {
-        console.error(err);
+
+        setFromFlights(options); // IMPORTANT
       } finally {
         setLoadingFrom(false);
       }
     };
 
-    const delay = setTimeout(() => {
-      if (searchTerm.trim().length === 0 || searchTerm.trim().length >= 1) {
-        fetchAirports();
-      }
-    }, 500);
-
+    const delay = setTimeout(fetchAirports, 500);
     return () => clearTimeout(delay);
   }, [searchTerm]);
 
   // to
+  const [toFlights, setToFlights] = useState([]);
   const [searchTermTo, setSearchTermTo] = useState("");
   const [LoadingTo, setLoadingTo] = useState(false);
   useEffect(() => {
     const fetchAirports = async () => {
       setLoadingTo(true);
       try {
-        let response = null;
-        if (searchTermTo.trim().length === 0) {
+        let response;
+
+        if (!searchTermTo.trim()) {
           response = await axios.get(
             `${process.env.NEXT_PUBLIC_BASE_URL}/api/airports`,
             {
@@ -119,7 +118,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
           response = await axios.get(
             `${process.env.NEXT_PUBLIC_BASE_URL}/api/airports`,
             {
-              params: { mode: "search", search: searchTermTo },
+              params: { mode: "search", keyword: searchTermTo },
             }
           );
         }
@@ -127,23 +126,15 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
         const options = (response.data.airports || []).map((a: any) => ({
           label: `${a.airport_code} - ${a.airport_name} (${a.city}, ${a.country})`,
           value: a.airport_code,
-          city: a.city,
-          country: a.country,
         }));
-        setFlights(options);
-      } catch (err: any) {
-        toast.error("Error fetching inquiries: " + err.message, {
-          position: "top-right",
-        });
+
+        setToFlights(options); // IMPORTANT
       } finally {
         setLoadingTo(false);
       }
     };
 
-    const delay = setTimeout(() => {
-      fetchAirports();
-    }, 500);
-
+    const delay = setTimeout(fetchAirports, 500);
     return () => clearTimeout(delay);
   }, [searchTermTo]);
 
@@ -347,7 +338,8 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
     setRows(newRows);
   };
 
-  const formatPrice = (value: number) => {
+  const formatPrice = (value?: number | null) => {
+    if (value == null || isNaN(value)) return "0.00";
     return value.toLocaleString("en-US", {
       minimumFractionDigits: 0,
       maximumFractionDigits: 2,
@@ -355,11 +347,6 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
   };
 
   const [deposit, setDeposit] = useState(0);
-
-  const [inquiryDetails, setInquiryDetails] = useState("");
-
-  const [customerDetails, setCustomerDetails] = useState("");
-
   // header ------------------------------
 
   const [BookingDate, setBookingDate] = useState("");
@@ -426,8 +413,478 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
     return true;
   };
 
+  // ------------- Validation --------------
+
+  const Validation = () => {
+    if (!BookingDate) {
+      toast.error("Booking Date is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!SupplierName) {
+      toast.error("Supplier Name is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!ReferencesNO) {
+      toast.error("References NO is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!FullName) {
+      toast.error("Full Name is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!Email) {
+      toast.error("Email is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (Email.includes("@") == false) {
+      toast.error("Invalid Email", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!Phone) {
+      toast.error("Phone is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!from) {
+      toast.error("Departure Airport is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!to) {
+      toast.error("Return Airport is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!DepartureDate) {
+      toast.error("Departure Date is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (FlightType == "Return") {
+      if (!ReturnDate) {
+        toast.error("Return Date is Required", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+        return false;
+      }
+
+      if (DepartureDate > ReturnDate) {
+        toast.error("Departure Date should be less than Return Date", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+        return false;
+      }
+    }
+
+    if (!FlightType) {
+      toast.error("Flight Type is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!FlightClass) {
+      toast.error("Flight Class is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!PNRno) {
+      toast.error("PNRno is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!airlineLocator) {
+      toast.error("Airline Locator is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!PNRExpiryDate) {
+      toast.error("PNR Expiry Date is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!FareExpiryDate) {
+      toast.error("Fare Expiry Date is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!PaymentType) {
+      toast.error("Payment Type is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!AgentFlightDetails) {
+      toast.error("Agent Flight Details is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!CustomerFlightDetails) {
+      toast.error("Customer Flight Details is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    if (!Passanger) {
+      toast.error("Passanger is Required", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  const validateRows = () => {
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+
+      // Category select validation
+      if (!row.category?.value) {
+        toast.error(`Row ${i + 1}: Category is required`, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+        return false;
+      }
+
+      // Required text fields
+      if (!row.firstName || !row.surName) {
+        toast.error(`Row ${i + 1}: First Name & Sur Name are required`, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+        return false;
+      }
+
+      // Age validation
+      if (!row.age || row.age <= "0") {
+        toast.error(`Row ${i + 1}: Age must be a valid number`, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+        return false;
+      }
+
+      // Sale Price & Admin Price validation
+      if (row.salePrice === undefined || isNaN(row.salePrice)) {
+        toast.error(`Row ${i + 1}: Sale Price must be a number`, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+        return false;
+      }
+      if (row.adminPrice === undefined || isNaN(row.adminPrice)) {
+        toast.error(`Row ${i + 1}: Admin Price must be a number`, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const resetField = () => {
+    setBookingDate("");
+    setSupplierName("");
+    setReferencesNO("");
+    setFullName("");
+    setEmail("");
+    setPhone("");
+    setFrom(null);
+    setTo(null);
+    setSelectedAirline(null);
+    setGoingStopOver(null);
+    setReturnStopOver(null);
+    setDepartureDate("");
+    setReturnDate("");
+    setFlightType("");
+    setFlightClass("");
+    setPNRno("");
+    setairlineLocator("");
+    setPNRExpiryDate("");
+    setFareExpiryDate("");
+    setPaymentType("");
+    setAgentFlightDetails("");
+    setCustomerFlightDetails("");
+    setPassanger("");
+    setRows([
+      {
+        category: null,
+        title: "",
+        firstName: "",
+        surName: "",
+        midName: "",
+        age: "",
+        salePrice: 0,
+        adminPrice: 0,
+      },
+    ]);
+  };
+
   const handleSubmit = async () => {
     try {
+      if (!Validation()) return;
+
+      if (!validateRows()) return;
+
+      setIsLoading(true);
+
       var user = Cookies.get("user");
       var parsedUser = JSON.parse(user!);
       debugger;
@@ -439,11 +896,11 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
         FullName: FullName,
         Email: Email,
         Phone: Phone,
-        Departureairport: from.value,
-        Returnairport: to.value,
-        Goingstopover: goingStopOver.value,
-        Returnstopover: returnStopOver.value,
-        Airline: selectedAirline.value,
+        Departureairport: from.label,
+        Returnairport: to.label,
+        Goingstopover: goingStopOver.label,
+        Returnstopover: returnStopOver.label,
+        Airline: selectedAirline.label,
         DepartureDate: DepartureDate,
         ReturnDate: ReturnDate,
         FlightType: FlightType,
@@ -493,6 +950,10 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
           theme: "colored",
           transition: Slide,
         });
+
+        resetField();
+
+        router.push(`/Component/Admin/booking`);
       } else if (result.status == 404) {
         toast.error(result.data.message, {
           position: "top-right",
@@ -518,6 +979,141 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
         theme: "colored",
         transition: Slide,
       });
+    } finally {
+      setIsLoading(false); // loader stop
+    }
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    // Must start with +, followed by 7 to 15 digits (international format)
+    if (/^\+\d{0,15}$/.test(val)) {
+      setPhone(val);
+    }
+  };
+
+  // ---------------------------- Edit ---------------------
+
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
+  useEffect(() => {
+    if (id) {
+      getBookingById(id);
+    }
+  }, [id]);
+
+  const getBookingById = async (id: string) => {
+    setIsLoading(true);
+    try {
+      const numericId = Number(id);
+
+      var result = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/get-booking-by-id/${numericId}`,
+        {
+          headers: { "Content-Type": "application/json" },
+          timeout: 120000, // 2 minutes
+        }
+      );
+
+      // console.log(result.data);
+
+      if (result.data.booking_date) {
+        const date = new Date(result.data.booking_date);
+        const formattedDate = date.toISOString().split("T")[0]; // yyyy-mm-dd
+        setBookingDate(formattedDate);
+      }
+
+      setSupplierName(result.data.supplier_name);
+      setReferencesNO(result.data.reference_no);
+      setFullName(result.data.full_name);
+      setEmail(result.data.email);
+      setPhone(result.data.phone);
+      setFrom({
+        label: result.data.departure_airport,
+        value: result.data.departure_airport,
+      });
+      setTo({
+        label: result.data.return_airport,
+        value: result.data.return_airport,
+      });
+
+      if (result.data.departure_date) {
+        const date = new Date(result.data.departure_date);
+        const formattedDate = date.toISOString().split("T")[0]; // yyyy-mm-dd
+        setDepartureDate(formattedDate);
+      }
+
+      if (result.data.return_date) {
+        const date = new Date(result.data.return_date);
+        const formattedDate = date.toISOString().split("T")[0]; // yyyy-mm-dd
+        setReturnDate(formattedDate);
+      }
+
+      setFlightType(result.data.flight_type);
+      setFlightClass(result.data.flight_class);
+      setGoingStopOver({
+        label: result.data.going_stopover,
+        value: result.data.going_stopover,
+      });
+      setReturnStopOver({
+        label: result.data.return_stopover,
+        value: result.data.return_stopover,
+      });
+      setSelectedAirline({
+        label: result.data.airline,
+        value: result.data.airline,
+      });
+      setPNRno(result.data.pnr);
+      setairlineLocator(result.data.airline_locator);
+
+      if (result.data.pnr_expiry) {
+        const date = new Date(result.data.pnr_expiry);
+        const formattedDate = date.toISOString().split("T")[0]; // yyyy-mm-dd
+        setPNRExpiryDate(formattedDate);
+      }
+
+      if (result.data.fare_expiry) {
+        const date = new Date(result.data.fare_expiry);
+        const formattedDate = date.toISOString().split("T")[0]; // yyyy-mm-dd
+        setFareExpiryDate(formattedDate);
+      }
+
+      setPaymentType(result.data.payment_type);
+      setAgentFlightDetails(result.data.agent_flight_details);
+      setCustomerFlightDetails(result.data.customer_flight_details);
+      setPassanger(result.data.passanger);
+
+      const passengerRows: RowType[] = result.data.details.map((p: any) => ({
+        category: { label: p.category, value: p.category },
+        title: p.title,
+        firstName: p.first_name,
+        midName: p.mid_name,
+        surName: p.sur_name,
+        age: p.age,
+        salePrice: p.sale_price,
+        adminPrice: p.admin_price,
+      }));
+      setRows(passengerRows);
+
+      setTotal(result.data.total ?? 0);
+      setPayableToSupplier(result.data.payable_supplier ?? 0);
+      setReceivedAmount(result.data.received_amount ?? 0);
+      setRemainingProfit(result.data.remaining_profit ?? 0);
+    } catch (error: any) {
+      toast.error(error.message, {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
+    } finally {
+      setIsLoading(false); // loader stop
     }
   };
 
@@ -538,6 +1134,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
               name="booking_date"
               value={BookingDate}
               onChange={(e) => setBookingDate(e.target.value)}
+              min={new Date().toISOString().split("T")[0]}
             />
           </div>
         </div>
@@ -627,13 +1224,13 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
             </label>
 
             <input
-              type="text"
+              type="tel"
               id="Phone"
               className="form-control"
-              placeholder="Enter Phone..."
+              placeholder="Enter International Phone (e.g. +923001234567)"
               name="customer_phone"
               value={Phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={handlePhoneChange}
             />
           </div>
         </div>
@@ -658,7 +1255,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
                   setSearchTerm(value);
                 }
               }}
-              options={flights}
+              options={fromFlights}
               isLoading={loadingFrom}
               placeholder="Search airports..."
               noOptionsMessage={() =>
@@ -690,7 +1287,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
                   setSearchTermTo(value);
                 }
               }}
-              options={flights} // same flights array used for "from"
+              options={toFlights} // same flights array used for "from"
               isLoading={LoadingTo}
               placeholder=" Search airports..."
               noOptionsMessage={() =>
@@ -718,25 +1315,70 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
               className="form-control"
               value={DepartureDate}
               onChange={(e) => setDepartureDate(e.target.value)}
+              min={new Date().toISOString().split("T")[0]}
             />
           </div>
         </div>
 
-        <div className="col-md-6 col-lg-6 col-sm-12">
-          <div className="mb-4">
-            <label className="form-label" htmlFor="ReturnDate">
-              Return Date: <span className="validate">*</span>
-            </label>
+        {FlightType === "Return" && (
+          <div className="col-md-6 col-lg-6 col-sm-12">
+            <div className="mb-4">
+              <label className="form-label" htmlFor="ReturnDate">
+                Return Date: <span className="validate">*</span>
+              </label>
 
-            <input
-              type="date"
-              id="ReturnDate"
-              className="form-control"
-              value={ReturnDate}
-              onChange={(e) => setReturnDate(e.target.value)}
-            />
+              <input
+                type="date"
+                id="ReturnDate"
+                className="form-control"
+                value={ReturnDate}
+                onChange={(e) => setReturnDate(e.target.value)}
+                min={
+                  DepartureDate
+                    ? new Date(
+                        new Date(DepartureDate).getTime() +
+                          2 * 24 * 60 * 60 * 1000
+                      )
+                        .toISOString()
+                        .split("T")[0]
+                    : new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000)
+                        .toISOString()
+                        .split("T")[0]
+                }
+              />
+            </div>
           </div>
-        </div>
+        )}
+
+        {FlightType === "" && (
+          <div className="col-md-6 col-lg-6 col-sm-12">
+            <div className="mb-4">
+              <label className="form-label" htmlFor="ReturnDate">
+                Return Date: <span className="validate">*</span>
+              </label>
+
+              <input
+                type="date"
+                id="ReturnDate"
+                className="form-control"
+                value={ReturnDate}
+                onChange={(e) => setReturnDate(e.target.value)}
+                min={
+                  DepartureDate
+                    ? new Date(
+                        new Date(DepartureDate).getTime() +
+                          2 * 24 * 60 * 60 * 1000
+                      )
+                        .toISOString()
+                        .split("T")[0]
+                    : new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000)
+                        .toISOString()
+                        .split("T")[0]
+                }
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="row mb-10">
@@ -925,6 +1567,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
               className="form-control"
               value={PNRExpiryDate}
               onChange={(e) => setPNRExpiryDate(e.target.value)}
+              min={new Date().toISOString().split("T")[0]}
             />
           </div>
         </div>
@@ -943,6 +1586,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
               className="form-control"
               value={FareExpiryDate}
               onChange={(e) => setFareExpiryDate(e.target.value)}
+              min={new Date().toISOString().split("T")[0]}
             />
           </div>
         </div>
@@ -1020,6 +1664,8 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
           </div>
         </div>
       </div>
+
+      {/* ------------------- Table ------------------- */}
 
       <div className="row mb-10">
         <div className="col-12">
@@ -1214,7 +1860,25 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
               value={formatPrice(ReceivedAmount)}
               onChange={(e) => {
                 const val = parseFloat(e.target.value.replace(/,/g, ""));
-                setDeposit(isNaN(val) ? 0 : val);
+                if (val > Total) {
+                  setReceivedAmount(0);
+                  setDeposit(0);
+
+                  toast.error("Received amount cannot be greater than total.", {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Slide,
+                  });
+                } else {
+                  setReceivedAmount(isNaN(val) ? 0 : val);
+                  setDeposit(isNaN(val) ? 0 : val);
+                }
               }}
             />
           </div>
@@ -1236,13 +1900,17 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
       <div className="row mb-10 mt-10">
         <div className="col-md-6 col-lg-6 col-sm-12"></div>
         <div className="col-md-6 col-lg-6 col-sm-12 d-flex justify-content-end">
-          <button
-            type="button"
-            className="btn custom-btn"
-            onClick={() => handleSubmit()}
-          >
-            Submit Booking
-          </button>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <button
+              type="button"
+              className="btn custom-btn"
+              onClick={handleSubmit}
+            >
+              Submit Booking
+            </button>
+          )}
         </div>
       </div>
     </>

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { withLayout } from "@/app/Component/Layout";
 import AddBooking from "../_AddBooking";
+import { useSearchParams } from "next/navigation";
 
 const AddBookingData = () => {
   const [rows, setRows] = useState<
@@ -17,11 +18,16 @@ const AddBookingData = () => {
     }>
   >([]);
 
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
   return (
     <>
       <div className="card">
         <div className="card-header">
-          <h3 className="card-title">Create New Booking</h3>
+          <h3 className="card-title">
+            {id ? "Edit Booking" : "Create New Booking"}
+          </h3>
         </div>
         <div className="card-body">
           <div className="row">
