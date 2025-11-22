@@ -1104,15 +1104,27 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
       setCustomerFlightDetails(result.data.customer_flight_details);
       setPassanger(result.data.passanger);
 
+      // const passengerRows: RowType[] = result.data.details.map((p: any) => ({
+      //   category: { label: p.category, value: p.category },
+      //   title: p.title,
+      //   firstName: p.first_name,
+      //   midName: p.mid_name,
+      //   surName: p.sur_name,
+      //   age: p.age,
+      //   salePrice: p.sale_price,
+      //   adminPrice: p.admin_price,
+      // }));
+      // setRows(passengerRows);
+
       const passengerRows: RowType[] = result.data.details.map((p: any) => ({
         category: { label: p.category, value: p.category },
-        title: p.title,
-        firstName: p.first_name,
-        midName: p.mid_name,
-        surName: p.sur_name,
-        age: p.age,
-        salePrice: p.sale_price,
-        adminPrice: p.admin_price,
+        title: p.title || "",
+        firstName: p.first_name || "",
+        midName: p.mid_name || "",
+        surName: p.sur_name || "",
+        age: Number(p.age ?? 0), // convert to number
+        salePrice: Number(p.sale_price ?? 0), // convert to number
+        adminPrice: Number(p.admin_price ?? 0), // convert to number
       }));
       setRows(passengerRows);
 
