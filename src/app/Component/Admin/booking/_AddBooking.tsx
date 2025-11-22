@@ -1116,22 +1116,25 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
       // }));
       // setRows(passengerRows);
 
+      debugger;
+
       const passengerRows: RowType[] = result.data.details.map((p: any) => ({
         category: { label: p.category, value: p.category },
         title: p.title || "",
         firstName: p.first_name || "",
         midName: p.mid_name || "",
         surName: p.sur_name || "",
-        age: Number(p.age ?? 0), // convert to number
-        salePrice: Number(p.sale_price ?? 0), // convert to number
-        adminPrice: Number(p.admin_price ?? 0), // convert to number
+        age: Number(p.age ?? 0),
+        salePrice: Number(p.sale_price ?? 0),
+        adminPrice: Number(p.admin_price ?? 0),
       }));
+
       setRows(passengerRows);
 
-      setTotal(result.data.total ?? 0);
-      setPayableToSupplier(result.data.payable_supplier ?? 0);
-      setReceivedAmount(result.data.received_amount ?? 0);
-      setRemainingProfit(result.data.remaining_profit ?? 0);
+      setTotal(Number(result.data.total) ?? 0);
+      setPayableToSupplier(Number(result.data.payable_supplier) ?? 0);
+      setReceivedAmount(Number(result.data.received_amount) ?? 0);
+      setRemainingProfit(Number(result.data.remaining_profit) ?? 0);
     } catch (error: any) {
       toast.error(error.message, {
         position: "top-right",
@@ -1761,7 +1764,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
                         type="text"
                         className="form-control shadow-sm rounded-pill border-1"
                         placeholder="Title"
-                        disabled={Passanger < "1"}
+                        disabled={Number(Passanger) < 1}
                         value={row.title || ""}
                         onChange={(e) =>
                           handleRow(index, "title", e.target.value)
@@ -1774,7 +1777,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
                         type="text"
                         className="form-control shadow-sm rounded-pill border-1"
                         placeholder="First Name"
-                        disabled={Passanger < "1"}
+                        disabled={Number(Passanger) < 1}
                         value={row.firstName || ""}
                         onChange={(e) =>
                           handleRow(index, "firstName", e.target.value)
@@ -1787,7 +1790,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
                         type="text"
                         className="form-control shadow-sm rounded-pill border-1"
                         placeholder="Mid Name"
-                        disabled={Passanger < "1"}
+                        disabled={Number(Passanger) < 1}
                         value={row.midName || ""}
                         onChange={(e) =>
                           handleRow(index, "midName", e.target.value)
@@ -1800,7 +1803,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
                         type="text"
                         className="form-control shadow-sm rounded-pill border-1"
                         placeholder="Sur Name"
-                        disabled={Passanger < "1"}
+                        disabled={Number(Passanger) < 1}
                         value={row.surName || ""}
                         onChange={(e) =>
                           handleRow(index, "surName", e.target.value)
@@ -1813,7 +1816,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
                         type="number"
                         className="form-control shadow-sm rounded-pill border-1"
                         placeholder="Age"
-                        disabled={Passanger < "1"}
+                        disabled={Number(Passanger) < 1}
                         value={row.age}
                         onChange={(e) =>
                           handleRow(index, "age", e.target.value)
@@ -1826,7 +1829,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
                         type="text"
                         className="form-control shadow-sm rounded-pill border-1"
                         placeholder="Sale Price"
-                        disabled={Passanger < "1"}
+                        disabled={Number(Passanger) < 1}
                         value={formatPrice(row.salePrice)}
                         onChange={(e) => {
                           const val = Number(e.target.value.replace(/,/g, ""));
@@ -1840,7 +1843,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
                         type="text"
                         className="form-control shadow-sm rounded-pill border-1"
                         placeholder="Admin Price"
-                        disabled={Passanger < "1"}
+                        disabled={Number(Passanger) < 1}
                         value={formatPrice(row.adminPrice)}
                         onChange={(e) => {
                           const val = Number(e.target.value.replace(/,/g, ""));
