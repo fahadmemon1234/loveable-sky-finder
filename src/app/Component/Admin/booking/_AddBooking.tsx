@@ -1036,7 +1036,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
 
       setEditId(numericId);
 
-      // console.log(result.data);
+      console.log(result.data);
 
       if (result.data.booking_date) {
         const date = new Date(result.data.booking_date);
