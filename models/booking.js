@@ -166,3 +166,98 @@ export const getBookingById = async (id) => {
     await connection.end();
   }
 };
+
+
+export const updateBookingHeader = async (headerId, data) => {
+  const connection = await db();
+
+  await connection.execute(
+    `UPDATE booking_header SET
+      user_id = ?, booking_date = ?, supplier_name = ?, reference_no = ?, full_name = ?, email = ?, phone = ?,
+      departure_airport = ?, return_airport = ?, going_stopover = ?, return_stopover = ?, airline = ?,
+      departure_date = ?, return_date = ?, flight_type = ?, flight_class = ?, pnr = ?, airline_locator = ?,
+      pnr_expiry = ?, fare_expiry = ?, payment_type = ?, agent_flight_details = ?, customer_flight_details = ?, passanger = ?,
+      total = ?, payable_supplier = ?, received_amount = ?, remaining_profit = ?
+    WHERE id = ?`,
+    [
+      data.user_id,
+      data.BookingDate,
+      data.SupplierName,
+      data.ReferencesNO,
+      data.FullName,
+      data.Email,
+      data.Phone,
+      data.Departureairport,
+      data.Returnairport,
+      data.Goingstopover,
+      data.Returnstopover,
+      data.Airline,
+      data.DepartureDate,
+      data.ReturnDate,
+      data.FlightType,
+      data.FlightClass,
+      data.PNRno,
+      data.airlineLocator,
+      data.PNRExpiryDate,
+      data.FareExpiryDate,
+      data.PaymentType,
+      data.AgentFlightDetails,
+      data.CustomerFlightDetails,
+      data.Passengers,
+      data.Total,
+      data.PayableToSupplier,
+      data.ReceivedAmount,
+      data.RemainingProfit,
+      headerId,
+    ]
+  );
+
+  await connection.end();
+};
+
+
+export const updateBookingDetails = async (headerId, passengers) => {
+  const connection = await db();
+
+  // Remove old passengers
+  await connection.execute(
+    `DELETE FROM booking_details WHERE booking_header_id = ?`,
+    [headerId]
+  );
+
+  // Insert new passengers
+  for (const p of passengers) {
+    await connection.execute(
+      `INSERT INTO booking_details
+       (booking_header_id, category, title, first_name, mid_name, sur_name, age, sale_price, admin_price)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        headerId,
+        p.Category,
+        p.Title,
+        p.FirstName,
+        p.MidName,
+        p.SurName,
+        p.Age,
+        p.SalePrice,
+        p.AdminPrice,
+      ]
+    );
+  }
+
+  await connection.end();
+};
+
+
+export const updateInvoice = async (headerId, total, received) => {
+  const connection = await db();
+
+  await connection.execute(
+    `UPDATE invoice SET
+      total = ?, received = ?
+     WHERE booking_header_id = ?`,
+    [total, received, headerId]
+  );
+
+  await connection.end();
+};

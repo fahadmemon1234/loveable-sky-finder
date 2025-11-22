@@ -6,6 +6,9 @@ import {
   addInvoice,
   getAllBookings,
   getBookingById,
+  updateBookingHeader,
+  updateBookingDetails,
+  updateInvoice,
 } from "../models/booking.js";
 
 const router = express.Router();
@@ -134,6 +137,87 @@ router.post("/add-booking", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+router.put("/update-booking/:id", async (req, res) => {
+  try {
+    const headerId = req.params.id;
+    const {
+      user_id,
+      BookingDate,
+      SupplierName,
+      ReferencesNO,
+      FullName,
+      Email,
+      Phone,
+      Departureairport,
+      Returnairport,
+      Goingstopover,
+      Returnstopover,
+      Airline,
+      DepartureDate,
+      ReturnDate,
+      FlightType,
+      FlightClass,
+      PNRno,
+      airlineLocator,
+      PNRExpiryDate,
+      FareExpiryDate,
+      PaymentType,
+      AgentFlightDetails,
+      CustomerFlightDetails,
+      Passengers,
+      Total,
+      PayableToSupplier,
+      ReceivedAmount,
+      RemainingProfit,
+      PassengerDetails,
+    } = req.body;
+
+    // 1️⃣ Update header
+    await updateBookingHeader(headerId, {
+      user_id,
+      BookingDate,
+      SupplierName,
+      ReferencesNO,
+      FullName,
+      Email,
+      Phone,
+      Departureairport,
+      Returnairport,
+      Goingstopover,
+      Returnstopover,
+      Airline,
+      DepartureDate,
+      ReturnDate,
+      FlightType,
+      FlightClass,
+      PNRno,
+      airlineLocator,
+      PNRExpiryDate,
+      FareExpiryDate,
+      PaymentType,
+      AgentFlightDetails,
+      CustomerFlightDetails,
+      Passengers,
+      Total,
+      PayableToSupplier,
+      ReceivedAmount,
+      RemainingProfit,
+    });
+
+    // 2️⃣ Update passenger details
+    await updateBookingDetails(headerId, PassengerDetails);
+
+    // 3️⃣ Update invoice
+    await updateInvoice(headerId, Total, ReceivedAmount);
+
+    res.status(200).json({ message: "Booking updated successfully!" });
+  } catch (error) {
+    console.error("❌ Error updating booking:", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 
 router.get("/get-booking-by-id/:id", async (req, res) => {
