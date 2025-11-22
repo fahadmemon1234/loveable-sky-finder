@@ -85,8 +85,8 @@ export const addBookingDetails = async (headerId, passengers) => {
   for (const p of passengers) {
     await connection.execute(
       `INSERT INTO booking_details
-       (booking_header_id, category, title, first_name, mid_name, sur_name, age, sale_price, admin_price)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (booking_header_id, category, title, first_name, mid_name, sur_name, age, sale_price, admin_price, ETicketNumber)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         headerId,
         p.Category,
@@ -97,6 +97,7 @@ export const addBookingDetails = async (headerId, passengers) => {
         p.Age,
         p.SalePrice,
         p.AdminPrice,
+        p.ETicketNumber,
       ]
     );
   }
@@ -229,8 +230,8 @@ export const updateBookingDetails = async (headerId, passengers) => {
   for (const p of passengers) {
     await connection.execute(
       `INSERT INTO booking_details
-       (booking_header_id, category, title, first_name, mid_name, sur_name, age, sale_price, admin_price)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (booking_header_id, category, title, first_name, mid_name, sur_name, age, sale_price, admin_price, ETicketNumber)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         headerId,
         p.Category,
@@ -241,6 +242,7 @@ export const updateBookingDetails = async (headerId, passengers) => {
         p.Age,
         p.SalePrice,
         p.AdminPrice,
+        p.ETicketNumber,
       ]
     );
   }
