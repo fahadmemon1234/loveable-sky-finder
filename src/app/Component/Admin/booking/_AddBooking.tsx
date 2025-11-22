@@ -1104,35 +1104,36 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
       setCustomerFlightDetails(result.data.customer_flight_details);
       setPassanger(result.data.passanger);
 
+const normalizePassenger = (p: any) => ({
+  category: { label: p.category || p.Category || "", value: p.category || p.Category || "" },
+  title: p.title || p.Title || "",
+  firstName: p.first_name || p.FirstName || p.firstName || "",
+  midName: p.mid_name || p.MidName || p.midName || "",
+  surName: p.sur_name || p.SurName || p.surName || "",
+  age: Number(p.age ?? p.Age ?? 0),
+  salePrice: Number((p.sale_price ?? p.SalePrice ?? "0").toString().replace(/,/g, "")),
+  adminPrice: Number((p.admin_price ?? p.AdminPrice ?? "0").toString().replace(/,/g, "")),
+});
+
+const passengerRows: RowType[] = result.data.details.map(normalizePassenger);
+setRows(passengerRows);
+
+
       // const passengerRows: RowType[] = result.data.details.map((p: any) => ({
-      //   category: { label: p.category, value: p.category },
-      //   title: p.title,
-      //   firstName: p.first_name,
-      //   midName: p.mid_name,
-      //   surName: p.sur_name,
-      //   age: p.age,
-      //   salePrice: p.sale_price,
-      //   adminPrice: p.admin_price,
+      //   category: { label: p.category, value: p.category || "" },
+
+      //   title: p.title || "",
+      //   firstName: p.first_name || "",
+      //   midName: p.mid_name || "",
+      //   surName: p.sur_name || "",
+
+      //   age: Number(p.age ?? 0),
+
+      //   salePrice: Number((p.sale_price ?? "0").toString().replace(/,/g, "")),
+      //   adminPrice: Number((p.admin_price ?? "0").toString().replace(/,/g, "")),
       // }));
+
       // setRows(passengerRows);
-
-      debugger;
-
-      const passengerRows: RowType[] = result.data.details.map((p: any) => ({
-        category: { label: p.category, value: p.category || "" },
-
-        title: p.title || "",
-        firstName: p.first_name || "",
-        midName: p.mid_name || "",
-        surName: p.sur_name || "",
-
-        age: Number(p.age ?? 0),
-
-        salePrice: Number((p.sale_price ?? "0").toString().replace(/,/g, "")),
-        adminPrice: Number((p.admin_price ?? "0").toString().replace(/,/g, "")),
-      }));
-
-      setRows(passengerRows);
 
       setTotal(Number(result.data.total) ?? 0);
       setPayableToSupplier(Number(result.data.payable_supplier) ?? 0);
