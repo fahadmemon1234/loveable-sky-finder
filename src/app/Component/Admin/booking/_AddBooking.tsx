@@ -859,6 +859,11 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
     setairlineLocator("");
     setPNRExpiryDate("");
     setFareExpiryDate("");
+    setDeposit(0);
+    setTotal(0);
+    setPayableToSupplier(0);
+    setReceivedAmount(0);
+    setRemainingProfit(0);
     setPaymentType("");
     setAgentFlightDetails("");
     setCustomerFlightDetails("");
@@ -929,14 +934,25 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
         })),
       };
 
-      var result = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/add-booking`,
-        data,
-        {
-          headers: { "Content-Type": "application/json" },
-          timeout: 120000, // 2 minutes
-        }
-      );
+      if (editId > 0) {
+        var result = await axios.put(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/update-booking/${editId}`,
+          data,
+          {
+            headers: { "Content-Type": "application/json" },
+            timeout: 120000, // 2 minutes
+          }
+        );
+      } else {
+        var result = await axios.post(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/add-booking`,
+          data,
+          {
+            headers: { "Content-Type": "application/json" },
+            timeout: 120000, // 2 minutes
+          }
+        );
+      }
 
       if (result.status == 200) {
         toast.success(result.data.message, {
@@ -1003,6 +1019,8 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
     }
   }, [id]);
 
+  const [editId, setEditId] = useState(0);
+
   const getBookingById = async (id: string) => {
     setIsLoading(true);
     try {
@@ -1015,6 +1033,8 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
           timeout: 120000, // 2 minutes
         }
       );
+
+      setEditId(numericId);
 
       // console.log(result.data);
 
