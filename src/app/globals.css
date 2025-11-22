@@ -617,33 +617,31 @@ input:disabled {
   color: black !important;
 }
 
-
 .custom-radio {
-    accent-color: hsl(var(--main));
-    cursor: pointer;
-    width: 18px;
-    height: 18px;
-  }
+  accent-color: hsl(var(--main));
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
 
-  .form-check-label {
-    cursor: pointer;
-  }
+.form-check-label {
+  cursor: pointer;
+}
 
-  .trash-btn{
-    color: red;
-  }
+.trash-btn {
+  color: red;
+}
 
-  .custom-head{
-    background-color: hsl(var(--main)) !important;
-  }
+.custom-head {
+  background-color: hsl(var(--main)) !important;
+}
 
-  .custom-head tr th{
-    color: white !important;
-    text-align: center;
-  }
+.custom-head tr th {
+  color: white !important;
+  text-align: center;
+}
 
-
-  .table-responsive {
+.table-responsive {
   width: 100%;
   overflow-x: auto;
 }
@@ -679,7 +677,7 @@ input:disabled {
   width: 120px;
 }
 
-.custom-btn{
+.custom-btn {
   background-color: hsl(var(--main)) !important;
   color: white !important;
   border: none;
@@ -693,4 +691,9 @@ input:disabled {
 .custom-btn:hover {
   transform: scale(1.05);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.sc-fhHczv.lkqaeQ.rdt_TableHeadRow {
+  background-color: hsl(var(--main)) !important;
+  color: white !important;
 }
