@@ -15,6 +15,7 @@ const AddBookingData = () => {
       age: string;
       salePrice: number;
       adminPrice: number;
+      ETicketNumber?: string;
     }>
   >([]);
 

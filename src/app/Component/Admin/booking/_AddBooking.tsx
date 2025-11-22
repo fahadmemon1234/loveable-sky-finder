@@ -17,6 +17,7 @@ interface RowType {
   age: string;
   salePrice: number;
   adminPrice: number;
+  ETicketNumber?: string;
 }
 
 interface AddBookingProps {
@@ -324,6 +325,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
       age: "",
       salePrice: 0,
       adminPrice: 0,
+      ETicketNumber: "",
     }));
     setRows(newRows);
   }, [numPassengers]);
@@ -832,8 +834,22 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
         });
         return false;
       }
-    }
 
+      if (row.ETicketNumber === undefined || row.ETicketNumber.trim() === "") {
+        toast.error(`Row ${i + 1}: Admin Price must be a number`, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+        return false;
+      }
+    }
     return true;
   };
 
@@ -878,9 +894,11 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
         age: "",
         salePrice: 0,
         adminPrice: 0,
+        ETicketNumber: "",
       },
     ]);
   };
+
 
   const handleSubmit = async () => {
     try {
@@ -931,6 +949,7 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
           Age: row.age,
           SalePrice: row.salePrice,
           AdminPrice: row.adminPrice,
+          ETicketNumber: row.ETicketNumber || "",
         })),
       };
 
@@ -1104,20 +1123,27 @@ const AddBooking: React.FC<AddBookingProps> = ({ rows, setRows }) => {
       setCustomerFlightDetails(result.data.customer_flight_details);
       setPassanger(result.data.passanger);
 
-const normalizePassenger = (p: any) => ({
-  category: { label: p.category || p.Category || "", value: p.category || p.Category || "" },
-  title: p.title || p.Title || "",
-  firstName: p.first_name || p.FirstName || p.firstName || "",
-  midName: p.mid_name || p.MidName || p.midName || "",
-  surName: p.sur_name || p.SurName || p.surName || "",
-  age: Number(p.age ?? p.Age ?? 0),
-  salePrice: Number((p.sale_price ?? p.SalePrice ?? "0").toString().replace(/,/g, "")),
-  adminPrice: Number((p.admin_price ?? p.AdminPrice ?? "0").toString().replace(/,/g, "")),
-});
+      const normalizePassenger = (p: any) => ({
+        category: {
+          label: p.category || p.Category || "",
+          value: p.category || p.Category || "",
+        },
+        title: p.title || p.Title || "",
+        firstName: p.first_name || p.FirstName || p.firstName || "",
+        midName: p.mid_name || p.MidName || p.midName || "",
+        surName: p.sur_name || p.SurName || p.surName || "",
+        age: Number(p.age ?? p.Age ?? 0),
+        salePrice: Number(
+          (p.sale_price ?? p.SalePrice ?? "0").toString().replace(/,/g, "")
+        ),
+        adminPrice: Number(
+          (p.admin_price ?? p.AdminPrice ?? "0").toString().replace(/,/g, "")
+        ),
+      });
 
-const passengerRows: RowType[] = result.data.details.map(normalizePassenger);
-setRows(passengerRows);
-
+      const passengerRows: RowType[] =
+        result.data.details.map(normalizePassenger);
+      setRows(passengerRows);
 
       // const passengerRows: RowType[] = result.data.details.map((p: any) => ({
       //   category: { label: p.category, value: p.category || "" },
@@ -1723,6 +1749,7 @@ setRows(passengerRows);
                   <th style={{ width: "60px" }}>Age</th>
                   <th style={{ width: "100px" }}>Sale Price (£)</th>
                   <th style={{ width: "100px" }}>Admin (£)</th>
+                  <th style={{ width: "120px" }}>E-Ticket Number</th>
                 </tr>
               </thead>
 
@@ -1853,6 +1880,19 @@ setRows(passengerRows);
                           const val = Number(e.target.value.replace(/,/g, ""));
                           handleRow(index, "adminPrice", isNaN(val) ? 0 : val);
                         }}
+                      />
+                    </td>
+
+                    <td>
+                      <input
+                        type="text"
+                        className="form-control shadow-sm rounded-pill border-1"
+                        placeholder="E-Ticket Number"
+                        disabled={Number(Passanger) < 1}
+                        value={row.ETicketNumber || ""}
+                        onChange={(e) =>
+                          handleRow(index, "ETicketNumber", e.target.value)
+                        }
                       />
                     </td>
                   </tr>
